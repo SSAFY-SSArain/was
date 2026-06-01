@@ -50,7 +50,7 @@ jobs:
             
             # 환경변수 주입 및 컨테이너 실행
             sudo docker run -d --name spring-app \
-              -p 8080:8080 \
+              -p 80:8080 \
               -e SPRING_PROFILES_ACTIVE=production \
               -e MYSQL_URL="jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8" \
               -e MYSQL_USER=${{ secrets.RDS_USERNAME }} \
