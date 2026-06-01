@@ -1,32 +1,17 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
   application:
     name: ssarain
-  datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
-  data:
-    redis:
-        host: ${VALKEY_HOST:localhost}
-        port: ${VALKEY_HOST_PORT:6379}
-        password: ${VALKEY_PASSWORD:1234}
+  profiles:
+    active: develop
+
 app:
   jwt:
     issuer: ssarain
-    access-token-secret: ${JWT_ACCESS_SECRET:default_access_token_secret_key_must_be_very_long_and_secure_1234567890}
-    refresh-token-secret: ${JWT_REFRESH_SECRET:default_refresh_token_secret_key_must_be_very_long_and_secure_1234567890}
+    access-token-secret: ${JWT_ACCESS_SECRET}
+    refresh-token-secret: ${JWT_REFRESH_SECRET}
     access-token-expiration-seconds: 3600
     refresh-token-expiration-seconds: 1209600
   cors:
-    allowed-origins:
-      - ${CORS_ALLOWED_ORIGIN:http://localhost:5173}
     allowed-methods:
       - GET
       - POST
@@ -38,6 +23,3 @@ app:
       - "*"
     exposed-headers:
       - Authorization
-
-
-

@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:local_password}
+  data:
+    redis:
+      host: ${VALKEY_HOST:localhost}
+      port: ${VALKEY_HOST_PORT:6379}
+      password: ${VALKEY_PASSWORD:1234}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+app:
+  cors:
+    allowed-origins:
+      - ${CORS_ALLOWED_ORIGIN:http://localhost:5173}
