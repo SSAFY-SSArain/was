@@ -16,8 +16,8 @@ import java.util.UUID;
 public class User extends BaseAuditingEntity {
     @Id
     @GeneratedValue
-    @Column(name = "user_id", nullable = false, unique = true)
-    private UUID id;
+    @Column(name = "uid", nullable = false, unique = true)
+    private UUID uid;
 
     @Size(max = 100)
     @NotNull
@@ -26,7 +26,7 @@ public class User extends BaseAuditingEntity {
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "nickname", nullable = false, unique = true, length = 45)
+    @Column(name = "nickname", nullable = false, length = 45)
     private String nickname;
 
     @Size(max = 255)

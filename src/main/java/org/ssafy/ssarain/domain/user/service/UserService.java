@@ -56,7 +56,7 @@ public class UserService {
 
     public User getUserByUserId(UUID userId) {
 
-        return userRepository.findById(userId)
+        return userRepository.findByUid(userId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
     }
 
