@@ -46,6 +46,8 @@ jobs:
             # 최신 이미지 풀
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/spring-app:latest
             
+            PRIVATE_IP=$(hostname -I | awk '{print $1}')
+            
             # 환경변수 주입 및 컨테이너 실행
             sudo docker run -d --name spring-app \
               -p 8080:8080 \
@@ -53,6 +55,8 @@ jobs:
               -e MYSQL_URL="jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8" \
               -e MYSQL_USER=${{ secrets.RDS_USERNAME }} \
               -e MYSQL_PASSWORD=${{ secrets.RDS_PASSWORD }} \
+              -e VALKEY_HOST="$PRIVATE_IP" \
+              -e VALKEY_HOST_PORT="${{ secrets.VALKEY_HOST_PORT }}" \
               -e VALKEY_PASSWORD=${{ secrets.VALKEY_PASSWORD }} \
               -e JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
               -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
