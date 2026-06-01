@@ -77,13 +77,13 @@ public class AuthService {
 
     private UserWithTokenRes createUserWithTokenRes(User user) {
 
-        String accessToken  = jwtProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
-        String refreshToken = jwtProvider.generateRefreshToken(user.getId(), user.getEmail(), user.getRole());
+        String accessToken  = jwtProvider.generateAccessToken(user.getUid(), user.getEmail(), user.getRole());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getUid(), user.getEmail(), user.getRole());
 
         long accessTokenExpiresIn  = jwtProvider.getAccessTokenExpirationSeconds();
         long refreshTokenExpiresIn = jwtProvider.getRefreshTokenExpirationSeconds();
 
-        saveRefreshToken(user.getId(), refreshToken, refreshTokenExpiresIn);
+        saveRefreshToken(user.getUid(), refreshToken, refreshTokenExpiresIn);
 
         UserInfoRes userInfo = new UserInfoRes(user.getEmail(), user.getNickname());
         TokenRes    tokenRes = new TokenRes(accessToken, accessTokenExpiresIn, refreshToken, refreshTokenExpiresIn);
@@ -168,8 +168,8 @@ public class AuthService {
 
         User user = userService.getUserByUserId(userId);
 
-        String newAccessToken = jwtProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
-        String newRefreshToken = jwtProvider.generateRefreshToken(user.getId(), user.getEmail(), user.getRole());
+        String newAccessToken = jwtProvider.generateAccessToken(user.getUid(), user.getEmail(), user.getRole());
+        String newRefreshToken = jwtProvider.generateRefreshToken(user.getUid(), user.getEmail(), user.getRole());
 
         long accessTokenExpiresIn  = jwtProvider.getAccessTokenExpirationSeconds();
         long refreshTokenExpiresIn = jwtProvider.getRefreshTokenExpirationSeconds();
