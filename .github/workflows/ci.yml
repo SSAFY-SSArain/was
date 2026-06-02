@@ -13,6 +13,17 @@ jobs:
   verify:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: mock_password
+          MYSQL_DATABASE: ssarain
+        ports:
+          - 3306:3306
+        # 헬스체크
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=3s --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,6 +35,16 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Gradle (or Maven)
+        env:
+          MYSQL_URL: jdbc:mysql://localhost:3306/ssarain?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+          MYSQL_USER: root
+          MYSQL_PASSWORD: mock_password
+          VALKEY_HOST: localhost
+          VALKEY_HOST_PORT: 6379
+          VALKEY_PASSWORD: mock_password
+          JWT_ACCESS_SECRET: 123123123123123123123123123123123123123123123123123123123123123123
+          JWT_REFRESH_SECRET: 123123123123123123123123123123123123123123123123123123123123123123
+          CORS_ALLOWED_ORIGIN: http://localhost:3000
         run: |
           chmod +x ./gradlew
           ./gradlew build
