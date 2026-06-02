@@ -12,6 +12,7 @@
 *.zip
 *.tar.gz
 *.rar
+!gradle/wrapper/gradle-wrapper.jar
 
 # 빌드 디렉토리 (Gradle / Maven)
 bin/
