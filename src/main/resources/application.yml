@@ -2,7 +2,7 @@ spring:
   application:
     name: ssarain
   profiles:
-    active: develop
+    active: ${SPRING_PROFILES_ACTIVE:develop}
 
 app:
   jwt:
