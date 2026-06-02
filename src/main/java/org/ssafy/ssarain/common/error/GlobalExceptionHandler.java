@@ -3,14 +3,18 @@ package org.ssafy.ssarain.common.error;
 import lombok.extern.slf4j.Slf4j;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GlobalException.class)
     protected ResponseEntity<BaseResponse<Void>> handleGlobalException(GlobalException e) {
@@ -31,5 +35,13 @@ public class GlobalExceptionHandler {
 
         log.warn("MissingRequestCookieException: {}", e.getMessage(), e);
         return BaseResponse.error(ErrorCode.COOKIE_NOT_EXISTS);
+    }
+    
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+            HttpStatusCode statusCode, WebRequest request) {
+        return ResponseEntity
+                .status(ErrorCode.BAD_REQUEST.getStatus())
+                .body(BaseResponse.of(ErrorCode.BAD_REQUEST));
     }
 }

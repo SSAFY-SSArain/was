@@ -15,6 +15,7 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "C003","인증 정보가 유효하지 않습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C004","서버 내부 오류가 발생했습니다."),
     COOKIE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "C005","쿠키가 누락되었습니다."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "C006", "잘못된 형식의 요청입니다."),
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US001","해당 유저를 찾을 수 없습니다."),
