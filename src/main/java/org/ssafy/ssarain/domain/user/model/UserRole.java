@@ -17,7 +17,8 @@ import java.util.stream.Stream;
 public enum UserRole {
 
     USER ("ROLE_USER"),
-    ADMIN("ROLE_ADMIN");
+    ADMIN ("ROLE_ADMIN"),
+    BRAIN_ADMIN ("ROLE_BRAIN_ADMIN");
 
     private final String authority;
 
