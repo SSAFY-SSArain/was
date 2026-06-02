@@ -20,7 +20,11 @@ public enum SuccessCode {
     USER_LOGIN_SUCCESS(HttpStatus.OK, "로그인 되었습니다."),
     USER_LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 되었습니다."),
     USER_INFO_SUCCESS(HttpStatus.OK, "유저 정보가 조회되었습니다."),
-    USER_TOKEN_REFRESH_SUCCESS(HttpStatus.OK, "토큰 재발급이 완료되었습니다.");
+    USER_TOKEN_REFRESH_SUCCESS(HttpStatus.OK, "토큰 재발급이 완료되었습니다."),
+    
+    // Topic
+    TOPIC_INFO_SUCCESS(HttpStatus.OK, "주제 정보가 조회되었습니다."),
+    TOPIC_CREATE_SUCCESS(HttpStatus.CREATED, "주제가 생성되었습니다.");
 
     private final HttpStatus status;
     private final String message;
