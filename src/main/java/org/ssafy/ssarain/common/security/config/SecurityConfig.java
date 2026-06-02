@@ -8,8 +8,10 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.config.properties.CorsProperties;
 import org.ssafy.ssarain.common.security.jwt.filter.JwtAuthenticationFilter;
 import org.ssafy.ssarain.common.security.jwt.filter.JwtExceptionFilter;
+import org.ssafy.ssarain.domain.user.model.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -58,6 +60,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/topics/**")
+                                .hasAnyRole(UserRole.BRAIN_ADMIN.toString(), UserRole.ADMIN.toString())
                         .anyRequest().authenticated()
                 )
 
