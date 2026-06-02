@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  local-mysql:
+    image: mysql:8.0
+    container_name: ssarain-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ssarain
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ssarain-network
+
+  local-redis:
+    image: redis:7.0-alpine
+    container_name: ssarain-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${VALKEY_PASSWORD}
+    networks:
+      - ssarain-network
+
+  spring-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ssarain-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=develop
+      - MYSQL_URL=jdbc:mysql://local-mysql:3306/ssarain?useSSL=false&allowPublicKeyRetrieval=true
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - VALKEY_HOST=local-redis
+      - VALKEY_HOST_PORT=6379
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+    depends_on:
+      - local-mysql
+      - local-redis
+    networks:
+      - ssarain-network
+
+volumes:
+  mysql_data:
+
+networks:
+  ssarain-network:
+    driver: bridge
