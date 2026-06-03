@@ -16,6 +16,14 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C004","서버 내부 오류가 발생했습니다."),
     COOKIE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "C005","쿠키가 누락되었습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "C006", "잘못된 형식의 요청입니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "C007", "요청한 리소스를 찾을 수 없습니다."),
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "C008", "해당 메서드는 지원되지 않습니다."),
+    NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "C009", "응답할 수 없는 형식을 요청했습니다."),
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "C010", "지원되지 않는 media-type입니다."),
+    SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "C011", "현재 해당 요청을 처리할 수 없습니다."),
+    
+    // ErrorCode
+    NOT_ERROR_STATUS(HttpStatus.INTERNAL_SERVER_ERROR, "EC001","에러 코드가 아닌 status를 에러 코드로 변환하려 시도했습니다."),
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US001","해당 유저를 찾을 수 없습니다."),
@@ -31,4 +39,31 @@ public enum ErrorCode {
     private final HttpStatus status;
     private final String code;
     private final String message;
+    
+    public static ErrorCode getCommonErrorCode(HttpStatus status) {
+        if (status == null) {
+            return NOT_ERROR_STATUS;
+        }
+        
+        if (status.is4xxClientError()) {
+            return switch (status) {
+            case BAD_REQUEST -> BAD_REQUEST;
+            case NOT_FOUND -> NOT_FOUND;
+            case METHOD_NOT_ALLOWED -> METHOD_NOT_ALLOWED;
+            case NOT_ACCEPTABLE -> NOT_ACCEPTABLE;
+            case UNSUPPORTED_MEDIA_TYPE -> UNSUPPORTED_MEDIA_TYPE;
+            default -> BAD_REQUEST;
+            };
+        }
+        
+        if (status.is5xxServerError()) {
+            return switch (status) {
+            case SERVICE_UNAVAILABLE -> SERVICE_UNAVAILABLE;
+            default -> INTERNAL_SERVER_ERROR;
+            };
+        }
+        
+        // Not Error
+        return NOT_ERROR_STATUS;
+    }
 }
