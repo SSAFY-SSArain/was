@@ -65,6 +65,9 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             sendErrorResponse(response, ErrorCode.UNAUTHORIZED);
                         })
+                        .accessDeniedHandler((request, response, authException) -> {
+                            sendErrorResponse(response, ErrorCode.ACCESS_DENIED);
+                        })
                 )
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
