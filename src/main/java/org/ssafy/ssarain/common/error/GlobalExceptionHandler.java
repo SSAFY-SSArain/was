@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestCookieException;
@@ -40,8 +41,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
             HttpStatusCode statusCode, WebRequest request) {
+        log.error(ex.getMessage(), ex);
+        ErrorCode errorCode = ErrorCode.getCommonErrorCode((HttpStatus)statusCode);
         return ResponseEntity
-                .status(ErrorCode.BAD_REQUEST.getStatus())
-                .body(BaseResponse.of(ErrorCode.BAD_REQUEST));
+                .status(errorCode.getStatus())
+                .body(BaseResponse.of(errorCode));
     }
 }
