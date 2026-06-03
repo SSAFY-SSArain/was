@@ -41,7 +41,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
             HttpStatusCode statusCode, WebRequest request) {
-        log.error(ex.getMessage(), ex);
+        if (statusCode.is4xxClientError())
+            log.warn(ex.getMessage(), ex);
+        if (statusCode.is5xxServerError())
+            log.error(ex.getMessage(), ex);
+        
         ErrorCode errorCode = ErrorCode.getCommonErrorCode((HttpStatus)statusCode);
         return ResponseEntity
                 .status(errorCode.getStatus())
