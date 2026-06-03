@@ -45,18 +45,11 @@ public class TopicController {
         return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getTopicDetail(tid));
     }
     
-    @PostMapping("/{pid}")
-    @Operation(summary = "T04: Topic 생성")
+    @PostMapping({"", "/{pid}"})
+    @Operation(summary = "T04: Topic 생성", description = "pid == null일 경우 루트 주제를 생성합니다.")
     public ResponseEntity<BaseResponse<TopicDetailDto>> createTopic(
-            @PathVariable int pid,
+            @PathVariable(required = false) Integer pid,
             @RequestBody TopicCreateDto dto) {
         return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(pid, dto));
-    }
-    
-    @PostMapping
-    @Operation(summary = "T04_2: 루트 Topic 생성")
-    public ResponseEntity<BaseResponse<TopicDetailDto>> createTopic(
-            @RequestBody TopicCreateDto dto) {
-        return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(null, dto));
     }
 }
