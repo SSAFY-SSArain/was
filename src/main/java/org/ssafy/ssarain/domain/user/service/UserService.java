@@ -59,6 +59,16 @@ public class UserService {
         return userRepository.findByUid(userId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
     }
+    
+    public boolean isAnyBrainAdmin(UUID userId) {
+        // TODO: BrainAdmin 기능 개발시 반영할 것.
+        return true;
+    }
+    
+    public boolean isBrainAdminOf(UUID userId, int bid) {
+        // TODO: BrainAdmin 기능 개발시 반영할 것.
+        return true;
+    }
 
     /*
         Util Method

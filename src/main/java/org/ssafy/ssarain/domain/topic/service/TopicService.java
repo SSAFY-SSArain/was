@@ -1,6 +1,7 @@
 package org.ssafy.ssarain.domain.topic.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
+import org.ssafy.ssarain.domain.user.service.UserService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TopicService {
 
+    private final UserService userService;
     private final TopicRepository topicRepository;
     
     public List<TopicInfoDto> getAllTopicInfo() {
@@ -39,7 +42,8 @@ public class TopicService {
     }
     
     @Transactional
-    public TopicDetailDto createTopic(Integer pid, TopicCreateDto dto) {
+    public TopicDetailDto createTopic(Integer pid, TopicCreateDto dto, UUID uid) {
+        validateAnyBrainAdmin(uid);
         validatePid(pid);
         validateCreateDto(dto);
         
@@ -69,6 +73,12 @@ public class TopicService {
     private void validateDuplicateName(String name) {
         if (topicRepository.existsByName(name)) {
             throw new GlobalException(ErrorCode.TOPIC_NAME_DUPLICATED);
+        }
+    }
+    
+    private void validateAnyBrainAdmin(UUID uid) {
+        if (uid == null || !userService.isAnyBrainAdmin(uid)) {
+            throw new GlobalException(ErrorCode.ACCESS_DENIED);
         }
     }
     

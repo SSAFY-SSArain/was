@@ -3,6 +3,7 @@ package org.ssafy.ssarain.domain.topic.api;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
+import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
@@ -49,14 +51,16 @@ public class TopicController {
     @Operation(summary = "T04: Topic 생성")
     public ResponseEntity<BaseResponse<TopicDetailDto>> createTopic(
             @PathVariable int pid,
-            @RequestBody TopicCreateDto dto) {
-        return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(pid, dto));
+            @RequestBody TopicCreateDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(pid, dto, userDetails.getUserId()));
     }
     
     @PostMapping
     @Operation(summary = "T04_2: 루트 Topic 생성")
     public ResponseEntity<BaseResponse<TopicDetailDto>> createTopic(
-            @RequestBody TopicCreateDto dto) {
-        return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(null, dto));
+            @RequestBody TopicCreateDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(null, dto, userDetails.getUserId()));
     }
 }
