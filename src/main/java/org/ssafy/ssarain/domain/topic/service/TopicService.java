@@ -21,13 +21,15 @@ public class TopicService {
 
     private final TopicRepository topicRepository;
     
-    public List<TopicInfoDto> getAllTopicInfo() {
+    public List<TopicInfoDto> getAllTopicInfo(Integer bid) {
+        // TODO: Brain에 포함된 Topic을 처리하는 로직이 추가되어야 합니다.
         return topicRepository.findAll().stream()
                 .map(TopicInfoDto::from)
                 .collect(Collectors.toList());
     }
     
-    public List<TopicInfoDto> getChildTopic(int tid) {
+    public List<TopicInfoDto> getChildTopic(int tid, Integer bid) {
+        // TODO: Brain에 포함된 Topic을 처리하는 로직이 추가되어야 합니다.
         return topicRepository.findByPid(tid).stream()
                 .map(TopicInfoDto::from)
                 .collect(Collectors.toList());

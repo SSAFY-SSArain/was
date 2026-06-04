@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
@@ -27,15 +28,17 @@ public class TopicController {
     
     @GetMapping
     @Operation(summary = "T01: 전체 Topic 조회")
-    public ResponseEntity<BaseResponse<List<TopicInfoDto>>> getAllTopics() {
-        return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getAllTopicInfo());
+    public ResponseEntity<BaseResponse<List<TopicInfoDto>>> getAllTopics(
+            @RequestParam(name = "brain", required = false) Integer bid) {
+        return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getAllTopicInfo(bid));
     }
     
     @GetMapping("/{tid}/child")
     @Operation(summary = "T02: 특정 Topic의 자식 Topic 조회")
     public ResponseEntity<BaseResponse<List<TopicInfoDto>>> getChildTopic(
-            @PathVariable int tid) {
-        return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getChildTopic(tid));
+            @PathVariable int tid,
+            @RequestParam(name = "brain", required = false) Integer bid) {
+        return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getChildTopic(tid, bid));
     }
     
     @PostMapping({"", "/{pid}"})
