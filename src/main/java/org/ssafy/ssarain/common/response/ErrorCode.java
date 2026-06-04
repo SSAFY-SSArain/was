@@ -34,7 +34,11 @@ public enum ErrorCode {
     USER_AUTH_INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "US006", "잘못된 AccessToken입니다."),
     USER_AUTH_ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "US007", "만료된 AccessToken입니다."),
     USER_AUTH_INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "US008", "잘못된 RefreshToken입니다."),
-    USER_AUTH_REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "US009", "만료된 RefreshToken입니다.");
+    USER_AUTH_REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "US009", "만료된 RefreshToken입니다."),
+
+    // Topic
+    TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당 주제를 찾을 수 없습니다."),
+    TOPIC_NAME_DUPLICATED(HttpStatus.CONFLICT, "T002", "이미 존재하는 주제입니다.");
 
     private final HttpStatus status;
     private final String code;
