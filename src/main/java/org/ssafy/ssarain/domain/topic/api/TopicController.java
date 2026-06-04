@@ -38,13 +38,6 @@ public class TopicController {
         return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getChildTopic(tid));
     }
     
-    @GetMapping("/{tid}")
-    @Operation(summary = "T03: Topic 상세 조회")
-    public ResponseEntity<BaseResponse<TopicDetailDto>> getTopic(
-            @PathVariable int tid) {
-        return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getTopicDetail(tid));
-    }
-    
     @PostMapping({"", "/{pid}"})
     @Operation(summary = "T04: Topic 생성", description = "pid == null일 경우 루트 주제를 생성합니다.")
     public ResponseEntity<BaseResponse<TopicDetailDto>> createTopic(

@@ -33,11 +33,6 @@ public class TopicService {
                 .collect(Collectors.toList());
     }
     
-    public TopicDetailDto getTopicDetail(int tid) {
-        Topic topic = findTopicByTid(tid);
-        return TopicDetailDto.from(topic);
-    }
-    
     @Transactional
     public TopicDetailDto createTopic(Integer pid, TopicCreateDto dto) {
         validatePid(pid);
