@@ -16,6 +16,7 @@ import org.ssafy.ssarain.common.security.jwt.provider.JwtProvider;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
+import org.ssafy.ssarain.infra.mail.service.EmailVerificationService;
 import org.ssafy.ssarain.infra.redis.dao.RedisRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,13 @@ public class AuthService {
     private final UserService     userService;
     private final JwtProvider     jwtProvider;
     private final RedisRepository redisRepository;
+    private final EmailVerificationService emailVerificationService;
 
     public UserWithTokenRes signup(SignupReq dto) {
+
+        if(!emailVerificationService.isEmailVerified(dto.email())) {
+            throw new GlobalException(ErrorCode.EMAIL_IS_NOT_VERIFIED);
+        }
 
         User user = userService.createUser(dto);
         return createUserWithTokenRes(user);
@@ -85,7 +91,7 @@ public class AuthService {
 
         saveRefreshToken(user.getUid(), refreshToken, refreshTokenExpiresIn);
 
-        UserInfoRes userInfo = new UserInfoRes(user.getEmail(), user.getNickname());
+        UserInfoRes userInfo = new UserInfoRes(user.getEmail(), user.getName());
         TokenRes    tokenRes = new TokenRes(accessToken, accessTokenExpiresIn, refreshToken, refreshTokenExpiresIn);
 
         return new UserWithTokenRes(tokenRes, userInfo);

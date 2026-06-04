@@ -15,6 +15,10 @@ public enum SuccessCode {
     UPDATE_SUCCESS(HttpStatus.OK, "성공적으로 수정되었습니다."),
     DELETE_SUCCESS(HttpStatus.OK, "성공적으로 삭제되었습니다."),
 
+    // Email
+    EMAIL_VERIFICATION_CODE_SEND_SUCCESS(HttpStatus.OK, "인증 코드가 발송되었습니다."),
+    EMAIL_VERIFICATION_CODE_VERIFY_SUCCESS(HttpStatus.OK, "이메일 인증이 완료되었습니다."),
+
     // User
     USER_SIGN_UP_SUCCESS(HttpStatus.CREATED, "회원가입이 완료되었습니다."),
     USER_LOGIN_SUCCESS(HttpStatus.OK, "로그인 되었습니다."),

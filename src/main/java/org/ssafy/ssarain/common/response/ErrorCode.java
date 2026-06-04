@@ -21,6 +21,11 @@ public enum ErrorCode {
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "C009", "응답할 수 없는 형식을 요청했습니다."),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "C010", "지원되지 않는 media-type입니다."),
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "C011", "현재 해당 요청을 처리할 수 없습니다."),
+
+    // Email
+    EMAIL_VERIFY_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "EM01", "인증 코드가 만료되었거나 존재하지 않습니다."),
+    EMAIL_VERIFY_CODE_INCORRECT(HttpStatus.BAD_REQUEST, "EM02", "유효하지 않은 인증 코드입니다."),
+    EMAIL_IS_NOT_VERIFIED(HttpStatus.BAD_REQUEST, "EM03", "인증되지 않은 이메일입니다."),
     
     // ErrorCode
     NOT_ERROR_STATUS(HttpStatus.INTERNAL_SERVER_ERROR, "EC001","에러 코드가 아닌 status를 에러 코드로 변환하려 시도했습니다."),
@@ -28,7 +33,7 @@ public enum ErrorCode {
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US001","해당 유저를 찾을 수 없습니다."),
     USER_EMAIL_DUPLICATED(HttpStatus.BAD_REQUEST, "US002", "이미 사용 중인 이메일 주소입니다."),
-    USER_NICKNAME_DUPLICATED(HttpStatus.BAD_REQUEST, "US003", "이미 사용 중인 닉네임입니다."),
+    USER_NAME_DUPLICATED(HttpStatus.BAD_REQUEST, "US003", "이미 사용 중인 이름입니다."),
     USER_ROLE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "US004", "지원하지 않는 권한입니다."),
     USER_AUTH_INFO_INCORRECT(HttpStatus.BAD_REQUEST, "US005", "잘못된 이메일 혹은 비밀번호입니다."),
     USER_AUTH_INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "US006", "잘못된 AccessToken입니다."),
