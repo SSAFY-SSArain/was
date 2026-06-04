@@ -60,6 +60,10 @@ public class UserService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public boolean isNameDuplicate(String name) {
+        return userRepository.existsByName(name);
+    }
+
     /*
         Util Method
      */
