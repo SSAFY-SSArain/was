@@ -6,6 +6,7 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.dto.req.SignupReq;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
+import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,14 @@ public class UserService {
     public User createUser(SignupReq dto) {
 
         String email    = dto.email();
-        String nickname = dto.nickname();
+        String name = dto.name();
         String password = dto.password();
 
-        validateUser(email, nickname);
+        validateUser(email, name);
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        return userRepository.save(User.of(email, nickname, encodedPassword));
+        return userRepository.save(User.of(email, name, encodedPassword));
     }
 
     @Transactional(readOnly = true)
@@ -70,15 +71,21 @@ public class UserService {
         return true;
     }
 
+    public boolean isNameDuplicate(NameCheckReq nameCheckReq) {
+
+        String name = nameCheckReq.name();
+        return userRepository.existsByName(name);
+    }
+
     /*
         Util Method
      */
 
     // 유저 엔티티 유효성 검사
-    private void validateUser(String email, String nickname) {
+    private void validateUser(String email, String name) {
 
         validateDuplicateEmail(email);
-        validateDuplicateNickname(nickname);
+        validateDuplicateName(name);
     }
 
     // 이메일 중복
@@ -90,10 +97,10 @@ public class UserService {
     }
 
     // 닉네임 중복
-    private void validateDuplicateNickname(String nickname) {
+    private void validateDuplicateName(String name) {
 
-        if(userRepository.existsByNickname(nickname)) {
-            throw new GlobalException(ErrorCode.USER_NICKNAME_DUPLICATED);
+        if(userRepository.existsByName(name)) {
+            throw new GlobalException(ErrorCode.USER_NAME_DUPLICATED);
         }
     }
 

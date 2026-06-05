@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -15,8 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseAuditingEntity {
     @Id
-    @GeneratedValue
-    @Column(name = "uid", nullable = false, unique = true)
+    @UuidGenerator
+    @Column(name = "uid", columnDefinition = "BINARY(16)")
     private UUID uid;
 
     @Size(max = 100)
@@ -26,8 +27,8 @@ public class User extends BaseAuditingEntity {
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "nickname", nullable = false, length = 45)
-    private String nickname;
+    @Column(name = "name", nullable = false, length = 45)
+    private String name;
 
     @Size(max = 255)
     @NotNull
@@ -41,18 +42,18 @@ public class User extends BaseAuditingEntity {
     private UserRole role = UserRole.USER;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private User(String email, String nickname, String password, UserRole role) {
+    private User(String email, String name, String password, UserRole role) {
         this.email = email;
-        this.nickname = nickname;
+        this.name = name;
         this.password = password;
         this.role = role;
     }
 
-    public static User of(String email, String nickname, String password) {
-        return User.builder().email(email).nickname(nickname).password(password).role(UserRole.USER).build();
+    public static User of(String email, String name, String password) {
+        return User.builder().email(email).name(name).password(password).role(UserRole.USER).build();
     }
 
-    public static User of(String email, String nickname, String password, UserRole role) {
-        return User.builder().email(email).nickname(nickname).password(password).role(role).build();
+    public static User of(String email, String name, String password, UserRole role) {
+        return User.builder().email(email).name(name).password(password).role(role).build();
     }
 }
