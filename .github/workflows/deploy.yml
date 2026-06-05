@@ -60,6 +60,8 @@ jobs:
               -e VALKEY_PASSWORD=${{ secrets.VALKEY_PASSWORD }} \
               -e JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
               -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
+              -e SMTP_EMAIL=${{ secrets.SMTP_EMAIL }} \
+              -e SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }} \
               -e CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/spring-app:latest
             
