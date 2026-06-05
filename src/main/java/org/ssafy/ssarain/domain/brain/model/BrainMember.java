@@ -1,0 +1,59 @@
+package org.ssafy.ssarain.domain.brain.model;
+
+import java.util.UUID;
+
+import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.domain.user.model.User;
+
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@Table(name = "brain_member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class BrainMember extends BaseAuditingEntity {
+    @EmbeddedId
+    private BrainMemberId bmid;
+    
+    @Embeddable
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class BrainMemberId {
+        private int bid;
+        private UUID uid;
+    }
+    
+    @MapsId("bid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bid")
+    private Brain brain;
+
+    @MapsId("uid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uid")
+    private User user;
+    
+    @Builder(access = AccessLevel.PRIVATE)
+    private BrainMember(Brain brain, User user) {
+        this.bmid = new BrainMemberId(brain.getBid(), user.getUid());
+        this.brain = brain;
+        this.user = user;
+    }
+    
+    public static BrainMember of(Brain brain, User user) {
+        return BrainMember.builder().brain(brain).user(user).build();
+    }
+}
