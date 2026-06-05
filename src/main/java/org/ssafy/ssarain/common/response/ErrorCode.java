@@ -43,7 +43,16 @@ public enum ErrorCode {
 
     // Topic
     TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당 주제를 찾을 수 없습니다."),
-    TOPIC_NAME_DUPLICATED(HttpStatus.CONFLICT, "T002", "이미 존재하는 주제입니다.");
+    TOPIC_NAME_DUPLICATED(HttpStatus.CONFLICT, "T002", "이미 존재하는 주제입니다."),
+
+    // Quiz
+    QUIZ_SOURCE_NODE_NOT_FOUND(HttpStatus.NOT_FOUND, "Q001", "퀴즈 생성에 사용할 노드가 없습니다."),
+    QUIZ_GENERATION_LIMIT_EXCEEDED(HttpStatus.CONFLICT, "Q002", "해당 BrainTopic은 퀴즈를 더 이상 생성할 수 없습니다."),
+
+    // Gemini
+    GEMINI_API_KEY_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "G001", "Gemini API 키가 설정되지 않았습니다."),
+    GEMINI_REQUEST_FAILED(HttpStatus.BAD_GATEWAY, "G002", "Gemini API 요청에 실패했습니다."),
+    GEMINI_INVALID_RESPONSE(HttpStatus.BAD_GATEWAY, "G003", "Gemini API 응답 형식이 올바르지 않습니다.");
 
     private final HttpStatus status;
     private final String code;
