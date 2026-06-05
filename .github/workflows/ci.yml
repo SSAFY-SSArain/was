@@ -45,8 +45,9 @@ jobs:
           JWT_ACCESS_SECRET: dGhpcy1pcy1hLXNhbXBsZS1zZWNyZXQta2V5LWZvci1qd3QtYWNjZXNzLXRva2VuLXNhbXBsZS1zZWNyZXQ
           JWT_REFRESH_SECRET: dGhpcy1pcy1hLXNhbXBsZS1zZWNyZXQta2V5LWZvci1qd3QtYWNjZXNzLXRva2VuLXNhbXBsZS1zZWNyZXQ
           CORS_ALLOWED_ORIGIN: http://localhost:3000
-          SMTP_EMAIL: mock_email;
+          SMTP_EMAIL: mock_email
           SMTP_PASSWORD: mock_password
+          GEMINI_API_KEY: mock_key
         run: |
           chmod +x ./gradlew
           ./gradlew build

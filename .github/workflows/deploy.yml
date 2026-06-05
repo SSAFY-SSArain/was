@@ -63,6 +63,7 @@ jobs:
               -e SMTP_EMAIL=${{ secrets.SMTP_EMAIL }} \
               -e SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }} \
               -e CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }} \
+              -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/spring-app:latest
             
             # 사용하지 않는 오래된 이미지 삭제
