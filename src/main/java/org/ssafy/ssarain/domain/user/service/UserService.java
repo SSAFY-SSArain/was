@@ -6,6 +6,7 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.dto.req.SignupReq;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
+import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,9 @@ public class UserService {
         return true;
     }
 
-    public boolean isNameDuplicate(String name) {
+    public boolean isNameDuplicate(NameCheckReq nameCheckReq) {
+
+        String name = nameCheckReq.name();
         return userRepository.existsByName(name);
     }
 

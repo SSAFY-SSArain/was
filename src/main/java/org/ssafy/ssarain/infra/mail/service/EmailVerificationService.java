@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.common.security.dto.req.EmailVerifyCodeReq;
+import org.ssafy.ssarain.common.security.dto.req.EmailVerifyReq;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.infra.redis.dao.RedisRepository;
 
@@ -30,8 +32,9 @@ public class EmailVerificationService {
     private static final Duration VERIFICATION_LIMIT_TIME = Duration.ofMinutes(5);
     private static final Duration VERIFICATION_TOKEN_LIMIT_TIME = Duration.ofMinutes(10);
 
-    public void sendVerificationCode(String email) {
+    public void sendVerificationCode(EmailVerifyReq emailVerifyReq) {
 
+        String email = emailVerifyReq.email();
         // 이메일 중복 체크
         if(userRepository.existsByEmail(email)) {
             throw new GlobalException(ErrorCode.USER_EMAIL_DUPLICATED);
@@ -45,7 +48,10 @@ public class EmailVerificationService {
         sendEmail(email, title, "인증번호는 [" + code + "] 입니다. 3분 내에 입력해주세요.");
     }
 
-    public boolean verifyCode(String email, String code) {
+    public boolean verifyCode(EmailVerifyCodeReq emailVerifyCodeReq) {
+
+        String email = emailVerifyCodeReq.email();
+        String code = emailVerifyCodeReq.code();
 
         String key = MAIL_PREFIX + email;
         String savedCode = redisRepository.getValue(key, String.class)

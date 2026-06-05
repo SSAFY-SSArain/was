@@ -37,7 +37,7 @@ public class UserController {
     ) {
 
         // TODO: 닉네임 락
-        boolean isDuplicate = userService.isNameDuplicate(nameCheckReq.name());
+        boolean isDuplicate = userService.isNameDuplicate(nameCheckReq);
         NameCheckRes nameCheckRes = NameCheckRes.of(isDuplicate);
 
         return BaseResponse.success(SuccessCode.USER_NAME_CHECK_SUCCESS, nameCheckRes);

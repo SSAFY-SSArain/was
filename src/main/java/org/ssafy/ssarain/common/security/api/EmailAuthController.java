@@ -27,8 +27,7 @@ public class EmailAuthController {
             @RequestBody EmailVerifyReq emailVerifyReq
     ) {
 
-        String email = emailVerifyReq.email();
-        emailVerificationService.sendVerificationCode(email);
+        emailVerificationService.sendVerificationCode(emailVerifyReq);
 
         return BaseResponse.success(SuccessCode.EMAIL_VERIFICATION_CODE_SEND_SUCCESS);
     }
@@ -39,9 +38,7 @@ public class EmailAuthController {
             @RequestBody EmailVerifyCodeReq emailVerifyCodeReq
     ) {
 
-        String email = emailVerifyCodeReq.email();
-        String code  = emailVerifyCodeReq.code();
-        boolean isVerified = emailVerificationService.verifyCode(email, code);
+        boolean isVerified = emailVerificationService.verifyCode(emailVerifyCodeReq);
 
         if(isVerified) {
             return BaseResponse.success(SuccessCode.EMAIL_VERIFICATION_CODE_VERIFY_SUCCESS);
