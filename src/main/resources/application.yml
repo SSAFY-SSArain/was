@@ -36,4 +36,4 @@ app:
       - Authorization
   gemini:
     api-key: ${GEMINI_API_KEY}
-    model: ${gemini-3.5-flash}
+    model: gemini-3.5-flash
