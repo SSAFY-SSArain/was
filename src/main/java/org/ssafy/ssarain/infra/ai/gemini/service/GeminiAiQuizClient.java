@@ -30,8 +30,6 @@ public class GeminiAiQuizClient implements AiQuizClient {
 
     @Override
     public List<GeneratedQuizDto> generateQuizzes(List<String> nodeTitles, int count) {
-        validateApiKey();
-
         try {
             String response = restClientBuilder.build()
                     .post()
@@ -48,12 +46,6 @@ public class GeminiAiQuizClient implements AiQuizClient {
             throw e;
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.GEMINI_REQUEST_FAILED, e);
-        }
-    }
-
-    private void validateApiKey() {
-        if (geminiProperties.getApiKey() == null || geminiProperties.getApiKey().isBlank()) {
-            throw new GlobalException(ErrorCode.GEMINI_API_KEY_NOT_FOUND);
         }
     }
 
