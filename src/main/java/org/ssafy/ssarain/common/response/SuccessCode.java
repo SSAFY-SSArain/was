@@ -29,7 +29,11 @@ public enum SuccessCode {
 
     // Topic
     TOPIC_INFO_SUCCESS(HttpStatus.OK, "주제 정보가 조회되었습니다."),
-    TOPIC_CREATE_SUCCESS(HttpStatus.CREATED, "주제가 생성되었습니다.");
+    TOPIC_CREATE_SUCCESS(HttpStatus.CREATED, "주제가 생성되었습니다."),
+
+    // Quiz
+    QUIZ_INFO_SUCCESS(HttpStatus.OK, "퀴즈 조회가 완료되었습니다."),
+    QUIZ_CREATE_SUCCESS(HttpStatus.OK, "퀴즈 생성이 완료되었습니다.");
 
     private final HttpStatus status;
     private final String message;
