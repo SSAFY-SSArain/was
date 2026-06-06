@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.node.service.NodeService;
+import org.ssafy.ssarain.domain.quiz.client.AiQuizClient;
 import org.ssafy.ssarain.domain.quiz.dao.QuizRepository;
+import org.ssafy.ssarain.domain.quiz.dto.GeneratedQuizDto;
+import org.ssafy.ssarain.domain.quiz.dto.GeneratedQuizOptionDto;
 import org.ssafy.ssarain.domain.quiz.dto.QuizInfoDto;
 import org.ssafy.ssarain.domain.quiz.dto.QuizListRes;
 import org.ssafy.ssarain.domain.quiz.model.Quiz;
-import org.ssafy.ssarain.infra.ai.gemini.dto.GeneratedQuizOptionDto;
-import org.ssafy.ssarain.infra.ai.gemini.dto.GeneratedQuizDto;
-import org.ssafy.ssarain.infra.ai.gemini.service.GeminiQuizClient;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +27,7 @@ public class QuizService {
 
     private final QuizRepository    quizRepository;
     private final NodeService       nodeService;
-    private final GeminiQuizClient  geminiQuizClient;
+    private final AiQuizClient      aiQuizClient;
 
     public QuizListRes getQuizzes(Integer brainTopicId) {
         validateBrainTopicId(brainTopicId);
@@ -47,7 +47,7 @@ public class QuizService {
 
         List<String> nodeTitles = findQuizSourceNodeTitles(brainTopicId);
 
-        List<GeneratedQuizDto> generatedQuizzes = geminiQuizClient.generateQuizzes(nodeTitles, QUIZ_GENERATION_COUNT);
+        List<GeneratedQuizDto> generatedQuizzes = aiQuizClient.generateQuizzes(nodeTitles, QUIZ_GENERATION_COUNT);
         validateGeneratedQuizzes(generatedQuizzes);
 
         List<Quiz> quizzes = generatedQuizzes.stream()

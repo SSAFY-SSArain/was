@@ -8,8 +8,9 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.domain.quiz.client.AiQuizClient;
+import org.ssafy.ssarain.domain.quiz.dto.GeneratedQuizDto;
 import org.ssafy.ssarain.infra.ai.gemini.dto.GeminiQuizGenerateRes;
-import org.ssafy.ssarain.infra.ai.gemini.dto.GeneratedQuizDto;
 import org.ssafy.ssarain.infra.ai.gemini.properties.GeminiProperties;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class GeminiQuizClientImpl implements GeminiQuizClient {
+public class GeminiAiQuizClient implements AiQuizClient {
 
     private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent";
 

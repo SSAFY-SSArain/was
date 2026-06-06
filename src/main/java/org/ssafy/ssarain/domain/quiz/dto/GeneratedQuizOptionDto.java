@@ -1,4 +1,4 @@
-package org.ssafy.ssarain.infra.ai.gemini.dto;
+package org.ssafy.ssarain.domain.quiz.dto;
 
 import org.ssafy.ssarain.domain.quiz.model.QuizOption;
 
