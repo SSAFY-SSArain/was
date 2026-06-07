@@ -42,7 +42,7 @@ public enum ErrorCode {
     USER_AUTH_REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "US009", "만료된 RefreshToken입니다."),
 
     // Brain
-    BRAIN_NOT_FOUND(HttpStatus.CONFLICT, "B001", "해당 브레인을 찾을 수 없습니다."),
+    BRAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "해당 브레인을 찾을 수 없습니다."),
     BRAIN_NAME_DUPLICATED(HttpStatus.CONFLICT, "B002", "브레인 이름이 이미 존재합니다."),
     
     // Topic
