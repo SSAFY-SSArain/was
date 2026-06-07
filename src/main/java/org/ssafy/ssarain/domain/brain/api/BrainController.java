@@ -40,7 +40,7 @@ public class BrainController {
     @GetMapping
     @Operation(summary = "B05: Brain 검색")
     public ResponseEntity<BaseResponse<BrainPageDto<BrainFoundDto>>> searchBrain(
-            @ModelAttribute BrainSearchDto dto) {
+            @Valid @ModelAttribute BrainSearchDto dto) {
         return BaseResponse.success(SuccessCode.BRAIN_INFO_SUCCESS, brainService.searchBrain(dto));
     }
     

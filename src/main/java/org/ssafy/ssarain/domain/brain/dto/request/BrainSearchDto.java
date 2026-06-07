@@ -6,9 +6,11 @@ import org.springframework.data.domain.Sort;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.Size;
 
 public record BrainSearchDto(
         @Schema(requiredMode = RequiredMode.NOT_REQUIRED, example = "구미")
+        @Size(max = 50)
         String name,
         
         @Schema(requiredMode = RequiredMode.NOT_REQUIRED, example = "0")

@@ -64,14 +64,9 @@ public class BrainService {
     
     @Transactional
     public BrainDetailDto createBrain(BrainCreateDto dto, UUID uid) {
-        validateCreateDto(dto);
+        validateDuplicateName(dto.name());
         
-        Brain newBrain = null;
-        if (dto.description() == null) {
-            newBrain = Brain.of(dto.name(), "", dto.joinPolicy());
-        } else {
-            newBrain = Brain.of(dto.name(), dto.description(), dto.joinPolicy());
-        }
+        Brain newBrain = Brain.of(dto.name(), dto.description(), dto.joinPolicy());
         newBrain = brainRepository.save(newBrain);
         
         // 외래키 저장에만 활용하므로 프록시 User객체를 사용합니다.
@@ -89,13 +84,6 @@ public class BrainService {
     /*
         Util Method
      */
-    
-    private void validateCreateDto(BrainCreateDto dto) {
-        if (dto == null || dto.name() == null) {
-            throw new GlobalException(ErrorCode.BAD_REQUEST);
-        }
-        validateDuplicateName(dto.name());
-    }
     
     private void validateDuplicateName(String name) {
         if (brainRepository.existsByName(name)) {
