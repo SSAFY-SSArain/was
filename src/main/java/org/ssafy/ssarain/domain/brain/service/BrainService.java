@@ -36,6 +36,7 @@ public class BrainService {
     private final BrainManagerRepository brainManagerRepository;
     private final BrainMemberRepository brainMemberRepository;
     
+    @Transactional(readOnly = true)
     public BrainListDto<BrainInfoDto> getBrainInfos(UUID uid) {
         List<BrainInfoDto> brains = brainMemberRepository.findByBmid_Uid(uid).stream()
                 .map(brainMember -> BrainInfoDto.from(brainMember.getBrain()))
