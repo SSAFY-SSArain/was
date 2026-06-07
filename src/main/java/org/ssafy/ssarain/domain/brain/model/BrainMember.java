@@ -1,5 +1,6 @@
 package org.ssafy.ssarain.domain.brain.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
@@ -16,6 +17,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +33,10 @@ public class BrainMember extends BaseAuditingEntity {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class BrainMemberId {
+    @EqualsAndHashCode
+    public static class BrainMemberId implements Serializable {
+        private static final long serialVersionUID = -7631747102627678704L;
+        
         private int bid;
         private UUID uid;
     }
