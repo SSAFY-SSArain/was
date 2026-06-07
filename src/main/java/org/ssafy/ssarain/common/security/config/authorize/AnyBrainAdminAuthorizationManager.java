@@ -9,7 +9,7 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.stereotype.Component;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.user.model.UserRole;
-import org.ssafy.ssarain.domain.user.service.UserService;
+import org.ssafy.ssarain.domain.brain.service.BrainAdminService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AnyBrainAdminAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
-    private final UserService userService;
+    private final BrainAdminService brainAdminService;
     
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
@@ -37,7 +37,7 @@ public class AnyBrainAdminAuthorizationManager implements AuthorizationManager<R
 
         // 1개 이상의 Brain Admin인지 확인
         CustomUserDetails userDetails = (CustomUserDetails)auth.getPrincipal();
-        boolean isAnyBrainAdmin = userService.isAnyBrainAdmin(userDetails.getUserId());
+        boolean isAnyBrainAdmin = brainAdminService.isAnyBrainAdmin(userDetails.getUserId());
         return new AuthorizationDecision(isAnyBrainAdmin);
     }
     
