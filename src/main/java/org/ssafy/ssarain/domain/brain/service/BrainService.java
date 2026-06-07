@@ -46,19 +46,8 @@ public class BrainService {
     
     @Transactional(readOnly = true)
     public BrainPageDto<BrainFoundDto> searchBrain(BrainSearchDto dto) {
-        Pageable pageable = dto.pageable();
-        String name = dto.name();
-        Page<Brain> brains = (name == null || name.isBlank())
-                ? brainRepository.findAll(pageable)
-                : brainRepository.findByNameContaining(name.trim(), pageable);
-        
-        Page<BrainFoundDto> brainDtos = brains
-                .map(brain -> BrainFoundDto.from(
-                        brain,
-                        brain.getBrainManager().getUser().getName(),
-                        brain.getBrainMembers().stream()
-                                .map(brainMember -> brainMember.getUser().getName())
-                                .toList()));
+        Page<Brain> brains = findBrains(dto);
+        Page<BrainFoundDto> brainDtos = brains.map(this::toBrainFoundDto);
         
         return BrainPageDto.from(brainDtos);
     }
@@ -67,19 +56,13 @@ public class BrainService {
     public BrainDetailDto createBrain(BrainCreateDto dto, UUID uid) {
         validateDuplicateName(dto.name());
         
-        Brain newBrain = Brain.of(dto.name(), dto.description(), dto.joinPolicy());
-        newBrain = brainRepository.save(newBrain);
-        
-        // 외래키 저장에만 활용하므로 프록시 User객체를 사용합니다.
+        Brain brain = createAndSaveBrain(dto);
         User brainAdmin = userRepository.getReferenceById(uid);
         
-        BrainManager brainManager = BrainManager.of(newBrain, brainAdmin);
-        brainManagerRepository.save(brainManager);
+        brainManagerRepository.save(BrainManager.of(brain, brainAdmin));
+        brainMemberRepository.save(BrainMember.of(brain, brainAdmin));
         
-        BrainMember brainMember = BrainMember.of(newBrain, brainAdmin);
-        brainMemberRepository.save(brainMember);
-        
-        return BrainDetailDto.from(newBrain);
+        return BrainDetailDto.from(brain);
     }
     
     /*
@@ -90,5 +73,27 @@ public class BrainService {
         if (brainRepository.existsByName(name)) {
             throw new GlobalException(ErrorCode.BRAIN_NAME_DUPLICATED);
         }
+    }
+    
+    private Brain createAndSaveBrain(BrainCreateDto dto) {
+        Brain newBrain = Brain.of(dto.name(), dto.description(), dto.joinPolicy());
+        return brainRepository.save(newBrain);
+    }
+    
+    private Page<Brain> findBrains(BrainSearchDto dto) {
+        Pageable pageable = dto.pageable();
+        String name = dto.name();
+        return (name == null || name.isBlank())
+                ? brainRepository.findAll(pageable)
+                : brainRepository.findByNameContaining(name.trim(), pageable);
+    }
+    
+    private BrainFoundDto toBrainFoundDto(Brain brain) {
+        String adminName = brain.getBrainManager().getUser().getName();
+        List<String> memberNames = brain.getBrainMembers().stream()
+                .map(brainMember -> brainMember.getUser().getName())
+                .toList();
+        
+        return BrainFoundDto.from(brain, adminName, memberNames);
     }
 }
