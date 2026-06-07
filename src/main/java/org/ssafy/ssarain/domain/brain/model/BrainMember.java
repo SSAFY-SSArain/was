@@ -43,12 +43,12 @@ public class BrainMember extends BaseAuditingEntity {
     
     @MapsId("bid")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bid")
+    @JoinColumn(name = "bid", nullable = false)
     private Brain brain;
 
     @MapsId("uid")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uid")
+    @JoinColumn(name = "uid", nullable = false)
     private User user;
     
     @Builder(access = AccessLevel.PRIVATE)

@@ -26,7 +26,7 @@ public class BrainManager extends BaseAuditingEntity {
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bid")
+    @JoinColumn(name = "bid", nullable = false)
     private Brain brain;
     
     @ManyToOne(fetch = FetchType.LAZY)
