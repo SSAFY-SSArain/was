@@ -26,4 +26,11 @@ public record BrainDetailDto(
     public static BrainDetailDto from(Brain brain) {
         return new BrainDetailDto(brain.getBid(), brain.getName(), brain.getDescription(), List.of());
     }
+
+    public static BrainDetailDto from(Brain brain, List<TopicInfoDto> topics) {
+        if (topics == null) {
+            topics = List.of();
+        }
+        return new BrainDetailDto(brain.getBid(), brain.getName(), brain.getDescription(), topics);
+    }
 }
