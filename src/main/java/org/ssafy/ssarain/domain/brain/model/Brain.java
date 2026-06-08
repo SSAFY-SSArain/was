@@ -1,0 +1,69 @@
+package org.ssafy.ssarain.domain.brain.model;
+
+import java.util.List;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@Table(name = "brain")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Brain extends BaseAuditingEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bid", nullable = false, unique = true)
+    private int bid;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "name", nullable = false, unique = true, length = 50)
+    private String name;
+    
+    @Size(max = 200)
+    @Column(name = "description", nullable = false, length = 200)
+    @ColumnDefault("''")
+    private String description = "";
+    
+    @NotNull
+    @Column(name = "join_policy", nullable = false)
+    @ColumnDefault("false")
+    private boolean joinPolicy = false;
+    
+    /*
+     * 연관된 엔티티
+     */
+    
+    @OneToOne(mappedBy = "brain", fetch = FetchType.LAZY)
+    private BrainManager brainManager;
+    
+    @OneToMany(mappedBy = "brain", fetch = FetchType.LAZY)
+    private List<BrainMember> brainMembers;
+    
+    @Builder(access = AccessLevel.PRIVATE)
+    private Brain(String name, String description, boolean joinPolicy) {
+        this.name = name;
+        this.description = description;
+        this.joinPolicy = joinPolicy;
+    }
+    
+    public static Brain of(String name, String description, boolean joinPolicy) {
+        return Brain.builder().name(name).description(description).joinPolicy(joinPolicy).build();
+    }
+}

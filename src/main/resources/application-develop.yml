@@ -13,6 +13,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        # Pagination에는 Fetch Join 사용이 어려우므로 Batch 방식을 사용합니다.
+        default_batch_fetch_size: 100
         format_sql: true
         show_sql: true
 
