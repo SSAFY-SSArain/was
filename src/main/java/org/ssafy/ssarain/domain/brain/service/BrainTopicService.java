@@ -10,12 +10,12 @@ import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainTopicDetailDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainTopicInfoDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.node.dto.NodeInfoDto;
 import org.ssafy.ssarain.domain.node.service.NodeService;
 import org.ssafy.ssarain.domain.topic.dao.TopicRepository;
-import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,10 +39,9 @@ public class BrainTopicService {
     @Transactional(readOnly = true)
     public BrainDetailDto getBrainTopics(int bid) {
         Brain brain = findBrain(bid);
-        List<TopicInfoDto> topics = brainTopicRepository.findByBid(bid)
+        List<BrainTopicInfoDto> topics = brainTopicRepository.findByBid(bid)
                 .stream()
-                .map(BrainTopic::getTopic)
-                .map(TopicInfoDto::from)
+                .map(BrainTopicInfoDto::from)
                 .toList();
 
         return BrainDetailDto.from(brain, topics);
