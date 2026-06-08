@@ -3,6 +3,7 @@ package org.ssafy.ssarain.domain.topic.api;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
+import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.AuthService;
 import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/topics")
 public class TopicController {
+    private final AuthService authService;
     private final TopicService topicService;
     
     @GetMapping
@@ -45,7 +49,9 @@ public class TopicController {
     @Operation(summary = "T04: Topic 생성", description = "pid == null일 경우 루트 주제를 생성합니다.")
     public ResponseEntity<BaseResponse<TopicDetailDto>> createTopic(
             @PathVariable(required = false) Integer pid,
-            @RequestBody TopicCreateDto dto) {
+            @RequestBody TopicCreateDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        authService.authorizeAnyBrainAdmin(userDetails);
         return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(pid, dto));
     }
 }
