@@ -1,5 +1,6 @@
 package org.ssafy.ssarain.domain.topic.dto;
 
+import org.ssafy.ssarain.domain.topic.dao.dto.TopicWithUsedQueryDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,10 +14,17 @@ public record TopicInfoDto(
         Integer pid,
         
         @Schema(requiredMode = RequiredMode.REQUIRED, example = "Java 개발")
-        String name
+        String name,
+        
+        @Schema(requiredMode = RequiredMode.REQUIRED, example = "true")
+        boolean isUsing
         ) {
     
     public static TopicInfoDto from(Topic topic) {
-        return new TopicInfoDto(topic.getTid(), topic.getPid(), topic.getName());
+        return new TopicInfoDto(topic.getTid(), topic.getPid(), topic.getName(), false);
+    }
+    
+    public static TopicInfoDto from(TopicWithUsedQueryDto topic) {
+        return new TopicInfoDto(topic.tid(), topic.pid(), topic.name(), topic.isUsing());
     }
 }
