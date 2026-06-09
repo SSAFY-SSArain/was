@@ -59,6 +59,10 @@ public class BrainTopicService {
         return BrainTopicDetailDto.from(brainTopic, nodes);
     }
     
+    public boolean existBrainTopic(int btid) {
+        return brainTopicRepository.existsById(btid);
+    }
+    
     /*
         Util Method
      */

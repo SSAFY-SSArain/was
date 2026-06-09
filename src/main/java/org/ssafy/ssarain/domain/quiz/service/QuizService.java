@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.domain.brain.service.BrainTopicService;
 import org.ssafy.ssarain.domain.node.service.NodeService;
 import org.ssafy.ssarain.domain.quiz.client.AiQuizClient;
 import org.ssafy.ssarain.domain.quiz.dao.QuizRepository;
@@ -26,6 +27,7 @@ public class QuizService {
     private static final int QUIZ_OPTION_COUNT = 5;
 
     private final QuizRepository    quizRepository;
+    private final BrainTopicService brainTopicService;
     private final NodeService       nodeService;
     private final AiQuizClient      aiQuizClient;
 
@@ -67,8 +69,11 @@ public class QuizService {
     */
 
     private void validateBrainTopicId(Integer brainTopicId) {
-        if (brainTopicId == null || brainTopicId <= 0) {
+        if (brainTopicId == null) {
             throw new GlobalException(ErrorCode.BAD_REQUEST);
+        }
+        if (!brainTopicService.existBrainTopic(brainTopicId)) {
+            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
         }
     }
 
