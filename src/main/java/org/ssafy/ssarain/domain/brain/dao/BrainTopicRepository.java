@@ -37,7 +37,7 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
                 SELECT bt.btid
                 FROM brain_topic bt 
                 WHERE bt.tid = a.tid AND bt.bid = :bid
-            );
+            )
             """, 
         nativeQuery = true)
     int addTopicWithAncestors(int bid, int tid);
