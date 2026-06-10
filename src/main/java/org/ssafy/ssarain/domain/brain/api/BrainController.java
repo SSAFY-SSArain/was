@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
-import org.ssafy.ssarain.common.security.service.AuthService;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/brains")
 public class BrainController {
-    private final AuthService authService;
+    private final BrainAuthService authService;
     private final BrainService brainService;
     private final BrainTopicService brainTopicService;
     
