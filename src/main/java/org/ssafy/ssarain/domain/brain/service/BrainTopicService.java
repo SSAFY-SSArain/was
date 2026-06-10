@@ -61,13 +61,13 @@ public class BrainTopicService {
     
     private void validateBid(int bid) {
         if (!brainRepository.existsById(bid)) {
-            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
+            throw new GlobalException(ErrorCode.BRAIN_NOT_FOUND);
         }
     }
     
     private void validateTid(int tid) {
         if (!topicRepository.existsById(tid)) {
-            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
+            throw new GlobalException(ErrorCode.TOPIC_NOT_FOUND);
         }
     }
 
