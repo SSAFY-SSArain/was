@@ -1,8 +1,11 @@
 package org.ssafy.ssarain.domain.brain.model;
 
+import java.util.UUID;
+
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.ssafy.ssarain.domain.user.model.User;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -23,6 +26,9 @@ import lombok.NoArgsConstructor;
 public class BrainManager extends BaseAuditingEntity {
     @Id
     private int bid;
+    
+    @Column(name = "uid", insertable = false, updatable = false)
+    private UUID uid;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
