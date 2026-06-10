@@ -98,6 +98,6 @@ public class BrainTopicService {
     
     private BrainTopic findBrainTopic(int bid, int tid) {
         return brainTopicRepository.findByBidAndTid(bid, tid)
-                .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_OR_TOPIC_NOT_FOUND));
     }
 }
