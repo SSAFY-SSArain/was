@@ -14,9 +14,7 @@ import org.ssafy.ssarain.common.security.dto.res.UserInfoRes;
 import org.ssafy.ssarain.common.security.dto.res.UserWithTokenRes;
 import org.ssafy.ssarain.common.security.jwt.provider.JwtProvider;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
-import org.ssafy.ssarain.domain.brain.service.BrainAdminService;
 import org.ssafy.ssarain.domain.user.model.User;
-import org.ssafy.ssarain.domain.user.model.UserRole;
 import org.ssafy.ssarain.domain.user.service.UserService;
 import org.ssafy.ssarain.infra.mail.service.EmailVerificationService;
 import org.ssafy.ssarain.infra.redis.dao.RedisRepository;
@@ -36,7 +34,6 @@ public class AuthService {
     private static final long     GRACE_PERIOD_SECONDS = 30L;
 
     private final UserService     userService;
-    private final BrainAdminService brainAdminService;
     private final JwtProvider     jwtProvider;
     private final RedisRepository redisRepository;
     private final EmailVerificationService emailVerificationService;
@@ -78,34 +75,6 @@ public class AuthService {
 
         UUID userId = jwtProvider.getUserIdFromAccessToken(accessToken);
         deleteRefreshToken(userId);
-    }
-    
-    public void authorizeAnyBrainAdmin(CustomUserDetails userDetails) {
-        // ADMIN 권한은 항상 허용
-        if (isAdmin(userDetails)) {
-            return;
-        }
-
-        // 1개 이상의 Brain Admin인지 확인
-        boolean isAnyBrainAdmin = brainAdminService.isAnyBrainAdmin(userDetails.getUserId());
-        if (isAnyBrainAdmin)
-            return;
-        
-        throw new GlobalException(ErrorCode.ACCESS_DENIED);
-    }
-    
-    public void authorizeBrainAdminOf(CustomUserDetails userDetails, int bid) {
-        // ADMIN 권한은 항상 허용
-        if (isAdmin(userDetails)) {
-            return;
-        }
-
-        // 특정 Brain의 Admin인지 확인
-        boolean isAnyBrainAdmin = brainAdminService.isBrainAdminOf(userDetails.getUserId(), bid);
-        if (isAnyBrainAdmin)
-            return;
-        
-        throw new GlobalException(ErrorCode.ACCESS_DENIED);
     }
 
     /*
@@ -219,10 +188,5 @@ public class AuthService {
         return new TokenRes(
                 newAccessToken, accessTokenExpiresIn, newRefreshToken, refreshTokenExpiresIn
         );
-    }
-    
-    private boolean isAdmin(CustomUserDetails userDetails) {
-        return userDetails.getAuthorities().stream()
-                .anyMatch(authority -> UserRole.ADMIN.getAuthority().equals(authority.getAuthority()));
     }
 }

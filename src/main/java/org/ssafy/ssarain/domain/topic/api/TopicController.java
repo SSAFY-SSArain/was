@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
-import org.ssafy.ssarain.common.security.service.AuthService;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/topics")
 public class TopicController {
-    private final AuthService authService;
+    private final BrainAuthService brainAuthService;
     private final TopicService topicService;
     
     @GetMapping
@@ -51,7 +51,7 @@ public class TopicController {
             @PathVariable(required = false) Integer pid,
             @RequestBody TopicCreateDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        authService.authorizeAnyBrainAdmin(userDetails);
+        brainAuthService.authorizeAnyBrainAdmin(userDetails);
         return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(pid, dto));
     }
 }
