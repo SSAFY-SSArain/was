@@ -18,4 +18,6 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
     List<Topic> findByPid(int pid);
     
     boolean existsByName(String name);
+    
+    long countByTidIn(List<Integer> ids);
 }

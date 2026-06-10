@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +15,7 @@ import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainSearchDto;
+import org.ssafy.ssarain.domain.brain.dto.request.TopicIdListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainFoundDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
@@ -59,15 +59,15 @@ public class BrainController {
         return BaseResponse.success(SuccessCode.BRAIN_CREATED_SUCCESS, brainService.createBrain(dto, userDetails.getUserId()));
     }
 
-    @PatchMapping("/{bid}/topics/{tid}")
+    @PostMapping("/{bid}/topics")
     @Operation(summary = "B09: 특정 Brain에 Topic 등록")
     public ResponseEntity<BaseResponse<Void>> registerBrainTopic(
             @PathVariable int bid,
-            @PathVariable int tid,
+            @Valid @RequestBody TopicIdListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
             ) {
         authService.authorizeBrainAdminOf(userDetails, bid);
-        brainTopicService.registerTopic(bid, tid);
+        brainTopicService.registerTopic(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_TOPIC_REGISTER_SUCCESS);
     }
 

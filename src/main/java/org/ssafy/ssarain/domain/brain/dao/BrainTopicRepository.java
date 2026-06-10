@@ -23,9 +23,9 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
             WITH RECURSIVE Ancestors AS (
                 SELECT tid, pid
                 FROM topic
-                WHERE tid = :tid
+                WHERE tid IN (:tid)
                 
-                UNION ALL
+                UNION
                 
                 SELECT t.tid, t.pid
                 FROM topic t
@@ -40,5 +40,5 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
             )
             """, 
         nativeQuery = true)
-    int addTopicWithAncestors(int bid, int tid);
+    int addTopicWithAncestors(int bid, List<Integer> tid);
 }
