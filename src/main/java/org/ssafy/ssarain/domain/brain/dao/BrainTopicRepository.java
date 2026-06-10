@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 
-import jakarta.transaction.Transactional;
-
 public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer> {
 
     @EntityGraph(attributePaths = {"brain", "topic"})
@@ -19,8 +17,7 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
     @EntityGraph(attributePaths = {"brain", "topic"})
     Optional<BrainTopic> findByBidAndTid(int bid, int tid);
     
-    @Transactional
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = """
             INSERT INTO brain_topic (bid, tid, generate_count, created_at, updated_at)
             WITH RECURSIVE Ancestors AS (
