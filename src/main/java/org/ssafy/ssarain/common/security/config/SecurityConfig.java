@@ -5,13 +5,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.ErrorCode;
-import org.ssafy.ssarain.common.security.config.authorize.AnyBrainAdminAuthorizationManager;
 import org.ssafy.ssarain.common.security.config.properties.CorsProperties;
 import org.ssafy.ssarain.common.security.jwt.filter.JwtAuthenticationFilter;
 import org.ssafy.ssarain.common.security.jwt.filter.JwtExceptionFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -41,8 +39,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(
-            HttpSecurity http,
-            AnyBrainAdminAuthorizationManager anyBrainAdminAuthorizationManager) throws Exception {
+            HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
 
@@ -63,7 +60,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/topics/**").access(anyBrainAdminAuthorizationManager)
                         .anyRequest().authenticated()
                 )
 
