@@ -3,7 +3,7 @@ package org.ssafy.ssarain.domain.brain.service;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.ssafy.ssarain.domain.brain.dao.BrainManagerRepository;
+import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -11,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrainAdminService {
     
-    private final BrainManagerRepository brainManagerRepository;
+    private final BrainMemberRepository brainMemberRepository;
     
     public boolean isAnyBrainAdmin(UUID uid) {
-        return brainManagerRepository.existsByUid(uid);
+        return brainMemberRepository.isAnyBrainAdmin(uid);
     }
     
     public boolean isBrainAdminOf(UUID uid, int bid) {
-        return brainManagerRepository.existsByBidAndUid(bid, uid);
+        return brainMemberRepository.isBrainAdminOf(uid, bid);
     }
 }
