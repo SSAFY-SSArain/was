@@ -67,7 +67,9 @@ public class BrainMember extends BaseAuditingEntity {
         this.bmid = new BrainMemberId(brain.getBid(), user.getUid());
         this.brain = brain;
         this.user = user;
-        this.role = role;
+        if (role != null) {
+            this.role = role;
+        }
     }
     
     public static BrainMember of(Brain brain, User user) {
