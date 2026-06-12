@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TopicService {
 
+    private static final int MAX_DESCENDANT_DEPTH = 3; 
+
     private final TopicRepository topicRepository;
     
     @Transactional(readOnly = true)
@@ -30,7 +32,7 @@ public class TopicService {
     
     @Transactional(readOnly = true)
     public List<TopicInfoDto> getChildTopic(int tid, Integer bid) {
-        return topicRepository.findWithUsingByPidAndBid(tid, bid)
+        return topicRepository.findWithUsingByPidAndBid(tid, bid, MAX_DESCENDANT_DEPTH)
                 .stream()
                 .map(TopicInfoDto::from)
                 .toList();

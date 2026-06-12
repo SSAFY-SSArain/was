@@ -38,14 +38,25 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      * @param bid
      * @return
      */
-    @Query(value = """    
+    @Query(value = """
+            WITH RECURSIVE Descendant AS (
+                SELECT tid, pid, name, 1 AS `depth`
+                FROM topic
+                WHERE pid = :pid
+                
+                UNION ALL
+                
+                SELECT t.tid, t.pid, t.name, (d.depth + 1)
+                FROM topic t
+                INNER JOIN Descendant d ON t.pid = d.tid
+                WHERE (d.depth + 1) <= :maxDepth
+            )
             SELECT tid, pid, name,
-                EXISTS (SELECT * FROM brain_topic WHERE bid = :bid AND tid = t.tid) AS `using`
-            FROM topic t
-            WHERE pid = :pid
-            """,
+                EXISTS (SELECT 1 FROM brain_topic WHERE bid = :bid AND tid = d.tid) AS `using`
+            FROM Descendant d
+            """, 
             nativeQuery = true)
-    List<TopicWithUsedQueryDto> findWithUsingByPidAndBid(int pid, Integer bid);
+    List<TopicWithUsedQueryDto> findWithUsingByPidAndBid(int pid, Integer bid, int maxDepth);
     
     boolean existsByName(String name);
     
