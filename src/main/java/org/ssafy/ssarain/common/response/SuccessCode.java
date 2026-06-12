@@ -37,7 +37,10 @@ public enum SuccessCode {
 
     // Quiz
     QUIZ_INFO_SUCCESS(HttpStatus.OK, "퀴즈 조회가 완료되었습니다."),
-    QUIZ_CREATE_SUCCESS(HttpStatus.OK, "퀴즈 생성이 완료되었습니다.");
+    QUIZ_CREATE_SUCCESS(HttpStatus.CREATED, "퀴즈 생성이 완료되었습니다."),
+
+    // Node
+    NODE_CREATE_SUCCESS(HttpStatus.CREATED, "노드 생성이 완료되었습니다.");
 
     private final HttpStatus status;
     private final String message;

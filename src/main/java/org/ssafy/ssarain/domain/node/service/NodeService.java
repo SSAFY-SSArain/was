@@ -1,11 +1,31 @@
 package org.ssafy.ssarain.domain.node.service;
 
 import java.util.List;
+import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.ssafy.ssarain.domain.node.dao.NodeRepository;
+import org.ssafy.ssarain.domain.node.dto.NodeCreateDto;
+import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
+import org.ssafy.ssarain.domain.node.model.Node;
+import org.ssafy.ssarain.domain.user.model.User;
+import org.ssafy.ssarain.domain.user.service.UserService;
 
 @Service
+@RequiredArgsConstructor
 public class NodeService {
+
+    private final UserService userService;
+    private final NodeRepository nodeRepository;
+
+    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
+
+        User user = userService.getUserByUserId(uid);
+        Node node = nodeCreateDto.toEntity(uid);
+
+        return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+    }
 
     public List<String> findTitlesByBrainTopicId(Integer brainTopicId) {
         return List.of(
