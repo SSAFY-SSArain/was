@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.user.model.User;
 
 import java.util.UUID;
