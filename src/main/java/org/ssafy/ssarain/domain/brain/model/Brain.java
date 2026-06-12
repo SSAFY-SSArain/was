@@ -7,6 +7,8 @@ import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,9 +43,10 @@ public class Brain extends BaseAuditingEntity {
     private String description = "";
     
     @NotNull
-    @Column(name = "join_policy", nullable = false)
-    @ColumnDefault("false")
-    private boolean joinPolicy = false;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "join_policy", nullable = false, length = 20)
+    @ColumnDefault("'PROTECTED'")
+    private JoinPolicy joinPolicy = JoinPolicy.PROTECTED;
     
     /*
      * 연관된 엔티티
@@ -53,13 +56,13 @@ public class Brain extends BaseAuditingEntity {
     private List<BrainMember> brainMembers;
     
     @Builder(access = AccessLevel.PRIVATE)
-    private Brain(String name, String description, boolean joinPolicy) {
+    private Brain(String name, String description, JoinPolicy joinPolicy) {
         this.name = name;
         this.description = description;
         this.joinPolicy = joinPolicy;
     }
     
-    public static Brain of(String name, String description, boolean joinPolicy) {
+    public static Brain of(String name, String description, JoinPolicy joinPolicy) {
         return Brain.builder().name(name).description(description).joinPolicy(joinPolicy).build();
     }
 }
