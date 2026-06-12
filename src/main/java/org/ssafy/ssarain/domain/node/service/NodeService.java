@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
-import org.ssafy.ssarain.domain.node.dto.NodeCreateDto;
-import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
+import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
-import org.ssafy.ssarain.domain.node.dto.NodeInfoDto;
 
 @Service
 @RequiredArgsConstructor
@@ -22,12 +20,14 @@ public class NodeService {
     private final UserService userService;
     private final NodeRepository nodeRepository;
 
-    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
+    public NodePreviewListDto getNodePreview(Integer btid) {
 
-        User user = userService.getUserByUserId(uid);
-        Node node = nodeCreateDto.toEntity(uid);
+        List<Node> nodes = nodeRepository.findByBtid(btid);
+        List<NodePreviewDto> nodePreviewList = nodes.stream()
+                                                    .map(NodePreviewDto::from)
+                                                    .toList();
 
-        return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+        return NodePreviewListDto.from(nodePreviewList);
     }
 
     public NodeDetailDto getNode(Integer nid) {
@@ -37,6 +37,16 @@ public class NodeService {
 
         return NodeDetailDto.from(node, node.getUser().getName());
     }
+
+    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
+
+        User user = userService.getUserByUserId(uid);
+        Node node = nodeCreateDto.toEntity(uid);
+
+        return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+    }
+
+
 
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
         // TODO: Node 도메인 개발 후 실제 로직 작성할 것
