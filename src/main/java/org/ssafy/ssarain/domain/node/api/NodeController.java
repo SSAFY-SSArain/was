@@ -1,5 +1,6 @@
 package org.ssafy.ssarain.domain.node.api;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +23,7 @@ public class NodeController {
     private final NodeService nodeService;
 
     @PostMapping
+    @Operation(summary = "N03: Node 추가")
     public ResponseEntity<BaseResponse<NodeDetailDto>> createNode(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody NodeCreateDto nodeCreateDto
