@@ -3,9 +3,15 @@ package org.ssafy.ssarain.domain.node.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.ssafy.ssarain.domain.node.dto.NodeInfoDto;
 
 @Service
 public class NodeService {
+
+    public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
+        // TODO: Node 도메인 개발 후 실제 로직 작성할 것
+        return List.of();
+    }
 
     public List<String> findTitlesByBrainTopicId(Integer brainTopicId) {
         return List.of(

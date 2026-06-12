@@ -12,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -49,9 +48,6 @@ public class Brain extends BaseAuditingEntity {
     /*
      * 연관된 엔티티
      */
-    
-    @OneToOne(mappedBy = "brain", fetch = FetchType.LAZY)
-    private BrainManager brainManager;
     
     @OneToMany(mappedBy = "brain", fetch = FetchType.LAZY)
     private List<BrainMember> brainMembers;

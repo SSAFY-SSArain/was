@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
-import org.ssafy.ssarain.domain.brain.dao.BrainManagerRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
@@ -20,8 +19,8 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainPageDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
-import org.ssafy.ssarain.domain.brain.model.BrainManager;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
+import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.model.User;
 
@@ -33,7 +32,6 @@ public class BrainService {
     
     private final UserRepository userRepository;
     private final BrainRepository brainRepository;
-    private final BrainManagerRepository brainManagerRepository;
     private final BrainMemberRepository brainMemberRepository;
     
     @Transactional(readOnly = true)
@@ -58,9 +56,7 @@ public class BrainService {
         
         Brain brain = createAndSaveBrain(dto);
         User brainAdmin = userRepository.getReferenceById(uid);
-        
-        brainManagerRepository.save(BrainManager.of(brain, brainAdmin));
-        brainMemberRepository.save(BrainMember.of(brain, brainAdmin));
+        brainMemberRepository.save(BrainMember.adminOf(brain, brainAdmin));
         
         return BrainDetailDto.from(brain);
     }
@@ -89,8 +85,13 @@ public class BrainService {
     }
     
     private BrainFoundDto toBrainFoundDto(Brain brain) {
-        String adminName = brain.getBrainManager().getUser().getName();
-        List<String> memberNames = brain.getBrainMembers().stream()
+        List<BrainMember> members = brain.getBrainMembers();
+        String adminName = members.stream()
+                .filter(member -> member.getRole().equals(BrainMemberRole.ADMIN))
+                .findFirst()
+                .map(member -> member.getUser().getName())
+                .orElse("");
+        List<String> memberNames = members.stream()
                 .map(brainMember -> brainMember.getUser().getName())
                 .toList();
         
