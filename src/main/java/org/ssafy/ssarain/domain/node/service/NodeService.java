@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
@@ -20,6 +21,7 @@ public class NodeService {
     private final UserService userService;
     private final NodeRepository nodeRepository;
 
+    @Transactional(readOnly = true)
     public NodePreviewListDto getNodePreview(Integer btid) {
 
         List<Node> nodes = nodeRepository.findByBtid(btid);
@@ -30,6 +32,7 @@ public class NodeService {
         return NodePreviewListDto.from(nodePreviewList);
     }
 
+    @Transactional(readOnly = true)
     public NodeDetailDto getNode(Integer nid) {
 
         Node node = nodeRepository.findById(nid)
@@ -38,6 +41,7 @@ public class NodeService {
         return NodeDetailDto.from(node, node.getUser().getName());
     }
 
+    @Transactional
     public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
 
         User user = userService.getUserByUserId(uid);
