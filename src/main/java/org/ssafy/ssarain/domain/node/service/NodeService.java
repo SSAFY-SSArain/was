@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.ssafy.ssarain.common.error.GlobalException;
+import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.dto.NodeCreateDto;
 import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
@@ -26,6 +28,14 @@ public class NodeService {
         Node node = nodeCreateDto.toEntity(uid);
 
         return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+    }
+
+    public NodeDetailDto getNode(Integer nid) {
+
+        Node node = nodeRepository.findById(nid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
+
+        return NodeDetailDto.from(node, node.getUser().getName());
     }
 
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
