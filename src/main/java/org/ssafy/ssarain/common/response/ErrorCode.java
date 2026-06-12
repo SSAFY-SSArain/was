@@ -46,6 +46,10 @@ public enum ErrorCode {
     BRAIN_NAME_DUPLICATED(HttpStatus.CONFLICT, "B002", "브레인 이름이 이미 존재합니다."),
     BRAIN_OR_TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "B003", "브레인 또는 주제를 찾을 수 없습니다."),
     BRAIN_TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "B004", "브레인에 속한 주제를 찾을 수 없습니다."),
+    BRAIN_MEMBER_DUPLICATED(HttpStatus.CONFLICT, "B005", "이미 브레인에 회원으로 소속되어 있습니다."),
+    BRAIN_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "B006", "브레인 회원 정보를 찾을 수 없습니다."),
+    BRAIN_WAITING_NOT_FOUND(HttpStatus.NOT_FOUND, "B007", "브레인 가입 신청 내역이 없습니다."),
+    BRAIN_MEMBER_CANNOT_DELETE_SELF(HttpStatus.UNPROCESSABLE_ENTITY, "B008", "브레인 관리자 자신을 제외시킬 수 없습니다."),
     
     // Topic
     TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당 주제를 찾을 수 없습니다."),
