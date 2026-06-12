@@ -3,6 +3,7 @@ package org.ssafy.ssarain.common.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.config.properties.CorsProperties;
@@ -55,6 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/user/name-check").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/nodes/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
