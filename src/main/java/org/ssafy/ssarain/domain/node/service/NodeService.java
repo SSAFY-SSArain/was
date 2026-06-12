@@ -11,6 +11,7 @@ import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
+import org.ssafy.ssarain.domain.node.dto.NodeInfoDto;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,11 @@ public class NodeService {
         Node node = nodeCreateDto.toEntity(uid);
 
         return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+    }
+
+    public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
+        // TODO: Node 도메인 개발 후 실제 로직 작성할 것
+        return List.of();
     }
 
     public List<String> findTitlesByBrainTopicId(Integer brainTopicId) {
