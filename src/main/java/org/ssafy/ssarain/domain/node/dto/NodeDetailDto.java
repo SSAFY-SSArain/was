@@ -15,11 +15,11 @@ public record NodeDetailDto(
         // List<Comments> comments
 ) {
 
-    public static NodeDetailDto from(Node node, String name) {
+    public static NodeDetailDto from(Node node) {
         return new NodeDetailDto(
                 node.getId(),
                 node.getTitle(),
-                name,
+                node.getUser().getName(),
                 node.getContent()
         );
     }

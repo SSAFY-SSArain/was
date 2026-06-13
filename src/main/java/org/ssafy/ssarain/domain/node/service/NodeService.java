@@ -38,7 +38,7 @@ public class NodeService {
         Node node = nodeRepository.findById(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
 
-        return NodeDetailDto.from(node, node.getUser().getName());
+        return NodeDetailDto.from(node);
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class NodeService {
         User user = userService.getUserByUserId(uid);
         Node node = nodeCreateDto.toEntity(uid);
 
-        return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+        return NodeDetailDto.from(nodeRepository.save(node));
     }
 
 
