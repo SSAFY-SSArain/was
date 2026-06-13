@@ -44,7 +44,8 @@ public enum ErrorCode {
     // Brain
     BRAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "해당 브레인을 찾을 수 없습니다."),
     BRAIN_NAME_DUPLICATED(HttpStatus.CONFLICT, "B002", "브레인 이름이 이미 존재합니다."),
-    BRAIN_TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "B003", "브레인 또는 주제를 찾을 수 없습니다."),
+    BRAIN_OR_TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "B003", "브레인 또는 주제를 찾을 수 없습니다."),
+    BRAIN_TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "B004", "브레인에 속한 주제를 찾을 수 없습니다."),
     
     // Topic
     TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당 주제를 찾을 수 없습니다."),

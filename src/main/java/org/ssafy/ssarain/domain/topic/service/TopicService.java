@@ -1,9 +1,9 @@
 package org.ssafy.ssarain.domain.topic.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.topic.dao.TopicRepository;
@@ -12,27 +12,30 @@ import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TopicService {
 
+    private static final int MAX_DESCENDANT_DEPTH = 3; 
+
     private final TopicRepository topicRepository;
     
-    public List<TopicInfoDto> getAllTopicInfo(Integer bid) {
-        // TODO: Brain에 포함된 Topic을 처리하는 로직이 추가되어야 합니다.
-        return topicRepository.findAll().stream()
+    @Transactional(readOnly = true)
+    public List<TopicInfoDto> getAllTopicInfo(Integer bid) {        
+        return topicRepository.findWithUsingByBid(bid)
+                .stream()
                 .map(TopicInfoDto::from)
-                .collect(Collectors.toList());
+                .toList();
     }
     
+    @Transactional(readOnly = true)
     public List<TopicInfoDto> getChildTopic(int tid, Integer bid) {
-        // TODO: Brain에 포함된 Topic을 처리하는 로직이 추가되어야 합니다.
-        return topicRepository.findByPid(tid).stream()
+        return topicRepository.findWithUsingByPidAndBid(tid, bid, MAX_DESCENDANT_DEPTH)
+                .stream()
                 .map(TopicInfoDto::from)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     @Transactional
