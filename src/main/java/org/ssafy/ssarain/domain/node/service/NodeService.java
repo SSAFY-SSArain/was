@@ -50,7 +50,12 @@ public class NodeService {
         return NodeDetailDto.from(nodeRepository.save(node), user.getName());
     }
 
-
+    @Transactional(readOnly = true)
+    public void validateExists(Integer nid) {
+        if(!nodeRepository.existsById(nid)) {
+            throw new GlobalException(ErrorCode.NODE_NOT_FOUND);
+        }
+    }
 
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
         // TODO: Node 도메인 개발 후 실제 로직 작성할 것

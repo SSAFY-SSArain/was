@@ -43,7 +43,11 @@ public enum SuccessCode {
 
     // Node
     NODE_INFO_SUCCESS(HttpStatus.OK, "노드 정보가 조회되었습니다."),
-    NODE_CREATE_SUCCESS(HttpStatus.CREATED, "노드 생성이 완료되었습니다.");
+    NODE_CREATE_SUCCESS(HttpStatus.CREATED, "노드 생성이 완료되었습니다."),
+
+    // Comment
+    COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다.");
+
 
     private final HttpStatus status;
     private final String message;
