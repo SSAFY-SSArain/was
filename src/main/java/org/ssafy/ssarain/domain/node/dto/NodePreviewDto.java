@@ -11,6 +11,6 @@ public record NodePreviewDto(
 ) {
 
     public static NodePreviewDto from (Node node) {
-        return new NodePreviewDto(node.getId(), node.getTitle(), node.getContent());
+        return new NodePreviewDto(node.getNid(), node.getTitle(), node.getContent());
     }
 }
