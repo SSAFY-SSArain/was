@@ -28,7 +28,7 @@ public class CommentService {
     public CommentDetailDto createComment(CommentCreateDto commentCreateDto, UUID uid) {
 
         Node node      = nodeService.getNodeById(commentCreateDto.nid());
-        Comment parent = getParentComment(commentCreateDto.pid());
+        Comment parent = getParentComment(commentCreateDto.pid(), node);
         User user      = userService.getUserByUserId(uid);
 
         Comment comment = Comment.of(
@@ -46,13 +46,20 @@ public class CommentService {
         Util Method
      */
 
-    private Comment getParentComment(Integer pid) {
+    private Comment getParentComment(Integer pid, Node node) {
         if(pid == null) {
             return null;
         }
 
-        return commentRepository.findById(pid)
+        Comment parent = commentRepository.findById(pid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        // 부모 node와 자식 node가 다른 경우
+        if(!parent.getNode().getId().equals(node.getId())) {
+            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+
+        return parent;
     }
 
 }
