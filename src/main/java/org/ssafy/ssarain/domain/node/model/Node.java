@@ -18,7 +18,7 @@ public class Node extends BaseAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nid", nullable = false)
-    private Integer id;
+    private Integer nid;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
