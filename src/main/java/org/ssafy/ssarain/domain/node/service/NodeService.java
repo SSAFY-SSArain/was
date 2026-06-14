@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
-import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
@@ -25,8 +24,6 @@ public class NodeService {
     private final UserService          userService;
     private final NodeRepository       nodeRepository;
     private final BrainTopicRepository brainTopicRepository;
-    private final BrainAuthService     brainAuthService;
-
 
     @Transactional(readOnly = true)
     public NodePreviewListDto getNodePreview(Integer btid) {
