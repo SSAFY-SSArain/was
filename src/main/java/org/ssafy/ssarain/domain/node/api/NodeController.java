@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.node.dto.NodeCreateDto;
 import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
 import org.ssafy.ssarain.domain.node.dto.NodePreviewListDto;
@@ -19,7 +20,8 @@ import org.ssafy.ssarain.domain.node.service.NodeService;
 @RequestMapping("/api/v1/nodes")
 public class NodeController {
 
-    private final NodeService nodeService;
+    private final NodeService      nodeService;
+    private final BrainAuthService brainAuthService;
 
     @GetMapping("/preview/{btid}")
     @Operation(summary = "N01: Node 프리 조회")
@@ -50,9 +52,10 @@ public class NodeController {
             @RequestBody @Valid NodeCreateDto nodeCreateDto
     ) {
 
-            NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails);
+        brainAuthService.authorizeBrainMemberByBtid(userDetails, nodeCreateDto.btid());
+        NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails);
 
-            return BaseResponse.success(SuccessCode.NODE_CREATE_SUCCESS, nodeDetailDto);
+        return BaseResponse.success(SuccessCode.NODE_CREATE_SUCCESS, nodeDetailDto);
     }
 
 }

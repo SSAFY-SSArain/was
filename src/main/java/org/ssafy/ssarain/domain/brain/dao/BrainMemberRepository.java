@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 
@@ -15,5 +16,11 @@ public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainM
 
     boolean existsByBmidUidAndBmidBidAndRole(UUID uid, int bid, BrainMemberRole role);
 
-    boolean existsByBmidUidAndBmidBid(UUID bmidUid, int bmidBid);
+    @Query("""
+            SELECT 0 < count(*)
+            FROM BrainMember bm
+            INNER JOIN BrainTopic bt ON bm.bmid.bid = bt.bid AND bt.btid = :btid
+            WHERE bm.bmid.uid = :uid
+            """)
+    boolean existsByUidAndBtid(UUID uid, int btid);
 }

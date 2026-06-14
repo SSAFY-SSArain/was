@@ -54,8 +54,6 @@ public class NodeService {
         BrainTopic brainTopic = brainTopicRepository.findById(nodeCreateDto.btid())
                                                     .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND));
 
-        brainAuthService.authorizeBrainMember(userDetails, brainTopic.getBid());
-
         User user = userService.getUserByUserId(userDetails.getUserId());
 
         Node node = Node.of(brainTopic, user, nodeCreateDto.title(), nodeCreateDto.content());
