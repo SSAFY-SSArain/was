@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
@@ -18,8 +19,10 @@ import org.ssafy.ssarain.domain.user.service.UserService;
 @RequiredArgsConstructor
 public class NodeService {
 
-    private final UserService userService;
-    private final NodeRepository nodeRepository;
+    private final UserService          userService;
+    private final NodeRepository       nodeRepository;
+    private final BrainTopicRepository brainTopicRepository;
+
 
     @Transactional(readOnly = true)
     public NodePreviewListDto getNodePreview(Integer btid) {
@@ -44,12 +47,19 @@ public class NodeService {
     @Transactional
     public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
 
+        validateBrainTopicExists(nodeCreateDto.btid());
+
         User user = userService.getUserByUserId(uid);
         Node node = nodeCreateDto.toEntity(uid);
 
         return NodeDetailDto.from(nodeRepository.save(node));
     }
 
+    private void validateBrainTopicExists(Integer btid) {
+        if(!brainTopicRepository.existsById(btid)) {
+            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
+        }
+    }
 
 
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
