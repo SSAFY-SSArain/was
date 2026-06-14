@@ -51,8 +51,8 @@ public class NodeService {
     @Transactional
     public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, CustomUserDetails userDetails) {
 
-        BrainTopic brainTopic = brainTopicRepository.findById(nodeCreateDto.btid())
-                                                    .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND));
+        // 권한 검증에서 brainTopic 존재 검증
+        BrainTopic brainTopic = brainTopicRepository.getReferenceById(nodeCreateDto.btid());
 
         User user = userService.getUserByUserId(userDetails.getUserId());
 
