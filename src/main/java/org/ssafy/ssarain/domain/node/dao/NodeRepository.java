@@ -6,5 +6,5 @@ import org.ssafy.ssarain.domain.node.model.Node;
 import java.util.List;
 
 public interface NodeRepository extends JpaRepository<Node, Integer> {
-    List<Node> findByBrainTopic_Btid(int btid);
+    List<Node> findByBrainTopic_Btid(Integer btid);
 }
