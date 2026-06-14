@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
@@ -23,6 +25,7 @@ public class NodeService {
     private final UserService          userService;
     private final NodeRepository       nodeRepository;
     private final BrainTopicRepository brainTopicRepository;
+    private final BrainAuthService     brainAuthService;
 
 
     @Transactional(readOnly = true)
@@ -46,12 +49,14 @@ public class NodeService {
     }
 
     @Transactional
-    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
+    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, CustomUserDetails userDetails) {
 
         BrainTopic brainTopic = brainTopicRepository.findById(nodeCreateDto.btid())
                                                     .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND));
 
-        User user = userService.getUserByUserId(uid);
+        brainAuthService.authorizeBrainMember(userDetails, brainTopic.getBid());
+
+        User user = userService.getUserByUserId(userDetails.getUserId());
 
         Node node = Node.of(brainTopic, user, nodeCreateDto.title(), nodeCreateDto.content());
 

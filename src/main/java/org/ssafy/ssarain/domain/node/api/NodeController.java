@@ -50,7 +50,7 @@ public class NodeController {
             @RequestBody @Valid NodeCreateDto nodeCreateDto
     ) {
 
-            NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails.getUserId());
+            NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails);
 
             return BaseResponse.success(SuccessCode.NODE_CREATE_SUCCESS, nodeDetailDto);
     }
