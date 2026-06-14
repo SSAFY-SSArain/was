@@ -17,11 +17,11 @@ public record CommentDetailDto(
         LocalDateTime createdAt
 ) {
 
-    public static CommentDetailDto from(Comment comment, String author) {
+    public static CommentDetailDto from(Comment comment) {
         return new CommentDetailDto(
                 comment.getCid(),
                 comment.getPid(),
-                author,
+                comment.getUser().getName(),
                 comment.getContent(),
                 comment.getCreatedAt()
         );

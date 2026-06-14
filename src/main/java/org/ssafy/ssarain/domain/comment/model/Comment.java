@@ -8,8 +8,6 @@ import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 
-import java.util.UUID;
-
 @Getter
 @Entity
 @Table(name = "comment")
@@ -22,26 +20,17 @@ public class Comment extends BaseAuditingEntity {
     private Integer cid;
 
     @NotNull
-    @Column(name = "nid", nullable = false)
-    private Integer nid;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "nid", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "nid", nullable = false)
     private Node node;
 
-    @Column(name = "pid")
-    private Integer pid;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pid", insertable = false, updatable = false)
+    @JoinColumn(name = "pid")
     private Comment parent;
 
     @NotNull
-    @Column(name = "uid", nullable = false)
-    private UUID uid;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "uid", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "uid", nullable = false)
     private User user;
 
     @Size(max = 255)
@@ -49,20 +38,24 @@ public class Comment extends BaseAuditingEntity {
     private String content;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Comment(Integer nid, Integer pid, UUID uid, String content) {
-        this.nid = nid;
-        this.pid = pid;
-        this.uid = uid;
+    private Comment(Node node, Comment parent, User user, String content) {
+        this.node = node;
+        this.parent = parent;
+        this.user = user;
         this.content = content;
     }
 
-    public static Comment of(Integer nid, Integer pid, UUID uid, String content) {
+    public static Comment of(Node node, Comment parent, User user, String content) {
         return Comment.builder()
-                .nid(nid)
-                .pid(pid)
-                .uid(uid)
+                .node(node)
+                .parent(parent)
+                .user(user)
                 .content(content)
                 .build();
+    }
+
+    public Integer getPid() {
+        return parent == null ? null : parent.getCid();
     }
 
 }

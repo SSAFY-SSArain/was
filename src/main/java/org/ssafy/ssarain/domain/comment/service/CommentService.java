@@ -9,6 +9,7 @@ import org.ssafy.ssarain.domain.comment.dao.CommentRepository;
 import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
 import org.ssafy.ssarain.domain.comment.model.Comment;
+import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.node.service.NodeService;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
@@ -26,12 +27,18 @@ public class CommentService {
     @Transactional
     public CommentDetailDto createComment(CommentCreateDto commentCreateDto, UUID uid) {
 
-        validateCreateComment(commentCreateDto);
+        Node node      = nodeService.getNodeById(commentCreateDto.nid());
+        Comment parent = getParentComment(commentCreateDto.pid());
+        User user      = userService.getUserByUserId(uid);
 
-        Comment comment = commentCreateDto.toEntity(uid);
-        User user = userService.getUserByUserId(uid);
+        Comment comment = Comment.of(
+                node,
+                parent,
+                user,
+                commentCreateDto.content()
+        );
 
-        return CommentDetailDto.from(commentRepository.save(comment), user.getName());
+        return CommentDetailDto.from(commentRepository.save(comment));
     }
 
 
@@ -39,17 +46,13 @@ public class CommentService {
         Util Method
      */
 
-    private void validateCreateComment(CommentCreateDto commentCreateDto) {
-        nodeService.validateExists(commentCreateDto.nid());
-        if(commentCreateDto.pid() != null) {
-            validateParentCommentExists(commentCreateDto.pid());
+    private Comment getParentComment(Integer pid) {
+        if(pid == null) {
+            return null;
         }
-    }
 
-    private void validateParentCommentExists(Integer pid) {
-        if(!commentRepository.existsById(pid)) {
-            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
-        }
+        return commentRepository.findById(pid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
     }
 
 }
