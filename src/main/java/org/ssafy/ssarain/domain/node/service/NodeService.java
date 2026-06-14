@@ -58,10 +58,14 @@ public class NodeService {
         return NodeDetailDto.from(nodeRepository.save(node));
     }
 
-
+    @Transactional(readOnly = true)
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
-        // TODO: Node 도메인 개발 후 실제 로직 작성할 것
-        return List.of();
+
+        List<Node> nodes = nodeRepository.findByBrainTopic_Btid(brainTopicId);
+
+        return nodes.stream()
+                .map(NodeInfoDto::from)
+                .toList();
     }
 
     public List<String> findTitlesByBrainTopicId(Integer brainTopicId) {
