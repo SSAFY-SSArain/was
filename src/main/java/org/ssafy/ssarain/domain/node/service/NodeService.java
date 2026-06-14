@@ -61,12 +61,6 @@ public class NodeService {
 
         return NodeDetailDto.from(nodeRepository.save(node));
     }
-    @Transactional(readOnly = true)
-    public void validateExists(Integer nid) {
-        if(!nodeRepository.existsById(nid)) {
-            throw new GlobalException(ErrorCode.NODE_NOT_FOUND);
-        }
-    }
 
     @Transactional(readOnly = true)
     public Node getNodeById(Integer nid) {
