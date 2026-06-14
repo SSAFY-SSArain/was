@@ -67,6 +67,10 @@ public class UserService {
         return userRepository.existsByName(name);
     }
 
+    public User getReferenceByUserId(UUID userId) {
+        return userRepository.getReferenceById(userId);
+    }
+
     /*
         Util Method
      */

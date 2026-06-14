@@ -10,8 +10,6 @@ import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.user.model.User;
 
-import java.util.UUID;
-
 @Getter
 @Entity
 @Table(name = "node")
@@ -23,20 +21,14 @@ public class Node extends BaseAuditingEntity {
     private Integer id;
 
     @NotNull
-    @Column(name = "btid", nullable = false)
-    private Integer btid;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "btid", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "btid", nullable = false)
     private BrainTopic brainTopic;
 
     @NotNull
-    @Column(name = "uid", nullable = false)
-    private UUID uid;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "uid", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "uid", nullable = false)
     private User user;
 
     @Size(max = 255)
@@ -48,17 +40,17 @@ public class Node extends BaseAuditingEntity {
     private String content;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Node(Integer btid, UUID uid, String title, String content) {
-        this.btid = btid;
-        this.uid = uid;
+    private Node(BrainTopic brainTopic, User user, String title, String content) {
+        this.brainTopic = brainTopic;
+        this.user = user;
         this.title = title;
         this.content = content;
     }
 
-    public static Node of(Integer btid, UUID uid, String title, String content) {
+    public static Node of(BrainTopic brainTopic, User user, String title, String content) {
         return Node.builder()
-                .btid(btid)
-                .uid(uid)
+                .brainTopic(brainTopic)
+                .user(user)
                 .title(title)
                 .content(content)
                 .build();

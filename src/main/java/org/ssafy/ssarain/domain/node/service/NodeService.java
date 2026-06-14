@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
+import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
@@ -27,7 +28,7 @@ public class NodeService {
     @Transactional(readOnly = true)
     public NodePreviewListDto getNodePreview(Integer btid) {
 
-        List<Node> nodes = nodeRepository.findByBtid(btid);
+        List<Node> nodes = nodeRepository.findByBrainTopic_Btid(btid);
         List<NodePreviewDto> nodePreviewList = nodes.stream()
                                                     .map(NodePreviewDto::from)
                                                     .toList();
@@ -47,10 +48,12 @@ public class NodeService {
     @Transactional
     public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
 
-        validateBrainTopicExists(nodeCreateDto.btid());
+        BrainTopic brainTopic = brainTopicRepository.findById(nodeCreateDto.btid())
+                                                    .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND));
 
         User user = userService.getUserByUserId(uid);
-        Node node = nodeCreateDto.toEntity(uid);
+
+        Node node = Node.of(brainTopic, user, nodeCreateDto.title(), nodeCreateDto.content());
 
         return NodeDetailDto.from(nodeRepository.save(node));
     }
@@ -74,15 +77,5 @@ public class NodeService {
                 "트랜잭션 격리 수준과 동시성 문제",
                 "REST API 응답 형식 설계"
         );
-    }
-
-    /*
-        Util Method
-     */
-
-    private void validateBrainTopicExists(Integer btid) {
-        if(!brainTopicRepository.existsById(btid)) {
-            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
-        }
     }
 }
