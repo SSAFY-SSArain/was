@@ -67,12 +67,6 @@ public class NodeService {
         return NodeDetailDto.from(nodeRepository.save(node));
     }
 
-    @Transactional(readOnly = true)
-    public Node getNodeById(Integer nid) {
-        return nodeRepository.findById(nid)
-                .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
-    }
-
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
         // TODO: Node 도메인 개발 후 실제 로직 작성할 것
         return List.of();
