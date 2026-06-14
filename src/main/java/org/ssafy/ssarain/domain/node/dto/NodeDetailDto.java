@@ -2,6 +2,8 @@ package org.ssafy.ssarain.domain.node.dto;
 
 import org.ssafy.ssarain.domain.node.model.Node;
 
+import java.time.LocalDateTime;
+
 public record NodeDetailDto(
         Integer nid,
 
@@ -9,18 +11,21 @@ public record NodeDetailDto(
 
         String writer,
 
-        String content
+        String content,
+
+        LocalDateTime createdAt
 
         // TODO: Comments 추가 필요
         // List<Comments> comments
 ) {
 
-    public static NodeDetailDto from(Node node, String name) {
+    public static NodeDetailDto from(Node node) {
         return new NodeDetailDto(
                 node.getId(),
                 node.getTitle(),
-                name,
-                node.getContent()
+                node.getUser().getName(),
+                node.getContent(),
+                node.getCreatedAt()
         );
     }
 }

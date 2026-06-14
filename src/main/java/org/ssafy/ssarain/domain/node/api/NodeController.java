@@ -1,6 +1,7 @@
 package org.ssafy.ssarain.domain.node.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,11 +11,8 @@ import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.node.dto.NodeCreateDto;
 import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
-import org.ssafy.ssarain.domain.node.dto.NodePreviewDto;
 import org.ssafy.ssarain.domain.node.dto.NodePreviewListDto;
 import org.ssafy.ssarain.domain.node.service.NodeService;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,10 +47,10 @@ public class NodeController {
     @Operation(summary = "N03: Node 추가")
     public ResponseEntity<BaseResponse<NodeDetailDto>> createNode(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody NodeCreateDto nodeCreateDto
+            @RequestBody @Valid NodeCreateDto nodeCreateDto
     ) {
 
-            NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails.getUserId());
+            NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails);
 
             return BaseResponse.success(SuccessCode.NODE_CREATE_SUCCESS, nodeDetailDto);
     }

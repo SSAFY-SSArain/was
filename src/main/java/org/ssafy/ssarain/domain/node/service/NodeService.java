@@ -1,13 +1,16 @@
 package org.ssafy.ssarain.domain.node.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
+import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
+import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
@@ -18,13 +21,16 @@ import org.ssafy.ssarain.domain.user.service.UserService;
 @RequiredArgsConstructor
 public class NodeService {
 
-    private final UserService userService;
-    private final NodeRepository nodeRepository;
+    private final UserService          userService;
+    private final NodeRepository       nodeRepository;
+    private final BrainTopicRepository brainTopicRepository;
+    private final BrainAuthService     brainAuthService;
+
 
     @Transactional(readOnly = true)
     public NodePreviewListDto getNodePreview(Integer btid) {
 
-        List<Node> nodes = nodeRepository.findByBtid(btid);
+        List<Node> nodes = nodeRepository.findByBrainTopic_Btid(btid);
         List<NodePreviewDto> nodePreviewList = nodes.stream()
                                                     .map(NodePreviewDto::from)
                                                     .toList();
@@ -38,18 +44,23 @@ public class NodeService {
         Node node = nodeRepository.findById(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
 
-        return NodeDetailDto.from(node, node.getUser().getName());
+        return NodeDetailDto.from(node);
     }
 
     @Transactional
-    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
+    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, CustomUserDetails userDetails) {
 
-        User user = userService.getUserByUserId(uid);
-        Node node = nodeCreateDto.toEntity(uid);
+        BrainTopic brainTopic = brainTopicRepository.findById(nodeCreateDto.btid())
+                                                    .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND));
 
-        return NodeDetailDto.from(nodeRepository.save(node), user.getName());
+        brainAuthService.authorizeBrainMember(userDetails, brainTopic.getBid());
+
+        User user = userService.getUserByUserId(userDetails.getUserId());
+
+        Node node = Node.of(brainTopic, user, nodeCreateDto.title(), nodeCreateDto.content());
+
+        return NodeDetailDto.from(nodeRepository.save(node));
     }
-
     @Transactional(readOnly = true)
     public void validateExists(Integer nid) {
         if(!nodeRepository.existsById(nid)) {
