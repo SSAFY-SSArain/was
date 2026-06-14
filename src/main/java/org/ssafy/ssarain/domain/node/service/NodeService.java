@@ -11,6 +11,8 @@ import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
+import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
+import org.ssafy.ssarain.domain.comment.service.CommentService;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
@@ -25,6 +27,7 @@ public class NodeService {
     private final NodeRepository       nodeRepository;
     private final BrainTopicRepository brainTopicRepository;
     private final BrainAuthService     brainAuthService;
+    private final CommentService       commentService;
 
 
     @Transactional(readOnly = true)
@@ -44,7 +47,9 @@ public class NodeService {
         Node node = nodeRepository.findById(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
 
-        return NodeDetailDto.from(node);
+        List<CommentDetailDto> comments = commentService.getCommentsByNid(nid);
+
+        return NodeDetailDto.from(node, comments);
     }
 
     @Transactional

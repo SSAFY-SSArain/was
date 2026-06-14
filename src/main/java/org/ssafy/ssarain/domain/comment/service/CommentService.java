@@ -9,11 +9,12 @@ import org.ssafy.ssarain.domain.comment.dao.CommentRepository;
 import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
 import org.ssafy.ssarain.domain.comment.model.Comment;
+import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.model.Node;
-import org.ssafy.ssarain.domain.node.service.NodeService;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,13 +22,14 @@ import java.util.UUID;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final NodeService       nodeService;
+    private final NodeRepository    nodeRepository;
     private final UserService       userService;
 
     @Transactional
     public CommentDetailDto createComment(CommentCreateDto commentCreateDto, UUID uid) {
 
-        Node node      = nodeService.getNodeById(commentCreateDto.nid());
+        Node node      = nodeRepository.findById(commentCreateDto.nid())
+                                        .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
         Comment parent = getParentComment(commentCreateDto.pid(), node);
         User user      = userService.getUserByUserId(uid);
 
@@ -39,6 +41,16 @@ public class CommentService {
         );
 
         return CommentDetailDto.from(commentRepository.save(comment));
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommentDetailDto> getCommentsByNid(Integer nid) {
+
+        List<Comment> comments = commentRepository.findByNode_Nid(nid);
+
+        return comments.stream()
+                .map(CommentDetailDto::from)
+                .toList();
     }
 
 
@@ -55,7 +67,7 @@ public class CommentService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
 
         // 부모 node와 자식 node가 다른 경우
-        if(!parent.getNode().getId().equals(node.getId())) {
+        if(!parent.getNode().getNid().equals(node.getNid())) {
             throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
         }
 
