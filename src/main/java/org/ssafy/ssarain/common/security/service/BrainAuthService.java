@@ -5,6 +5,7 @@ import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.brain.service.BrainAdminService;
+import org.ssafy.ssarain.domain.brain.service.BrainMemberService;
 import org.ssafy.ssarain.domain.user.model.UserRole;
 
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrainAuthService {
 
-    private final BrainAdminService brainAdminService;
+    private final BrainAdminService  brainAdminService;
+    private final BrainMemberService brainMemberService;
     
     public void authorizeAnyBrainAdmin(CustomUserDetails userDetails) {
         // ADMIN 권한은 항상 허용
@@ -42,6 +44,21 @@ public class BrainAuthService {
             return;
         }
         
+        throw new GlobalException(ErrorCode.ACCESS_DENIED);
+    }
+
+    public void authorizeBrainMemberByBtid(CustomUserDetails userDetails, int btid) {
+
+        // ADMIN 권한은 항상 허용
+        if (isAdmin(userDetails)) {
+            return;
+        }
+
+        // 특정 Brain의 Member인지 확인
+        if (brainMemberService.isBrainMemberByBtid(userDetails.getUserId(), btid)) {
+            return;
+        }
+
         throw new GlobalException(ErrorCode.ACCESS_DENIED);
     }
 

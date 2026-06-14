@@ -55,6 +55,9 @@ public enum ErrorCode {
     QUIZ_SOURCE_NODE_NOT_FOUND(HttpStatus.NOT_FOUND, "Q001", "퀴즈 생성에 사용할 노드가 없습니다."),
     QUIZ_GENERATION_LIMIT_EXCEEDED(HttpStatus.CONFLICT, "Q002", "해당 BrainTopic은 퀴즈를 더 이상 생성할 수 없습니다."),
 
+    // Node
+    NODE_NOT_FOUND(HttpStatus.NOT_FOUND, "N001", "해당 노드를 찾을 수 없습니다."),
+
     // Gemini
     GEMINI_API_KEY_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "G001", "Gemini API 키가 설정되지 않았습니다."),
     GEMINI_REQUEST_FAILED(HttpStatus.BAD_GATEWAY, "G002", "Gemini API 요청에 실패했습니다."),
