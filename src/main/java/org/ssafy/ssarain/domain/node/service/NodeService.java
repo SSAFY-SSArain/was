@@ -55,12 +55,6 @@ public class NodeService {
         return NodeDetailDto.from(nodeRepository.save(node));
     }
 
-    private void validateBrainTopicExists(Integer btid) {
-        if(!brainTopicRepository.existsById(btid)) {
-            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
-        }
-    }
-
 
     public List<NodeInfoDto> findByBrainTopicId(Integer brainTopicId) {
         // TODO: Node 도메인 개발 후 실제 로직 작성할 것
@@ -80,5 +74,15 @@ public class NodeService {
                 "트랜잭션 격리 수준과 동시성 문제",
                 "REST API 응답 형식 설계"
         );
+    }
+
+    /*
+        Util Method
+     */
+
+    private void validateBrainTopicExists(Integer btid) {
+        if(!brainTopicRepository.existsById(btid)) {
+            throw new GlobalException(ErrorCode.BRAIN_TOPIC_NOT_FOUND);
+        }
     }
 }
