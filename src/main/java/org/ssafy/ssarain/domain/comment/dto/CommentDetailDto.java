@@ -10,7 +10,7 @@ public record CommentDetailDto(
 
         Integer pid,
 
-        String author,
+        String writer,
 
         String content,
 
