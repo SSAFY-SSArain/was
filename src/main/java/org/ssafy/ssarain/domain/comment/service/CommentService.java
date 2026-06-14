@@ -46,7 +46,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentDetailDto> getCommentsByNid(Integer nid) {
 
-        List<Comment> comments = commentRepository.findByNode_Nid(nid);
+        List<Comment> comments = commentRepository.findByNode_NidOrderByCreatedAtAsc(nid);
 
         return comments.stream()
                 .map(CommentDetailDto::from)
