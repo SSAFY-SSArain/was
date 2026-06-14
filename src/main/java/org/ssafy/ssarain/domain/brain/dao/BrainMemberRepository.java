@@ -14,4 +14,6 @@ public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainM
     boolean existsByBmidUidAndRole(UUID uid, BrainMemberRole role);
 
     boolean existsByBmidUidAndBmidBidAndRole(UUID uid, int bid, BrainMemberRole role);
+
+    boolean existsByBmidUidAndBmidBid(UUID bmidUid, int bmidBid);
 }

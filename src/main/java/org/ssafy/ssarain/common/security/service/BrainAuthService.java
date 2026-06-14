@@ -59,11 +59,6 @@ public class BrainAuthService {
             return;
         }
 
-        // 특정 Brain의 Admin인지 확인
-        if(brainAdminService.isBrainAdminOf(userDetails.getUserId(), bid)) {
-            return;
-        }
-
         throw new GlobalException(ErrorCode.ACCESS_DENIED);
     }
 

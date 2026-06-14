@@ -14,6 +14,6 @@ public class BrainMemberService {
     private final BrainMemberRepository brainMemberRepository;
 
     public boolean isBrainMember(UUID uid, int bid) {
-        return brainMemberRepository.existsByBmidUidAndBmidBidAndRole(uid, bid, BrainMemberRole.USER);
+        return brainMemberRepository.existsByBmidUidAndBmidBid(uid, bid);
     }
 }
