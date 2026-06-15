@@ -42,9 +42,10 @@ public class BrainMemberService {
         User user = getUser(uid);
         
         if (brain.getJoinPolicy() == JoinPolicy.PROTECTED) {
-            if (!brainWaitingRepository.existsByBmidBidAndBmidUid(bid, uid)) {
-                brainWaitingRepository.save(BrainWaiting.of(brain, user));
+            if (brainWaitingRepository.existsByBmidBidAndBmidUid(bid, uid)) {
+                throw new GlobalException(ErrorCode.BRAIN_WAITING_ALREADY_EXISTS);
             }
+            brainWaitingRepository.save(BrainWaiting.of(brain, user));
         } else if (brain.getJoinPolicy() == JoinPolicy.PUBLIC) {
             brainMemberRepository.save(BrainMember.of(brain, user));
         } else {
