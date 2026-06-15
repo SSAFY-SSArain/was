@@ -3,7 +3,6 @@ package org.ssafy.ssarain.domain.brain.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
-import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 
 import java.util.UUID;
 
