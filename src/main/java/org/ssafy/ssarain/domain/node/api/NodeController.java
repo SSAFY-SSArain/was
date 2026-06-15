@@ -53,7 +53,7 @@ public class NodeController {
     ) {
 
         brainAuthService.authorizeBrainMemberByBtid(userDetails, nodeCreateDto.btid());
-        NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails);
+        NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails.getUserId());
 
         return BaseResponse.success(SuccessCode.NODE_CREATE_SUCCESS, nodeDetailDto);
     }

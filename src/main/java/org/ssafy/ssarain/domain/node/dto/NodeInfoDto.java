@@ -16,6 +16,6 @@ public record NodeInfoDto(
 ) {
 
     public static NodeInfoDto from(Node node) {
-        return new NodeInfoDto(node.getId(), node.getTitle(), node.getContent());
+        return new NodeInfoDto(node.getNid(), node.getTitle(), node.getContent());
     }
 }

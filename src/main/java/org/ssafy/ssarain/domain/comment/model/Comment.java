@@ -1,30 +1,32 @@
-package org.ssafy.ssarain.domain.node.model;
+package org.ssafy.ssarain.domain.comment.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
-import org.ssafy.ssarain.domain.brain.model.BrainTopic;
+import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 
 @Getter
 @Entity
-@Table(name = "node")
+@Table(name = "comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Node extends BaseAuditingEntity {
+public class Comment extends BaseAuditingEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nid", nullable = false)
-    private Integer nid;
+    @Column(name = "cid", nullable = false)
+    private Integer cid;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "btid", nullable = false)
-    private BrainTopic brainTopic;
+    @JoinColumn(name = "nid", nullable = false)
+    private Node node;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pid")
+    private Comment parent;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -32,27 +34,28 @@ public class Node extends BaseAuditingEntity {
     private User user;
 
     @Size(max = 255)
-    @Column(name = "title")
-    private String title;
-
-    @Lob
     @Column(name = "content")
     private String content;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Node(BrainTopic brainTopic, User user, String title, String content) {
-        this.brainTopic = brainTopic;
+    private Comment(Node node, Comment parent, User user, String content) {
+        this.node = node;
+        this.parent = parent;
         this.user = user;
-        this.title = title;
         this.content = content;
     }
 
-    public static Node of(BrainTopic brainTopic, User user, String title, String content) {
-        return Node.builder()
-                .brainTopic(brainTopic)
+    public static Comment of(Node node, Comment parent, User user, String content) {
+        return Comment.builder()
+                .node(node)
+                .parent(parent)
                 .user(user)
-                .title(title)
                 .content(content)
                 .build();
     }
+
+    public Integer getPid() {
+        return parent == null ? null : parent.getCid();
+    }
+
 }

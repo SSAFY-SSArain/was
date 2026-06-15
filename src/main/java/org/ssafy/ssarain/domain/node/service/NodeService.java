@@ -8,14 +8,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
-import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
+import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
+import org.ssafy.ssarain.domain.comment.service.CommentService;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
+import org.ssafy.ssarain.domain.node.dto.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,8 @@ public class NodeService {
     private final UserService          userService;
     private final NodeRepository       nodeRepository;
     private final BrainTopicRepository brainTopicRepository;
+    private final CommentService       commentService;
+
 
     @Transactional(readOnly = true)
     public NodePreviewListDto getNodePreview(Integer btid) {
@@ -42,16 +46,18 @@ public class NodeService {
         Node node = nodeRepository.findById(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
 
-        return NodeDetailDto.from(node);
+        List<CommentDetailDto> comments = commentService.getCommentsByNid(nid);
+
+        return NodeDetailDto.from(node, comments);
     }
 
     @Transactional
-    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, CustomUserDetails userDetails) {
+    public NodeDetailDto createNode(NodeCreateDto nodeCreateDto, UUID uid) {
 
         // 권한 검증에서 brainTopic 존재 검증
         BrainTopic brainTopic = brainTopicRepository.getReferenceById(nodeCreateDto.btid());
 
-        User user = userService.getUserByUserId(userDetails.getUserId());
+        User user = userService.getUserByUserId(uid);
 
         Node node = Node.of(brainTopic, user, nodeCreateDto.title(), nodeCreateDto.content());
 
