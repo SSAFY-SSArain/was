@@ -1,0 +1,57 @@
+name: ssarain
+
+services:
+  valkey:
+    image: valkey/valkey:8.0-alpine
+    container_name: ssarain-valkey
+    command: valkey-server --requirepass ${VALKEY_PASSWORD:-}
+    volumes:
+      - valkey_data:/data
+    networks:
+      - ssarain-network
+    restart: unless-stopped
+
+  spring-api:
+    image: ssarain-api:latest
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ssarain-api
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      MYSQL_URL: ${MYSQL_URL:-}
+      MYSQL_USER: ${MYSQL_USER:-}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-}
+      VALKEY_HOST: valkey
+      VALKEY_HOST_PORT: 6379
+      VALKEY_PASSWORD: ${VALKEY_PASSWORD:-}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      SMTP_EMAIL: ${SMTP_EMAIL:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN:-}
+    depends_on:
+      - valkey
+    networks:
+      - ssarain-network
+    restart: unless-stopped
+
+  web:
+    image: ssarain-web:latest
+    container_name: ssarain-web
+    ports:
+      - "80:80"
+    depends_on:
+      - spring-api
+    networks:
+      - ssarain-network
+    restart: unless-stopped
+
+volumes:
+  valkey_data:
+
+networks:
+  ssarain-network:
+    name: ssarain-network
+    driver: bridge
