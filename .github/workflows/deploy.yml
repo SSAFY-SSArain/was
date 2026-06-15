@@ -2,7 +2,7 @@ name: Backend Continuous Deployment
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   build-and-deploy:
@@ -47,8 +47,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "docker/docker-compose.production.yml"
-          target: "~/ssarain/was/docker"
+          source: 'docker/docker-compose.production.yml'
+          target: '~/ssarain/was/docker'
           strip_components: 1
 
       - name: Deploy to EC2
@@ -67,18 +67,17 @@ jobs:
 
             trap 'rm -f .env' EXIT
 
-            cat > .env <<EOF
-MYSQL_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-MYSQL_USER=${{ secrets.RDS_USERNAME }}
-MYSQL_PASSWORD=${{ secrets.RDS_PASSWORD }}
-VALKEY_PASSWORD=${{ secrets.VALKEY_PASSWORD }}
-JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}
-JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
-GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
-SMTP_EMAIL=${{ secrets.SMTP_EMAIL }}
-SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }}
-EOF
+            # EOF 대신 echo를 사용하여 YAML 들여쓰기 규칙 준수
+            echo "MYSQL_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8" > .env
+            echo "MYSQL_USER=${{ secrets.RDS_USERNAME }}" >> .env
+            echo "MYSQL_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> .env
+            echo "VALKEY_PASSWORD=${{ secrets.VALKEY_PASSWORD }}" >> .env
+            echo "JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}" >> .env
+            echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+            echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+            echo "SMTP_EMAIL=${{ secrets.SMTP_EMAIL }}" >> .env
+            echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
+            echo "CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }}" >> .env
 
             sudo docker compose -f docker-compose.production.yml up -d valkey
             sudo docker compose -f docker-compose.production.yml up -d --force-recreate --no-deps spring-api
