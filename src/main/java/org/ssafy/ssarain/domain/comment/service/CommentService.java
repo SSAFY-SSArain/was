@@ -63,15 +63,8 @@ public class CommentService {
             return null;
         }
 
-        Comment parent = commentRepository.findById(pid)
+        return commentRepository.findByCidAndNode_Nid(pid, node.getNid())
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
-
-        // 부모 node와 자식 node가 다른 경우
-        if(!parent.getNode().getNid().equals(node.getNid())) {
-            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
-        }
-
-        return parent;
     }
 
 }
