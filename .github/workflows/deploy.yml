@@ -65,17 +65,21 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ssarain-api:latest
             sudo docker tag ${{ secrets.DOCKERHUB_USERNAME }}/ssarain-api:latest ssarain-api:latest
 
-            export MYSQL_URL='jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8'
-            export MYSQL_USER='${{ secrets.RDS_USERNAME }}'
-            export MYSQL_PASSWORD='${{ secrets.RDS_PASSWORD }}'
-            export VALKEY_PASSWORD='${{ secrets.VALKEY_PASSWORD }}'
-            export JWT_ACCESS_SECRET='${{ secrets.JWT_ACCESS_SECRET }}'
-            export JWT_REFRESH_SECRET='${{ secrets.JWT_REFRESH_SECRET }}'
-            export GEMINI_API_KEY='${{ secrets.GEMINI_API_KEY }}'
-            export SMTP_EMAIL='${{ secrets.SMTP_EMAIL }}'
-            export SMTP_PASSWORD='${{ secrets.SMTP_PASSWORD }}'
-            export CORS_ALLOWED_ORIGIN='${{ secrets.CORS_ALLOWED_ORIGIN }}'
+            trap 'rm -f .env' EXIT
 
-            sudo -E docker compose --env-file /dev/null -f docker-compose.production.yml up -d valkey
-            sudo -E docker compose --env-file /dev/null -f docker-compose.production.yml up -d --force-recreate --no-deps spring-api
+            cat > .env <<EOF
+MYSQL_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+MYSQL_USER=${{ secrets.RDS_USERNAME }}
+MYSQL_PASSWORD=${{ secrets.RDS_PASSWORD }}
+VALKEY_PASSWORD=${{ secrets.VALKEY_PASSWORD }}
+JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}
+JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
+GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+SMTP_EMAIL=${{ secrets.SMTP_EMAIL }}
+SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }}
+EOF
+
+            sudo docker compose -f docker-compose.production.yml up -d valkey
+            sudo docker compose -f docker-compose.production.yml up -d --force-recreate --no-deps spring-api
             sudo docker image prune -f
