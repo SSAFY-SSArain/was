@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
-import org.ssafy.ssarain.common.security.model.CustomUserDetails;
-import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
@@ -19,6 +17,7 @@ import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
+import org.ssafy.ssarain.domain.node.dto.*;
 
 @Service
 @RequiredArgsConstructor
