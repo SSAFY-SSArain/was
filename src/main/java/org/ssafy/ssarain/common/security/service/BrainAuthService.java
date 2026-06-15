@@ -47,7 +47,7 @@ public class BrainAuthService {
         throw new GlobalException(ErrorCode.ACCESS_DENIED);
     }
 
-    public void authorizeBrainMember(CustomUserDetails userDetails, int bid) {
+    public void authorizeBrainMemberByBtid(CustomUserDetails userDetails, int btid) {
 
         // ADMIN 권한은 항상 허용
         if (isAdmin(userDetails)) {
@@ -55,7 +55,7 @@ public class BrainAuthService {
         }
 
         // 특정 Brain의 Member인지 확인
-        if (brainMemberService.isBrainMember(userDetails.getUserId(), bid)) {
+        if (brainMemberService.isBrainMemberByBtid(userDetails.getUserId(), btid)) {
             return;
         }
 

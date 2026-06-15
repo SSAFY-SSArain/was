@@ -12,7 +12,7 @@ public class BrainMemberService {
 
     private final BrainMemberRepository brainMemberRepository;
 
-    public boolean isBrainMember(UUID uid, int bid) {
-        return brainMemberRepository.existsByBmidUidAndBmidBid(uid, bid);
+    public boolean isBrainMemberByBtid(UUID uid, int bid) {
+        return brainMemberRepository.existsByUidAndBtid(uid, bid);
     }
 }
