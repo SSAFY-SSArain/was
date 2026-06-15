@@ -42,7 +42,7 @@ public class BrainMemberService {
         User user = getUser(uid);
         
         if (brain.getJoinPolicy() == JoinPolicy.PROTECTED) {
-            if (!brainWaitingRepository.existsById(new BrainWaiting.BrainWaitingId(bid, uid))) {
+            if (!brainWaitingRepository.existsByBmidBidAndBmidUid(bid, uid)) {
                 brainWaitingRepository.save(BrainWaiting.of(brain, user));
             }
         } else if (brain.getJoinPolicy() == JoinPolicy.PUBLIC) {
@@ -78,7 +78,7 @@ public class BrainMemberService {
     public BrainUserListDto getJoinRequests(int bid) {
         validateBrainExists(bid);
 
-        List<BrainUserInfoDto> users = brainWaitingRepository.findByBmid_Bid(bid).stream()
+        List<BrainUserInfoDto> users = brainWaitingRepository.findByBmidBid(bid).stream()
                 .map(brainWaiting -> BrainUserInfoDto.from(brainWaiting.getUser()))
                 .toList();
 
@@ -116,7 +116,7 @@ public class BrainMemberService {
     }
     
     private BrainWaiting getBrainWaiting(int bid, UUID uid) {
-        return brainWaitingRepository.findById(new BrainWaiting.BrainWaitingId(bid, uid))
+        return brainWaitingRepository.findByBmidBidAndBmidUid(bid, uid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_WAITING_NOT_FOUND));
     }
     
