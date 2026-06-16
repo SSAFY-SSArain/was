@@ -31,7 +31,7 @@ public class BrainMemberController {
     private final BrainMemberService brainMemberService;
     private final BrainAuthService brainAuthService;
 
-    @PostMapping("/{bid}/users")
+    @PostMapping("/{bid}/join")
     @Operation(summary = "B01: Brain 가입 신청")
     public ResponseEntity<BaseResponse<Void>> requestJoin(
             @PathVariable int bid,
