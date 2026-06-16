@@ -48,7 +48,7 @@ public class BrainMemberController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.addBrainMembers(bid, dto);
-        return BaseResponse.success(SuccessCode.BRAIN_MEMBER_REQUEST_SUCCESS);
+        return BaseResponse.success(SuccessCode.BRAIN_MEMBER_JOIN_SUCCESS);
     }
 
     @DeleteMapping("/{bid}/users")
