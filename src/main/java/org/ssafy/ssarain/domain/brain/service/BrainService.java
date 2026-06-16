@@ -87,7 +87,9 @@ public class BrainService {
     private BrainFoundDto toBrainFoundDto(Brain brain) {
         List<BrainMember> members = brain.getBrainMembers();
         String adminName = members.stream()
-                .filter(member -> member.getRole().equals(BrainMemberRole.ADMIN))
+                .filter(member -> member.getRole().equals(BrainMemberRole.ADMIN)
+                        || member.getRole().equals(BrainMemberRole.MANAGER))
+                .sorted((m1, m2) -> (m1.getRole() == BrainMemberRole.ADMIN) ? 1 : 0)
                 .findFirst()
                 .map(member -> member.getUser().getName())
                 .orElse("");
