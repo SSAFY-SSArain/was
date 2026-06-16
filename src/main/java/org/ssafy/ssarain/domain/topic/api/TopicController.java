@@ -51,7 +51,7 @@ public class TopicController {
             @PathVariable(required = false) Integer pid,
             @RequestBody TopicCreateDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeAnyBrainAdmin(userDetails);
+        brainAuthService.authorizeAnyBrainRole(userDetails, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(SuccessCode.TOPIC_CREATE_SUCCESS, topicService.createTopic(pid, dto));
     }
 }
