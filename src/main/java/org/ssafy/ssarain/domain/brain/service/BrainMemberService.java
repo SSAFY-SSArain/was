@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
@@ -14,8 +15,10 @@ import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainWaitingRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainJoinManageDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberPageDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserInfoDto;
-import org.ssafy.ssarain.domain.brain.dto.response.BrainUserListDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
@@ -82,26 +85,24 @@ public class BrainMemberService {
     }
 
     @Transactional(readOnly = true)
-    public BrainUserListDto searchAvailableUsers(int bid, String search) {
+    public BrainUserPageDto searchAvailableUsers(int bid, BrainMemberSearchDto dto) {
         validateBrainExists(bid);
 
-        String keyword = search == null ? "" : search.trim();
-        List<BrainUserInfoDto> users = userRepository.searchUsersAvailableForBrain(bid, keyword).stream()
-                .map(BrainUserInfoDto::from)
-                .toList();
+        String keyword = dto.keyword() == null ? "" : dto.keyword().trim();
+        Page<BrainUserInfoDto> users = userRepository.searchUsersAvailableForBrain(bid, keyword, dto.pageable())
+                .map(BrainUserInfoDto::from);
 
-        return BrainUserListDto.from(users);
+        return BrainUserPageDto.from(users);
     }
 
     @Transactional(readOnly = true)
-    public BrainUserListDto getJoinRequests(int bid) {
+    public BrainUserPageDto getJoinRequests(BrainMemberPageDto dto, int bid) {
         validateBrainExists(bid);
 
-        List<BrainUserInfoDto> users = brainWaitingRepository.findByBmidBid(bid).stream()
-                .map(brainWaiting -> BrainUserInfoDto.from(brainWaiting.getUser()))
-                .toList();
+        Page<BrainUserInfoDto> users = brainWaitingRepository.findByBmidBid(bid, dto.pageable())
+                .map(brainWaiting -> BrainUserInfoDto.from(brainWaiting.getUser()));
 
-        return BrainUserListDto.from(users);
+        return BrainUserPageDto.from(users);
     }
 
     @Transactional
@@ -117,13 +118,12 @@ public class BrainMemberService {
     }
 
     @Transactional(readOnly = true)
-    public BrainUserListDto getBrainMembers(int bid) {
+    public BrainUserPageDto getBrainMembers(BrainMemberPageDto dto, int bid) {
         validateBrainExists(bid);
         
-        List<BrainUserInfoDto> userInfoDtos = brainMemberRepository.findByBmid_Bid(bid).stream()
-                .map(brainMember -> BrainUserInfoDto.from(brainMember.getUser()))
-                .toList();
-        return BrainUserListDto.from(userInfoDtos);
+        Page<BrainUserInfoDto> userInfoDtos = brainMemberRepository.findByBmid_Bid(bid, dto.pageable())
+                .map(brainMember -> BrainUserInfoDto.from(brainMember.getUser()));
+        return BrainUserPageDto.from(userInfoDtos);
     }
     
     /*

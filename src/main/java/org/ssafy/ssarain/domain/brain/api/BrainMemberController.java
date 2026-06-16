@@ -4,11 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
@@ -16,7 +16,9 @@ import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainJoinManageDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
-import org.ssafy.ssarain.domain.brain.dto.response.BrainUserListDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberPageDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
 import org.ssafy.ssarain.domain.brain.service.BrainMemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,26 +66,27 @@ public class BrainMemberController {
 
     @GetMapping("/{bid}/available-users")
     @Operation(summary = "B12: 특정 Brain에 소속되지 않은 사용자 검색")
-    public ResponseEntity<BaseResponse<BrainUserListDto>> searchAvailableUsers(
+    public ResponseEntity<BaseResponse<BrainUserPageDto>> searchAvailableUsers(
             @PathVariable int bid,
-            @RequestParam(required = false, defaultValue = "") String search,
+            @Valid @ModelAttribute BrainMemberSearchDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(
                 SuccessCode.BRAIN_AVAILABLE_USER_INFO_SUCCESS,
-                brainMemberService.searchAvailableUsers(bid, search)
+                brainMemberService.searchAvailableUsers(bid, dto)
         );
     }
 
     @GetMapping("/{bid}/join-requests")
     @Operation(summary = "B14: 특정 Brain 가입 신청자 조회")
-    public ResponseEntity<BaseResponse<BrainUserListDto>> getJoinRequests(
+    public ResponseEntity<BaseResponse<BrainUserPageDto>> getJoinRequests(
             @PathVariable int bid,
+            @Valid @ModelAttribute BrainMemberPageDto pageDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(
                 SuccessCode.BRAIN_JOIN_REQUEST_INFO_SUCCESS,
-                brainMemberService.getJoinRequests(bid)
+                brainMemberService.getJoinRequests(pageDto, bid)
         );
     }
 
@@ -100,13 +103,14 @@ public class BrainMemberController {
 
     @GetMapping("/{bid}/users")
     @Operation(summary = "B17: Brain 소속 사용자 조회")
-    public ResponseEntity<BaseResponse<BrainUserListDto>> getBrainMembers(
+    public ResponseEntity<BaseResponse<BrainUserPageDto>> getBrainMembers(
             @PathVariable int bid,
+            @Valid @ModelAttribute BrainMemberPageDto pageDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(
                 SuccessCode.BRAIN_MEMBER_INFO_SUCCESS,
-                brainMemberService.getBrainMembers(bid)
+                brainMemberService.getBrainMembers(pageDto, bid)
         );
     }
 }

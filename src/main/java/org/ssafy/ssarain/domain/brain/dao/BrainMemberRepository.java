@@ -3,6 +3,8 @@ package org.ssafy.ssarain.domain.brain.dao;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
@@ -12,8 +14,7 @@ public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainM
     
     List<BrainMember> findByBmid_Uid(UUID uid);
     
-    @Query("SELECT bm FROM BrainMember bm JOIN FETCH bm.user WHERE bm.bmid.bid = :bid")
-    List<BrainMember> findByBmid_Bid(int bid);
+    Page<BrainMember> findByBmid_Bid(int bid, Pageable pageable);
     
     @Query("SELECT bm.role FROM BrainMember bm WHERE (bm.bmid.uid, bm.bmid.bid) = (:uid, :bid)")
     BrainMemberRole findRoleByBmidUidAndBmidBid(UUID uid, int bid);
