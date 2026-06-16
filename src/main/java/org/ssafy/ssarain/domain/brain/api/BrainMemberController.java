@@ -46,7 +46,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @RequestBody BrainMemberDeleteDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeBrainAdminOf(userDetails, bid);
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.deleteMembers(bid, userDetails.getUserId(), dto);
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_DELETE_SUCCESS);
     }
@@ -57,7 +57,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @RequestParam(required = false, defaultValue = "") String search,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeBrainAdminOf(userDetails, bid);
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(
                 SuccessCode.BRAIN_AVAILABLE_USER_INFO_SUCCESS,
                 brainMemberService.searchAvailableUsers(bid, search)
@@ -69,7 +69,7 @@ public class BrainMemberController {
     public ResponseEntity<BaseResponse<BrainUserListDto>> getJoinRequests(
             @PathVariable int bid,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeBrainAdminOf(userDetails, bid);
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(
                 SuccessCode.BRAIN_JOIN_REQUEST_INFO_SUCCESS,
                 brainMemberService.getJoinRequests(bid)
@@ -82,7 +82,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @RequestBody BrainJoinManageDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeBrainAdminOf(userDetails, bid);
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.manageJoinRequest(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_JOIN_MANAGE_SUCCESS);
     }

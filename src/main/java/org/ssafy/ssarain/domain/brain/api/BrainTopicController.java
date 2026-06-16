@@ -35,7 +35,7 @@ public class BrainTopicController {
             @Valid @RequestBody TopicIdListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
             ) {
-        authService.authorizeBrainAdminOf(userDetails, bid);
+        authService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainTopicService.registerTopic(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_TOPIC_REGISTER_SUCCESS);
     }

@@ -12,9 +12,9 @@ public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainM
     
     List<BrainMember> findByBmid_Uid(UUID uid);
         
-    boolean existsByBmidUidAndRole(UUID uid, BrainMemberRole role);
+    boolean existsByBmidUidAndRoleIn(UUID uid, List<BrainMemberRole> role);
 
-    boolean existsByBmidUidAndBmidBidAndRole(UUID uid, int bid, BrainMemberRole role);
+    boolean existsByBmidUidAndBmidBidAndRoleIn(UUID uid, int bid, List<BrainMemberRole> role);
     
     long countAllByBmidIn(List<BrainMember.BrainMemberId> ids);
 

@@ -1,5 +1,6 @@
 package org.ssafy.ssarain.common.security.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
+import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 import org.ssafy.ssarain.domain.user.model.UserRole;
 
 import lombok.RequiredArgsConstructor;
@@ -14,31 +16,34 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BrainAuthService {
+    
+    public static final List<BrainMemberRole> BRAIN_MANAGER = List.of(BrainMemberRole.ADMIN, BrainMemberRole.MANAGER);
+    public static final List<BrainMemberRole> BRAIN_ADMIN = List.of(BrainMemberRole.ADMIN);
 
     private final BrainMemberRepository brainMemberRepository;
     
-    public void authorizeAnyBrainAdmin(CustomUserDetails userDetails) {
+    public void authorizeAnyBrainRole(CustomUserDetails userDetails, List<BrainMemberRole> roles) {
         // ADMIN 권한은 항상 허용
         if (isAdmin(userDetails)) {
             return;
         }
 
-        // 1개 이상의 Brain Admin인지 확인
-        if (isAnyBrainAdmin(userDetails.getUserId())) {
+        // 1개 이상의 Brain Role을 가지는지 확인
+        if (hasAnyBrainRole(userDetails.getUserId(), roles)) {
             return;
         }
         
         throw new GlobalException(ErrorCode.ACCESS_DENIED);
     }
     
-    public void authorizeBrainAdminOf(CustomUserDetails userDetails, int bid) {
+    public void authorizeBrainRoleOf(CustomUserDetails userDetails, int bid, List<BrainMemberRole> roles) {
         // ADMIN 권한은 항상 허용
         if (isAdmin(userDetails)) {
             return;
         }
 
-        // 특정 Brain의 Admin인지 확인
-        if (isBrainAdminOf(userDetails.getUserId(), bid)) {
+        // 특정 Brain에서 Role을 가지는지 확인
+        if (hasBrainRoleOf(userDetails.getUserId(), bid, roles)) {
             return;
         }
         
@@ -69,11 +74,11 @@ public class BrainAuthService {
                 .anyMatch(authority -> UserRole.ADMIN.getAuthority().equals(authority.getAuthority()));
     }
 
-    private boolean isAnyBrainAdmin(UUID uid) {
+    private boolean hasAnyBrainRole(UUID uid, List<BrainMemberRole> roles) {
         return brainMemberRepository.existsByBmidUidAndRoleIn(uid, roles);
     }
     
-    private boolean isBrainAdminOf(UUID uid, int bid) {
+    private boolean hasBrainRoleOf(UUID uid, int bid, List<BrainMemberRole> roles) {
         return brainMemberRepository.existsByBmidUidAndBmidBidAndRoleIn(uid, bid, roles);
     }
 
