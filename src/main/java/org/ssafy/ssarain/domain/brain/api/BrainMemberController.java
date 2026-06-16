@@ -39,6 +39,17 @@ public class BrainMemberController {
         brainMemberService.requestJoin(bid, userDetails.getUserId());
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_REQUEST_SUCCESS);
     }
+    
+    @PostMapping("/{bid}/users")
+    @Operation(summary = "B02: Brain에 사용자 일괄 등록")
+    public ResponseEntity<BaseResponse<Void>> addBrainMembers(
+            @PathVariable int bid,
+            @Valid @RequestBody BrainMemberListDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
+        brainMemberService.addBrainMembers(bid, dto);
+        return BaseResponse.success(SuccessCode.BRAIN_MEMBER_REQUEST_SUCCESS);
+    }
 
     @DeleteMapping("/{bid}/users")
     @Operation(summary = "B03: Brain 소속 사용자 일괄 삭제")

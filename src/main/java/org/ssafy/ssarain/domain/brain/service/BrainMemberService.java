@@ -30,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class BrainMemberService {
+    
+    private static final int VALIDATION_BATCH_SIZE = 250;
 
     private final BrainRepository brainRepository;
     private final BrainMemberRepository brainMemberRepository;
@@ -54,13 +56,26 @@ public class BrainMemberService {
             throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @Transactional
+    public void addBrainMembers(int bid, BrainMemberListDto dto) {
+        validateBrainExists(bid);
+        List<BrainMember> newBrainMembers = toNewBrainMembersOf(bid, dto.users());
+        
+        List<BrainWaiting.BrainWaitingId> joinRequests = dto.users().stream()
+                .map(uid -> new BrainWaiting.BrainWaitingId(bid, uid))
+                .toList();
+        brainWaitingRepository.deleteAllByIdInBatch(joinRequests);
+        
+        brainMemberRepository.saveAll(newBrainMembers);
+    }
 
     @Transactional
     public void deleteMembers(int bid, UUID uid, BrainMemberListDto dto) {
         validateBrainExists(bid);
         validateSelfDeletion(uid, dto.users());
 
-        List<BrainMember> members = getBrainMembersOf(bid, dto.users());
+        List<BrainMember> members = getExistBrainMembersOf(bid, dto.users());
         BrainMemberRole requesterRole = brainMemberRepository.findRoleByBmidUidAndBmidBid(uid, bid);
         validateDeleteList(requesterRole, members);
         
@@ -121,7 +136,7 @@ public class BrainMemberService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_WAITING_NOT_FOUND));
     }
     
-    private List<BrainMember> getBrainMembersOf(int bid, List<UUID> uids) {
+    private List<BrainMember> getExistBrainMembersOf(int bid, List<UUID> uids) {
         List<BrainMember.BrainMemberId> ids = uids.stream()
                 .distinct()
                 .map(uid -> new BrainMember.BrainMemberId(bid, uid))
@@ -134,10 +149,43 @@ public class BrainMemberService {
         
         return members;
     }
+
+    private List<BrainMember> toNewBrainMembersOf(int bid, List<UUID> uids) {
+        uids = uids.stream().distinct().toList();
+        validateUidsInBatches(uids);
+        
+        List<BrainMember> members = uids.stream()
+                .map(uid -> BrainMember.of(
+                        brainRepository.getReferenceById(bid), 
+                        userRepository.getReferenceById(uid)))
+                .toList();
+        
+        List<BrainMember.BrainMemberId> ids = members.stream()
+                .map(BrainMember::getBmid)
+                .toList();
+        if (0 < brainMemberRepository.countAllByBmidIn(ids)) {
+            throw new GlobalException(ErrorCode.BRAIN_MEMBER_DUPLICATED);
+        }
+        
+        return members;
+    }
     
     private boolean hasDeleteAuthority(BrainMemberRole deleter, BrainMemberRole member) {
         return (deleter == BrainMemberRole.ADMIN)
                 || (deleter == BrainMemberRole.MANAGER && member == BrainMemberRole.USER);
+    }
+    
+    private void validateUidsInBatches(List<UUID> uids) {
+        int pageCount = 1 + (uids.size() - 1) / VALIDATION_BATCH_SIZE;
+        for (int page = 0; page < pageCount; page++) {
+            List<UUID> batch = uids.subList(
+                    page * VALIDATION_BATCH_SIZE,
+                    Math.min((page + 1) * VALIDATION_BATCH_SIZE, uids.size()));
+            
+            if (batch.size() != userRepository.countAllByUidIn(batch)) {
+                throw new GlobalException(ErrorCode.USER_NOT_FOUND);
+            }
+        }
     }
     
     private void validateDeleteList(BrainMemberRole requesterRole, List<BrainMember> deleteList) {
