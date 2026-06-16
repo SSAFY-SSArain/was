@@ -12,7 +12,7 @@ import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainWaitingRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainJoinManageDto;
-import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberDeleteDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserListDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
@@ -56,7 +56,7 @@ public class BrainMemberService {
     }
 
     @Transactional
-    public void deleteMembers(int bid, UUID uid, BrainMemberDeleteDto dto) {
+    public void deleteMembers(int bid, UUID uid, BrainMemberListDto dto) {
         validateBrainExists(bid);
         validateSelfDeletion(uid, dto.users());
 

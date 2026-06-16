@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public record BrainMemberDeleteDto(
+public record BrainMemberListDto(
         @Schema(requiredMode = RequiredMode.REQUIRED,
                 example = "[\"123e4567-e89b-12d3-a456-426614174000\", \"123e4567-e89b-12d3-a456-426614174001\"]")
         @NotEmpty

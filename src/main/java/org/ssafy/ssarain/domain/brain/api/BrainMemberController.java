@@ -15,7 +15,7 @@ import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainJoinManageDto;
-import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberDeleteDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserListDto;
 import org.ssafy.ssarain.domain.brain.service.BrainMemberService;
 
@@ -44,7 +44,7 @@ public class BrainMemberController {
     @Operation(summary = "B03: Brain 소속 사용자 일괄 삭제")
     public ResponseEntity<BaseResponse<Void>> deleteMembers(
             @PathVariable int bid,
-            @Valid @RequestBody BrainMemberDeleteDto dto,
+            @Valid @RequestBody BrainMemberListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.deleteMembers(bid, userDetails.getUserId(), dto);
