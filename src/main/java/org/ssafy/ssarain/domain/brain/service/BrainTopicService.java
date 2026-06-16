@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.common.util.BatchProcessor;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.TopicIdListDto;
@@ -24,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BrainTopicService {
-    
-    private static final int VALIDATION_BATCH_SIZE = 120;
 
     private final BrainRepository brainRepository;
     private final TopicRepository topicRepository;
@@ -83,16 +82,11 @@ public class BrainTopicService {
     }
     
     private void validateTidsInBatches(List<Integer> tids) {
-        int pageCount = 1 + (tids.size() - 1) / VALIDATION_BATCH_SIZE;
-        for (int page = 0; page < pageCount; page++) {
-            List<Integer> batch = tids.subList(
-                    page * VALIDATION_BATCH_SIZE,
-                    Math.min((page + 1) * VALIDATION_BATCH_SIZE, tids.size()));
-            
+        BatchProcessor.process(tids, batch -> {
             if (batch.size() != topicRepository.countByTidIn(batch)) {
                 throw new GlobalException(ErrorCode.TOPIC_NOT_FOUND);
-            }
-        }
+            } 
+        });
     }
 
     private Brain findBrain(int bid) {

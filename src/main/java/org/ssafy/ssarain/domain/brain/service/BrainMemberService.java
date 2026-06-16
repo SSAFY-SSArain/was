@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.common.util.BatchProcessor;
 import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainWaitingRepository;
@@ -30,8 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class BrainMemberService {
-    
-    private static final int VALIDATION_BATCH_SIZE = 250;
 
     private final BrainRepository brainRepository;
     private final BrainMemberRepository brainMemberRepository;
@@ -176,16 +175,11 @@ public class BrainMemberService {
     }
     
     private void validateUidsInBatches(List<UUID> uids) {
-        int pageCount = 1 + (uids.size() - 1) / VALIDATION_BATCH_SIZE;
-        for (int page = 0; page < pageCount; page++) {
-            List<UUID> batch = uids.subList(
-                    page * VALIDATION_BATCH_SIZE,
-                    Math.min((page + 1) * VALIDATION_BATCH_SIZE, uids.size()));
-            
+        BatchProcessor.process(uids, batch -> {
             if (batch.size() != userRepository.countAllByUidIn(batch)) {
                 throw new GlobalException(ErrorCode.USER_NOT_FOUND);
             }
-        }
+        });
     }
     
     private void validateDeleteList(BrainMemberRole requesterRole, List<BrainMember> deleteList) {
