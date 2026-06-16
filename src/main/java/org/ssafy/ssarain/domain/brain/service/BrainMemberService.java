@@ -97,10 +97,6 @@ public class BrainMemberService {
         
         brainWaitingRepository.delete(waiting);
     }
-
-    public boolean isBrainMemberByBtid(UUID uid, int bid) {
-        return brainMemberRepository.existsByUidAndBtid(uid, bid);
-    }
     
     /*
         Util Method
