@@ -11,12 +11,13 @@ import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainMember.BrainMemberId> {
     
     List<BrainMember> findByBmid_Uid(UUID uid);
+    
+    @Query("SELECT bm.role FROM BrainMember bm WHERE (bm.bmid.uid, bm.bmid.bid) = (:uid, :bid)")
+    BrainMemberRole findRoleByBmidUidAndBmidBid(UUID uid, int bid);
         
     boolean existsByBmidUidAndRoleIn(UUID uid, List<BrainMemberRole> role);
 
     boolean existsByBmidUidAndBmidBidAndRoleIn(UUID uid, int bid, List<BrainMemberRole> role);
-    
-    long countAllByBmidIn(List<BrainMember.BrainMemberId> ids);
 
     @Query("""
             SELECT 0 < count(*)

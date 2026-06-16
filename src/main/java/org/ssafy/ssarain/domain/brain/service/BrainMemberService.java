@@ -17,6 +17,7 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainUserInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserListDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
+import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 import org.ssafy.ssarain.domain.brain.model.BrainWaiting;
 import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
@@ -57,10 +58,13 @@ public class BrainMemberService {
     @Transactional
     public void deleteMembers(int bid, UUID uid, BrainMemberDeleteDto dto) {
         validateBrainExists(bid);
-        validateDeleteList(uid, dto.users());
+        validateSelfDeletion(uid, dto.users());
 
-        List<BrainMember.BrainMemberId> ids = getBrainMemberIdsOf(bid, dto.users());
-        brainMemberRepository.deleteAllByIdInBatch(ids);
+        List<BrainMember> members = getBrainMembersOf(bid, dto.users());
+        BrainMemberRole requesterRole = brainMemberRepository.findRoleByBmidUidAndBmidBid(uid, bid);
+        validateDeleteList(requesterRole, members);
+        
+        brainMemberRepository.deleteAllInBatch(members);
     }
 
     @Transactional(readOnly = true)
@@ -117,20 +121,36 @@ public class BrainMemberService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_WAITING_NOT_FOUND));
     }
     
-    private List<BrainMember.BrainMemberId> getBrainMemberIdsOf(int bid, List<UUID> uids) {
+    private List<BrainMember> getBrainMembersOf(int bid, List<UUID> uids) {
         List<BrainMember.BrainMemberId> ids = uids.stream()
                 .distinct()
                 .map(uid -> new BrainMember.BrainMemberId(bid, uid))
                 .collect(Collectors.toList());
 
-        if (brainMemberRepository.countAllByBmidIn(ids) != ids.size()) {
+        List<BrainMember> members = brainMemberRepository.findAllById(ids);
+        if (members.size() != ids.size()) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_NOT_FOUND);
         }
         
-        return ids;
+        return members;
     }
     
-    private void validateDeleteList(UUID requester, List<UUID> deleteList) {
+    private boolean hasDeleteAuthority(BrainMemberRole deleter, BrainMemberRole member) {
+        return (deleter == BrainMemberRole.ADMIN)
+                || (deleter == BrainMemberRole.MANAGER && member == BrainMemberRole.USER);
+    }
+    
+    private void validateDeleteList(BrainMemberRole requesterRole, List<BrainMember> deleteList) {
+        long validDeletionCount = deleteList.stream()
+                .filter(member -> hasDeleteAuthority(requesterRole, member.getRole()))
+                .count();
+        
+        if (deleteList.size() != validDeletionCount) {
+            throw new GlobalException(ErrorCode.BRAIN_MEMBER_DELETION_DENIED);
+        }
+    }
+    
+    private void validateSelfDeletion(UUID requester, List<UUID> deleteList) {
         if (deleteList.contains(requester)) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_CANNOT_DELETE_SELF);
         }
