@@ -38,6 +38,7 @@ public enum SuccessCode {
     BRAIN_JOIN_REQUEST_INFO_SUCCESS(HttpStatus.OK, "브레인 가입 신청 회원 정보가 조회되었습니다."),
     BRAIN_JOIN_MANAGE_SUCCESS(HttpStatus.NO_CONTENT, "브레인 가입 신청 처리가 완료되었습니다."),
     BRAIN_MEMBER_JOIN_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 사용자 추가가 완료되었습니다."),
+    BRAIN_MEMBER_INFO_SUCCESS(HttpStatus.OK, "브레인 회원 정보가 조회되었습니다."),
 
     // Topic
     TOPIC_INFO_SUCCESS(HttpStatus.OK, "주제 정보가 조회되었습니다."),

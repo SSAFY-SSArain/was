@@ -97,4 +97,16 @@ public class BrainMemberController {
         brainMemberService.manageJoinRequest(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_JOIN_MANAGE_SUCCESS);
     }
+
+    @GetMapping("/{bid}/users")
+    @Operation(summary = "B17: Brain 소속 사용자 조회")
+    public ResponseEntity<BaseResponse<BrainUserListDto>> getBrainMembers(
+            @PathVariable int bid,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
+        return BaseResponse.success(
+                SuccessCode.BRAIN_MEMBER_INFO_SUCCESS,
+                brainMemberService.getBrainMembers(bid)
+        );
+    }
 }

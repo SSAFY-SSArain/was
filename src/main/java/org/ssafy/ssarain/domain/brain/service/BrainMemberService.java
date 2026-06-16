@@ -115,6 +115,16 @@ public class BrainMemberService {
         
         brainWaitingRepository.delete(waiting);
     }
+
+    @Transactional(readOnly = true)
+    public BrainUserListDto getBrainMembers(int bid) {
+        validateBrainExists(bid);
+        
+        List<BrainUserInfoDto> userInfoDtos = brainMemberRepository.findByBmid_Bid(bid).stream()
+                .map(brainMember -> BrainUserInfoDto.from(brainMember.getUser()))
+                .toList();
+        return BrainUserListDto.from(userInfoDtos);
+    }
     
     /*
         Util Method
