@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
@@ -17,6 +18,7 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainFoundDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainListDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainNameVaildationDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainPageDto;
 import org.ssafy.ssarain.domain.brain.service.BrainService;
 
@@ -50,5 +52,12 @@ public class BrainController {
             @Valid @RequestBody BrainCreateDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         return BaseResponse.success(SuccessCode.BRAIN_CREATED_SUCCESS, brainService.createBrain(dto, userDetails.getUserId()));
+    }
+    
+    @GetMapping("/check-name")
+    @Operation(summary = "B13: Brain 명 중복 확인")
+    public ResponseEntity<BaseResponse<BrainNameVaildationDto>> checkBrainName(
+            @RequestParam String name) {
+        return BaseResponse.success(SuccessCode.BRAIN_NAME_VALIDATION_SUCCESS, brainService.checkBrainName(name));
     }
 }

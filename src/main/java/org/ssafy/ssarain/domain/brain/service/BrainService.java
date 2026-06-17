@@ -17,6 +17,7 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainFoundDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainListDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainNameVaildationDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainPageDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
@@ -60,6 +61,12 @@ public class BrainService {
         
         return BrainDetailDto.from(brain);
     }
+
+    @Transactional(readOnly = true)
+    public BrainNameVaildationDto checkBrainName(String name) {
+        validateBrainName(name);
+        return new BrainNameVaildationDto(brainRepository.existsByName(name));
+    }
     
     /*
         Util Method
@@ -68,6 +75,12 @@ public class BrainService {
     private void validateDuplicateName(String name) {
         if (brainRepository.existsByName(name)) {
             throw new GlobalException(ErrorCode.BRAIN_NAME_DUPLICATED);
+        }
+    }
+    
+    private void validateBrainName(String name) {
+        if (name.isBlank()) {
+            throw new GlobalException(ErrorCode.BAD_REQUEST);
         }
     }
     
