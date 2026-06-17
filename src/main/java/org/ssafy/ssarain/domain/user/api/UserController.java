@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
-import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
+import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.dto.res.NameCheckRes;
 import org.ssafy.ssarain.domain.user.service.UserService;
@@ -21,11 +21,11 @@ public class UserController {
 
     @Operation(summary = "U01: 내 정보 조회", description = "유저 본인의 정보(이메일, 이름, 활동 통계)를 조회합니다.")
     @GetMapping
-    public ResponseEntity<BaseResponse<UserProfileDto>> getUserInfo(
+    public ResponseEntity<BaseResponse<UserInfoDto>> getUserInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
-        UserProfileDto userInfo = userService.getUserInfo(userDetails.getUsername());
+        UserInfoDto userInfo = userService.getUserInfo(userDetails.getUsername());
 
         return BaseResponse.success(SuccessCode.USER_INFO_SUCCESS, userInfo);
     }
