@@ -5,7 +5,7 @@ import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.dto.req.SignupReq;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
-import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
+import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,11 +48,11 @@ public class UserService {
         return user;
     }
 
-    public UserInfoDto getUserInfo(String email) {
+    public UserProfileDto getUserInfo(String email) {
 
         User user = findUserByEmail(email);
 
-        return UserInfoDto.from(user);
+        return UserProfileDto.from(user);
     }
 
     public User getUserByUserId(UUID userId) {
