@@ -8,10 +8,12 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.comment.dao.CommentRepository;
 import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
+import org.ssafy.ssarain.domain.comment.dto.CommentUpdateDto;
 import org.ssafy.ssarain.domain.comment.model.Comment;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
+import org.ssafy.ssarain.domain.user.model.UserRole;
 import org.ssafy.ssarain.domain.user.service.UserService;
 
 import java.util.List;
@@ -53,6 +55,19 @@ public class CommentService {
                 .toList();
     }
 
+    @Transactional
+    public CommentDetailDto updateComment(CommentUpdateDto commentUpdateDto, int cid, UUID uid) {
+
+        Comment comment = commentRepository.findById(cid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        validateCommentOwner(comment, uid);
+
+        comment.updateContent(commentUpdateDto.content());
+
+        return CommentDetailDto.from(comment);
+    }
+
 
     /*
         Util Method
@@ -65,6 +80,20 @@ public class CommentService {
 
         return commentRepository.findByCidAndNode_Nid(pid, node.getNid())
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    private void validateCommentOwner(Comment comment, UUID uid) {
+        if(!comment.getUser().getUid().equals(uid)) {
+            throw new GlobalException(ErrorCode.ACCESS_DENIED);
+        }
+    }
+
+    private void validateCommentOwnerOrAdmin(Comment comment, UUID uid, UserRole role) {
+        if(role == UserRole.ADMIN) {
+            return;
+        }
+
+        validateCommentOwner(comment, uid);
     }
 
 }

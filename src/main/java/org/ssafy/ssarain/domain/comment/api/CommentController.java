@@ -5,15 +5,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
+import org.ssafy.ssarain.domain.comment.dto.CommentUpdateDto;
 import org.ssafy.ssarain.domain.comment.service.CommentService;
 
 @RestController
@@ -33,6 +31,19 @@ public class CommentController {
         CommentDetailDto commentDetailDto = commentService.createComment(commentCreateDto, customUserDetails.getUserId());
 
         return BaseResponse.success(SuccessCode.COMMENT_CREATE_SUCCESS, commentDetailDto);
+    }
+
+    @PatchMapping("/{cid}")
+    @Operation(summary = "C02: Comment 수정")
+    public ResponseEntity<BaseResponse<CommentDetailDto>> updateComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable int cid,
+            @RequestBody @Valid CommentUpdateDto commentUpdateDto
+    ) {
+
+        CommentDetailDto updatedDetailDto = commentService.updateComment(commentUpdateDto, cid, customUserDetails.getUserId());
+
+        return BaseResponse.success(SuccessCode.COMMENT_UPDATE_SUCCESS, updatedDetailDto);
     }
 
 

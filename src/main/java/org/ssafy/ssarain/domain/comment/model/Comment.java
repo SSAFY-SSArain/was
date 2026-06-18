@@ -58,4 +58,7 @@ public class Comment extends BaseAuditingEntity {
         return parent == null ? null : parent.getCid();
     }
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
