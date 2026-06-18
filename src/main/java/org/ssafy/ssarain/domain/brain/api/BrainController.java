@@ -24,6 +24,7 @@ import org.ssafy.ssarain.domain.brain.service.BrainService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -57,7 +58,7 @@ public class BrainController {
     @GetMapping("/check-name")
     @Operation(summary = "B13: Brain 명 중복 확인")
     public ResponseEntity<BaseResponse<BrainNameVaildationDto>> checkBrainName(
-            @RequestParam String name) {
+            @RequestParam @NotBlank String name) {
         return BaseResponse.success(SuccessCode.BRAIN_NAME_VALIDATION_SUCCESS, brainService.checkBrainName(name));
     }
 }

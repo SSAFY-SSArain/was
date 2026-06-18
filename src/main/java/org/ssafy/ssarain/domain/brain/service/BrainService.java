@@ -64,7 +64,6 @@ public class BrainService {
 
     @Transactional(readOnly = true)
     public BrainNameVaildationDto checkBrainName(String name) {
-        validateBrainName(name);
         return new BrainNameVaildationDto(brainRepository.existsByName(name));
     }
     
@@ -75,12 +74,6 @@ public class BrainService {
     private void validateDuplicateName(String name) {
         if (brainRepository.existsByName(name)) {
             throw new GlobalException(ErrorCode.BRAIN_NAME_DUPLICATED);
-        }
-    }
-    
-    private void validateBrainName(String name) {
-        if (name.isBlank()) {
-            throw new GlobalException(ErrorCode.BAD_REQUEST);
         }
     }
     
