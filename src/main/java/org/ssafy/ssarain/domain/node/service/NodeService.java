@@ -17,7 +17,6 @@ import org.ssafy.ssarain.domain.node.dto.*;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
-import org.ssafy.ssarain.domain.node.dto.*;
 
 @Service
 @RequiredArgsConstructor
@@ -82,5 +81,14 @@ public class NodeService {
         return nodes.stream()
                 .map(Node::getTitle)
                 .toList();
+    }
+
+    @Transactional
+    public void deleteNode(int nid) {
+
+        Node node = nodeRepository.findById(nid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
+
+        nodeRepository.delete(node);
     }
 }
