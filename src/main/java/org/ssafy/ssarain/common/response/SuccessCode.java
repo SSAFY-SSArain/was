@@ -54,7 +54,10 @@ public enum SuccessCode {
     NODE_CREATE_SUCCESS(HttpStatus.CREATED, "노드 생성이 완료되었습니다."),
 
     // Comment
-    COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다.");
+    COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다."),
+    COMMENT_UPDATE_SUCCESS(HttpStatus.OK, "댓글 수정이 완료되었습니다."),
+    COMMENT_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "댓글 삭제가 완료되었습니다.");
+
 
 
     private final HttpStatus status;

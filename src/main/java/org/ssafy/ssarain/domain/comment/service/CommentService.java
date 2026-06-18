@@ -8,10 +8,12 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.comment.dao.CommentRepository;
 import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
+import org.ssafy.ssarain.domain.comment.dto.CommentUpdateDto;
 import org.ssafy.ssarain.domain.comment.model.Comment;
 import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
+import org.ssafy.ssarain.domain.user.model.UserRole;
 import org.ssafy.ssarain.domain.user.service.UserService;
 
 import java.util.List;
@@ -53,10 +55,40 @@ public class CommentService {
                 .toList();
     }
 
+    @Transactional
+    public CommentDetailDto updateComment(CommentUpdateDto commentUpdateDto, int cid) {
+
+        Comment comment = getActiveCommentById(cid);
+
+        comment.updateContent(commentUpdateDto.content());
+
+        return CommentDetailDto.from(comment);
+    }
+
+    @Transactional
+    public void deleteComment(int cid) {
+
+        Comment comment = getActiveCommentById(cid);
+
+        comment.delete();
+    }
+
 
     /*
         Util Method
      */
+
+    private Comment getActiveCommentById(Integer cid) {
+
+        Comment comment = commentRepository.findById(cid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if(comment.isDeleted()) {
+            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+
+        return comment;
+    }
 
     private Comment getParentComment(Integer pid, Node node) {
         if(pid == null) {

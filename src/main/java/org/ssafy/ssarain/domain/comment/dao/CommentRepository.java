@@ -16,4 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByNode_NidOrderByCreatedAtAsc(Integer nodeNid);
 
     Optional<Comment> findByCidAndNode_Nid(Integer cid, Integer nodeNid);
+
+    boolean existsByCidAndUser_uid(Integer cid, UUID userUid);
 }
