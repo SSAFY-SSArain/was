@@ -46,6 +46,16 @@ public class CommentController {
         return BaseResponse.success(SuccessCode.COMMENT_UPDATE_SUCCESS, updatedDetailDto);
     }
 
+    @DeleteMapping("/{cid}")
+    @Operation(summary = "C03: Comment 삭제")
+    public ResponseEntity<BaseResponse<Void>> updateComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable int cid
+    ) {
 
+        commentService.deleteComment(cid, customUserDetails.getUserId(), customUserDetails.getRole());
+
+        return BaseResponse.success(SuccessCode.COMMENT_DELETE_SUCCESS);
+    }
 
 }

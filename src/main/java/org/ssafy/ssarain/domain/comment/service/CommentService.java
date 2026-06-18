@@ -61,11 +61,30 @@ public class CommentService {
         Comment comment = commentRepository.findById(cid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
 
+        if(comment.isDeleted()) {
+            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+
         validateCommentOwner(comment, uid);
 
         comment.updateContent(commentUpdateDto.content());
 
         return CommentDetailDto.from(comment);
+    }
+
+    @Transactional
+    public void deleteComment(int cid, UUID uid, UserRole role) {
+
+        Comment comment = commentRepository.findById(cid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if(comment.isDeleted()) {
+            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+
+        validateCommentOwnerOrAdmin(comment, uid, role);
+
+        comment.delete();
     }
 
 
