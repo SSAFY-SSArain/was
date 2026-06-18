@@ -21,10 +21,12 @@ public class BrainAuthService {
     public static final List<BrainMemberRole> BRAIN_ADMIN = List.of(BrainMemberRole.ADMIN);
 
     private final BrainMemberRepository brainMemberRepository;
+    private final AuthService           authService;
+
     
     public void authorizeAnyBrainRole(CustomUserDetails userDetails, List<BrainMemberRole> roles) {
         // ADMIN 권한은 항상 허용
-        if (isAdmin(userDetails)) {
+        if (authService.isAdmin(userDetails)) {
             return;
         }
 
@@ -38,7 +40,7 @@ public class BrainAuthService {
     
     public void authorizeBrainRoleOf(CustomUserDetails userDetails, int bid, List<BrainMemberRole> roles) {
         // ADMIN 권한은 항상 허용
-        if (isAdmin(userDetails)) {
+        if (authService.isAdmin(userDetails)) {
             return;
         }
 
@@ -53,7 +55,7 @@ public class BrainAuthService {
     public void authorizeBrainMemberByBtid(CustomUserDetails userDetails, int btid) {
 
         // ADMIN 권한은 항상 허용
-        if (isAdmin(userDetails)) {
+        if (authService.isAdmin(userDetails)) {
             return;
         }
 
@@ -69,10 +71,7 @@ public class BrainAuthService {
         Util Mehtod
      */
     
-    private boolean isAdmin(CustomUserDetails userDetails) {
-        return userDetails.getAuthorities().stream()
-                .anyMatch(authority -> UserRole.ADMIN.getAuthority().equals(authority.getAuthority()));
-    }
+
 
     private boolean hasAnyBrainRole(UUID uid, List<BrainMemberRole> roles) {
         return brainMemberRepository.existsByBmidUidAndRoleIn(uid, roles);
