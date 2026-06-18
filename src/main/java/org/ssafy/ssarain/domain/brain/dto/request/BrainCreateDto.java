@@ -1,8 +1,11 @@
 package org.ssafy.ssarain.domain.brain.dto.request;
 
+import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record BrainCreateDto(
@@ -15,8 +18,9 @@ public record BrainCreateDto(
         @Size(max = 200)
         String description,
         
-        @Schema(requiredMode = RequiredMode.REQUIRED, example = "false")
-        boolean joinPolicy
+        @Schema(requiredMode = RequiredMode.REQUIRED, example = "PROTECTED")
+        @NotNull
+        JoinPolicy joinPolicy
         ) {
 
     public BrainCreateDto {
