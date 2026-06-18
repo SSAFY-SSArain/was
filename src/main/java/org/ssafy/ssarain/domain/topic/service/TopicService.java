@@ -46,7 +46,9 @@ public class TopicService {
         // JPA 방식의 외래키 설정을 위해 프록시 껍데기 객체만 생성해 등록합니다.
         Topic newTopic = Topic.of(getParentTopicProxy(pid), dto.name());
         newTopic = topicRepository.save(newTopic);
-        return TopicDetailDto.from(newTopic);
+        
+        // 새로 생성된 Topic은 작성된 노드를 가지지 않는 것으로 처리합니다.
+        return TopicDetailDto.from(newTopic, List.of());
     }
     
     /*
