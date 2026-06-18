@@ -56,16 +56,9 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentDetailDto updateComment(CommentUpdateDto commentUpdateDto, int cid, UUID uid) {
+    public CommentDetailDto updateComment(CommentUpdateDto commentUpdateDto, int cid) {
 
-        Comment comment = commentRepository.findById(cid)
-                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
-
-        if(comment.isDeleted()) {
-            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
-        }
-
-        validateCommentOwner(comment, uid);
+        Comment comment = getActiveCommentById(cid);
 
         comment.updateContent(commentUpdateDto.content());
 
@@ -73,16 +66,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(int cid, UUID uid, UserRole role) {
+    public void deleteComment(int cid) {
 
-        Comment comment = commentRepository.findById(cid)
-                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
-
-        if(comment.isDeleted()) {
-            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
-        }
-
-        validateCommentOwnerOrAdmin(comment, uid, role);
+        Comment comment = getActiveCommentById(cid);
 
         comment.delete();
     }
@@ -92,6 +78,18 @@ public class CommentService {
         Util Method
      */
 
+    private Comment getActiveCommentById(Integer cid) {
+
+        Comment comment = commentRepository.findById(cid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if(comment.isDeleted()) {
+            throw new GlobalException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+
+        return comment;
+    }
+
     private Comment getParentComment(Integer pid, Node node) {
         if(pid == null) {
             return null;
@@ -99,20 +97,6 @@ public class CommentService {
 
         return commentRepository.findByCidAndNode_Nid(pid, node.getNid())
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
-    }
-
-    private void validateCommentOwner(Comment comment, UUID uid) {
-        if(!comment.getUser().getUid().equals(uid)) {
-            throw new GlobalException(ErrorCode.ACCESS_DENIED);
-        }
-    }
-
-    private void validateCommentOwnerOrAdmin(Comment comment, UUID uid, UserRole role) {
-        if(role == UserRole.ADMIN) {
-            return;
-        }
-
-        validateCommentOwner(comment, uid);
     }
 
 }

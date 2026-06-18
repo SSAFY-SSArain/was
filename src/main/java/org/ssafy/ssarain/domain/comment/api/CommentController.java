@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.CommentAuthService;
 import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentUpdateDto;
@@ -19,7 +20,8 @@ import org.ssafy.ssarain.domain.comment.service.CommentService;
 @RequestMapping("/api/v1/comments")
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentService     commentService;
+    private final CommentAuthService commentAuthService;
 
     @PostMapping
     @Operation(summary = "C01: Comments 생성")
@@ -41,7 +43,9 @@ public class CommentController {
             @RequestBody @Valid CommentUpdateDto commentUpdateDto
     ) {
 
-        CommentDetailDto updatedDetailDto = commentService.updateComment(commentUpdateDto, cid, customUserDetails.getUserId());
+        commentAuthService.authorizeCommentWriter(customUserDetails, cid);
+
+        CommentDetailDto updatedDetailDto = commentService.updateComment(commentUpdateDto, cid);
 
         return BaseResponse.success(SuccessCode.COMMENT_UPDATE_SUCCESS, updatedDetailDto);
     }
@@ -53,7 +57,9 @@ public class CommentController {
             @PathVariable int cid
     ) {
 
-        commentService.deleteComment(cid, customUserDetails.getUserId(), customUserDetails.getRole());
+        commentAuthService.authorizeCommentWriterOrAdmin(customUserDetails, cid);
+
+        commentService.deleteComment(cid);
 
         return BaseResponse.success(SuccessCode.COMMENT_DELETE_SUCCESS);
     }
