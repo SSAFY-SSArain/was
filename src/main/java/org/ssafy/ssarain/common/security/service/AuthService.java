@@ -15,6 +15,7 @@ import org.ssafy.ssarain.common.security.dto.res.UserWithTokenRes;
 import org.ssafy.ssarain.common.security.jwt.provider.JwtProvider;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.user.model.User;
+import org.ssafy.ssarain.domain.user.model.UserRole;
 import org.ssafy.ssarain.domain.user.service.UserService;
 import org.ssafy.ssarain.infra.mail.service.EmailVerificationService;
 import org.ssafy.ssarain.infra.redis.dao.RedisRepository;
@@ -75,6 +76,11 @@ public class AuthService {
 
         UUID userId = jwtProvider.getUserIdFromAccessToken(accessToken);
         deleteRefreshToken(userId);
+    }
+
+    public boolean isAdmin(CustomUserDetails userDetails) {
+        return userDetails.getAuthorities().stream()
+                .anyMatch(authority -> UserRole.ADMIN.getAuthority().equals(authority.getAuthority()));
     }
 
     /*
