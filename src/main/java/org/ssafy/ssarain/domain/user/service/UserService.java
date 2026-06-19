@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.dto.req.SignupReq;
+import org.ssafy.ssarain.domain.comment.dao.CommentRepository;
+import org.ssafy.ssarain.domain.node.dao.NodeRepository;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
+import org.ssafy.ssarain.domain.user.dto.UserActivityDto;
 import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
+import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,8 +22,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository  userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository    userRepository;
+    private final NodeRepository    nodeRepository;
+    private final CommentRepository commentRepository;
+    private final PasswordEncoder   passwordEncoder;
 
     @Transactional
     public User createUser(SignupReq dto) {
@@ -51,8 +57,14 @@ public class UserService {
     public UserInfoDto getUserInfo(String email) {
 
         User user = findUserByEmail(email);
+        int nodeCount = nodeRepository.countByUid(user.getUid());
+        int commentCount = commentRepository.countByUid(user.getUid());
+        // TODO: 추후 확장을 위한 데이터이며, 현재는 0이 전송됨
+        int likeCount = 0;
 
-        return UserInfoDto.from(user);
+        return new UserInfoDto(
+                UserProfileDto.from(user),
+                new UserActivityDto(nodeCount, commentCount, likeCount));
     }
 
     public User getUserByUserId(UUID userId) {

@@ -1,5 +1,7 @@
 package org.ssafy.ssarain.domain.topic.dto;
 
+import java.util.List;
+
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,12 +15,13 @@ public record TopicDetailDto(
         Integer pid,
         
         @Schema(requiredMode = RequiredMode.REQUIRED, example = "Java 개발")
-        String name
+        String name,
         
-        // TODO: Node 관련 정보도 추가되어야 합니다.
+        @Schema(requiredMode = RequiredMode.REQUIRED)
+        List<TopicNodeInfoDto> nodes
         ) {
     
-    public static TopicDetailDto from(Topic topic) {
-        return new TopicDetailDto(topic.getTid(), topic.getPid(), topic.getName());
+    public static TopicDetailDto from(Topic topic, List<TopicNodeInfoDto> nodeDtos) {
+        return new TopicDetailDto(topic.getTid(), topic.getPid(), topic.getName(), nodeDtos);
     }
 }

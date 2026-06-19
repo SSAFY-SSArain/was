@@ -9,7 +9,6 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
-import org.ssafy.ssarain.domain.user.model.UserRole;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +21,6 @@ public class BrainAuthService {
 
     private final BrainMemberRepository brainMemberRepository;
     private final AuthService           authService;
-
     
     public void authorizeAnyBrainRole(CustomUserDetails userDetails, List<BrainMemberRole> roles) {
         // ADMIN 권한은 항상 허용
@@ -70,7 +68,6 @@ public class BrainAuthService {
     /*
         Util Mehtod
      */
-    
 
 
     private boolean hasAnyBrainRole(UUID uid, List<BrainMemberRole> roles) {

@@ -39,6 +39,7 @@ public enum SuccessCode {
     BRAIN_JOIN_MANAGE_SUCCESS(HttpStatus.NO_CONTENT, "브레인 가입 신청 처리가 완료되었습니다."),
     BRAIN_MEMBER_JOIN_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 사용자 추가가 완료되었습니다."),
     BRAIN_MEMBER_INFO_SUCCESS(HttpStatus.OK, "브레인 회원 정보가 조회되었습니다."),
+    BRAIN_NAME_VALIDATION_SUCCESS(HttpStatus.OK, "브레인 이름 중복 검사가 완료되었습니다."),
 
     // Topic
     TOPIC_INFO_SUCCESS(HttpStatus.OK, "주제 정보가 조회되었습니다."),
@@ -54,7 +55,10 @@ public enum SuccessCode {
     NODE_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "노드 삭제가 완료되었습니다."),
 
     // Comment
-    COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다.");
+    COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다."),
+    COMMENT_UPDATE_SUCCESS(HttpStatus.OK, "댓글 수정이 완료되었습니다."),
+    COMMENT_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "댓글 삭제가 완료되었습니다.");
+
 
 
     private final HttpStatus status;

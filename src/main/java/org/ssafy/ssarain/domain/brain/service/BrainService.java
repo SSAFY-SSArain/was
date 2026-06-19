@@ -17,6 +17,7 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainFoundDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainListDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainNameVaildationDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainPageDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
@@ -59,6 +60,11 @@ public class BrainService {
         brainMemberRepository.save(BrainMember.adminOf(brain, brainAdmin));
         
         return BrainDetailDto.from(brain);
+    }
+
+    @Transactional(readOnly = true)
+    public BrainNameVaildationDto checkBrainName(String name) {
+        return new BrainNameVaildationDto(brainRepository.existsByName(name));
     }
     
     /*

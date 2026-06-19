@@ -10,6 +10,8 @@ import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "comment")
@@ -41,6 +43,9 @@ public class Comment extends BaseAuditingEntity {
     @Column(name = "content")
     private String content;
 
+    @Column(name= "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Builder(access = AccessLevel.PRIVATE)
     private Comment(Node node, Comment parent, User user, String content) {
         this.node = node;
@@ -62,4 +67,17 @@ public class Comment extends BaseAuditingEntity {
         return parent == null ? null : parent.getCid();
     }
 
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+        this.content = "삭제된 댓글입니다.";
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
