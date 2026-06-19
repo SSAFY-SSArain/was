@@ -3,7 +3,7 @@ package org.ssafy.ssarain.domain.quiz.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "quizzes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quiz extends BaseAuditingEntity {
+public class Quiz extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

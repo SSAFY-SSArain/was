@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 import org.ssafy.ssarain.domain.user.model.User;
 
 import jakarta.persistence.Column;
@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "brain_members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BrainMember extends BaseAuditingEntity {
+public class BrainMember extends BaseTimeEntity {
     @EmbeddedId
     private BrainMemberId bmid;
     
@@ -59,7 +59,7 @@ public class BrainMember extends BaseAuditingEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'USER'")
-    @Column(name = "role", nullable = false, length = 20)
+    @Column(name = "role", nullable = false, columnDefinition = "ENUM('USER', 'MANAGER', 'ADMIN')")
     private BrainMemberRole role = BrainMemberRole.USER;
     
     @Builder(access = AccessLevel.PRIVATE)

@@ -1,6 +1,6 @@
 package org.ssafy.ssarain.domain.topic.model;
 
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "topics")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Topic extends BaseAuditingEntity {
+public class Topic extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tid", nullable = false, unique = true)

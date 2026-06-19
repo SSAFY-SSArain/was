@@ -3,7 +3,7 @@ package org.ssafy.ssarain.domain.brain.model;
 import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "brains")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Brain extends BaseAuditingEntity {
+public class Brain extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bid", nullable = false, unique = true)
@@ -44,7 +44,7 @@ public class Brain extends BaseAuditingEntity {
     
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "join_policy", nullable = false, length = 20)
+    @Column(name = "join_policy", nullable = false, columnDefinition = "ENUM('PUBLIC', 'PROTECTED')")
     @ColumnDefault("'PROTECTED'")
     private JoinPolicy joinPolicy = JoinPolicy.PROTECTED;
     
