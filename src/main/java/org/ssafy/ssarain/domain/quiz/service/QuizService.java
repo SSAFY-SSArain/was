@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.brain.service.BrainTopicService;
-import org.ssafy.ssarain.domain.node.service.NodeService;
+import org.ssafy.ssarain.domain.neuron.service.NeuronService;
 import org.ssafy.ssarain.domain.quiz.client.AiQuizClient;
 import org.ssafy.ssarain.domain.quiz.dao.QuizRepository;
 import org.ssafy.ssarain.domain.quiz.dto.GeneratedQuizDto;
@@ -28,7 +28,7 @@ public class QuizService {
 
     private final QuizRepository    quizRepository;
     private final BrainTopicService brainTopicService;
-    private final NodeService       nodeService;
+    private final NeuronService       neuronService;
     private final AiQuizClient      aiQuizClient;
 
     public QuizListRes getQuizzes(Integer brainTopicId) {
@@ -47,9 +47,9 @@ public class QuizService {
         validateBrainTopicId(brainTopicId);
         validateGenerationLimit(brainTopicId);
 
-        List<String> nodeTitles = findQuizSourceNodeTitles(brainTopicId);
+        List<String> neuronTitles = findQuizSourceNeuronTitles(brainTopicId);
 
-        List<GeneratedQuizDto> generatedQuizzes = aiQuizClient.generateQuizzes(nodeTitles, QUIZ_GENERATION_COUNT);
+        List<GeneratedQuizDto> generatedQuizzes = aiQuizClient.generateQuizzes(neuronTitles, QUIZ_GENERATION_COUNT);
         validateGeneratedQuizzes(generatedQuizzes);
 
         List<Quiz> quizzes = generatedQuizzes.stream()
@@ -86,14 +86,14 @@ public class QuizService {
         }
     }
 
-    private List<String> findQuizSourceNodeTitles(Integer brainTopicId) {
-        List<String> nodeTitles = nodeService.findTitlesByBrainTopicId(brainTopicId);
+    private List<String> findQuizSourceNeuronTitles(Integer brainTopicId) {
+        List<String> neuronTitles = neuronService.findTitlesByBrainTopicId(brainTopicId);
 
-        if (nodeTitles.isEmpty()) {
-            throw new GlobalException(ErrorCode.QUIZ_SOURCE_NODE_NOT_FOUND);
+        if (neuronTitles.isEmpty()) {
+            throw new GlobalException(ErrorCode.QUIZ_SOURCE_NEURON_NOT_FOUND);
         }
 
-        return nodeTitles;
+        return neuronTitles;
     }
 
     private void validateGeneratedQuizzes(List<GeneratedQuizDto> generatedQuizzes) {

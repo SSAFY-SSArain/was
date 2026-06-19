@@ -3,7 +3,7 @@ package org.ssafy.ssarain.domain.brain.dto.response;
 import java.util.List;
 
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
-import org.ssafy.ssarain.domain.node.dto.NodeInfoDto;
+import org.ssafy.ssarain.domain.neuron.dto.NeuronInfoDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,14 +23,14 @@ public record BrainTopicDetailDto(
         String name,
 
         @Schema(requiredMode = RequiredMode.REQUIRED)
-        List<NodeInfoDto> nodes
+        List<NeuronInfoDto> neurons
 ) {
 
-    public static BrainTopicDetailDto from(BrainTopic brainTopic, List<NodeInfoDto> nodes) {
-        if (nodes == null) {
-            nodes = List.of();
+    public static BrainTopicDetailDto from(BrainTopic brainTopic, List<NeuronInfoDto> neurons) {
+        if (neurons == null) {
+            neurons = List.of();
         }
         Topic topic = brainTopic.getTopic();
-        return new BrainTopicDetailDto(brainTopic.getBtid(), topic.getTid(), topic.getPid(), topic.getName(), nodes);
+        return new BrainTopicDetailDto(brainTopic.getBtid(), topic.getTid(), topic.getPid(), topic.getName(), neurons);
     }
 }

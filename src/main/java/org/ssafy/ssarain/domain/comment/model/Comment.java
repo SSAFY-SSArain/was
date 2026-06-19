@@ -6,17 +6,17 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
-import org.ssafy.ssarain.domain.node.model.Node;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
+import org.ssafy.ssarain.domain.neuron.model.Neuron;
 import org.ssafy.ssarain.domain.user.model.User;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "comment")
+@Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseAuditingEntity {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class Comment extends BaseAuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "nid", nullable = false)
-    private Node node;
+    private Neuron neuron;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -40,23 +40,23 @@ public class Comment extends BaseAuditingEntity {
     private User user;
 
     @Size(max = 255)
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name= "deleted_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Comment(Node node, Comment parent, User user, String content) {
-        this.node = node;
+    private Comment(Neuron neuron, Comment parent, User user, String content) {
+        this.neuron = neuron;
         this.parent = parent;
         this.user = user;
         this.content = content;
     }
 
-    public static Comment of(Node node, Comment parent, User user, String content) {
+    public static Comment of(Neuron neuron, Comment parent, User user, String content) {
         return Comment.builder()
-                .node(node)
+                .neuron(neuron)
                 .parent(parent)
                 .user(user)
                 .content(content)

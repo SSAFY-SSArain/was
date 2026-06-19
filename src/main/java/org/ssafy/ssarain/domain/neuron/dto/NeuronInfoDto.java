@@ -1,10 +1,10 @@
-package org.ssafy.ssarain.domain.node.dto;
+package org.ssafy.ssarain.domain.neuron.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import org.ssafy.ssarain.domain.node.model.Node;
+import org.ssafy.ssarain.domain.neuron.model.Neuron;
 
-public record NodeInfoDto(
+public record NeuronInfoDto(
         @Schema(requiredMode = RequiredMode.REQUIRED, example = "1")
         int nid,
 
@@ -15,7 +15,7 @@ public record NodeInfoDto(
         String content
 ) {
 
-    public static NodeInfoDto from(Node node) {
-        return new NodeInfoDto(node.getNid(), node.getTitle(), node.getContent());
+    public static NeuronInfoDto from(Neuron neuron) {
+        return new NeuronInfoDto(neuron.getNid(), neuron.getTitle(), neuron.getContent());
     }
 }

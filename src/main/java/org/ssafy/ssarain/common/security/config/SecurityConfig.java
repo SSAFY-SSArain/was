@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/user/name-check").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/nodes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/neurons/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/brains").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/brains/*/topics").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/brains/*/topics/*").permitAll()

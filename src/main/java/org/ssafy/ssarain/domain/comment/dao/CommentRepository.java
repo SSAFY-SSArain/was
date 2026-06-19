@@ -13,9 +13,9 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @Query("SELECT count(*) FROM Comment c WHERE c.user.uid = :uid")
     int countByUid(UUID uid);
 
-    List<Comment> findByNode_NidOrderByCreatedAtAsc(Integer nodeNid);
+    List<Comment> findByNeuron_NidOrderByCreatedAtAsc(Integer neuronNid);
 
-    Optional<Comment> findByCidAndNode_Nid(Integer cid, Integer nodeNid);
+    Optional<Comment> findByCidAndNeuron_Nid(Integer cid, Integer neuronNid);
 
     boolean existsByCidAndUser_uid(Integer cid, UUID userUid);
 }

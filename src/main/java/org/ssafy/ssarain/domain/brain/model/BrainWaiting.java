@@ -3,7 +3,7 @@ package org.ssafy.ssarain.domain.brain.model;
 import java.io.Serializable;
 import java.util.UUID;
 
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 import org.ssafy.ssarain.domain.user.model.User;
 
 import jakarta.persistence.Embeddable;
@@ -23,9 +23,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "brain_waiting")
+@Table(name = "brain_waitings")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BrainWaiting extends BaseAuditingEntity {
+public class BrainWaiting extends BaseTimeEntity {
     @EmbeddedId
     private BrainWaitingId bmid;
     

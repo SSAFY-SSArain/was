@@ -1,11 +1,12 @@
 package org.ssafy.ssarain.domain.topic.model;
 
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,11 +20,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "topic")
+@Table(name = "topics")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Topic extends BaseAuditingEntity {
+public class Topic extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tid", nullable = false, unique = true)
     private int tid;
     

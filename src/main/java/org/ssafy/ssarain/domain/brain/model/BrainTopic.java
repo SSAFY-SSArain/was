@@ -1,7 +1,7 @@
 package org.ssafy.ssarain.domain.brain.model;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.ssafy.ssarain.common.model.BaseAuditingEntity;
+import org.ssafy.ssarain.common.model.BaseTimeEntity;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
 import jakarta.persistence.Column;
@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(
-        name = "brain_topic",
-        uniqueConstraints = @UniqueConstraint(name = "uk_brain_topic_bid_tid", columnNames = {"bid", "tid"})
+        name = "brain_topics",
+        uniqueConstraints = @UniqueConstraint(name = "uk_brain_topics_bid_tid", columnNames = {"bid", "tid"})
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BrainTopic extends BaseAuditingEntity {
+public class BrainTopic extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

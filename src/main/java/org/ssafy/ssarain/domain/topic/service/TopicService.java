@@ -47,7 +47,7 @@ public class TopicService {
         Topic newTopic = Topic.of(getParentTopicProxy(pid), dto.name());
         newTopic = topicRepository.save(newTopic);
         
-        // 새로 생성된 Topic은 작성된 노드를 가지지 않는 것으로 처리합니다.
+        // 새로 생성된 Topic은 작성된 뉴런을 가지지 않는 것으로 처리합니다.
         return TopicDetailDto.from(newTopic, List.of());
     }
     

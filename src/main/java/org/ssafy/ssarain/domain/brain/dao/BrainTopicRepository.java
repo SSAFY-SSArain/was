@@ -19,23 +19,23 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
     
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = """
-            INSERT INTO brain_topic (bid, tid, generate_count, created_at, updated_at)
+            INSERT INTO brain_topics (bid, tid, generate_count, created_at, updated_at)
             WITH RECURSIVE Ancestors AS (
                 SELECT tid, pid
-                FROM topic
+                FROM topics
                 WHERE tid IN (:tid)
                 
                 UNION
                 
                 SELECT t.tid, t.pid
-                FROM topic t
+                FROM topics t
                 INNER JOIN Ancestors a ON t.tid = a.pid
             )
-            SELECT :bid, a.tid, 0, NOW(), NOW()
+            SELECT :bid, a.tid, 0, NOW(6), NOW(6)
             FROM Ancestors a
             WHERE NOT EXISTS (
                 SELECT bt.btid
-                FROM brain_topic bt 
+                FROM brain_topics bt
                 WHERE bt.tid = a.tid AND bt.bid = :bid
             )
             """, 

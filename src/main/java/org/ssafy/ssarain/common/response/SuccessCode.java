@@ -49,10 +49,10 @@ public enum SuccessCode {
     QUIZ_INFO_SUCCESS(HttpStatus.OK, "퀴즈 조회가 완료되었습니다."),
     QUIZ_CREATE_SUCCESS(HttpStatus.CREATED, "퀴즈 생성이 완료되었습니다."),
 
-    // Node
-    NODE_INFO_SUCCESS(HttpStatus.OK, "노드 정보가 조회되었습니다."),
-    NODE_CREATE_SUCCESS(HttpStatus.CREATED, "노드 생성이 완료되었습니다."),
-    NODE_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "노드 삭제가 완료되었습니다."),
+    // Neuron
+    NEURON_INFO_SUCCESS(HttpStatus.OK, "뉴런 정보가 조회되었습니다."),
+    NEURON_CREATE_SUCCESS(HttpStatus.CREATED, "뉴런 생성이 완료되었습니다."),
+    NEURON_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "뉴런 삭제가 완료되었습니다."),
 
     // Comment
     COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다."),

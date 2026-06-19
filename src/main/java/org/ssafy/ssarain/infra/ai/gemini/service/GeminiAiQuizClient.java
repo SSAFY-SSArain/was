@@ -29,13 +29,13 @@ public class GeminiAiQuizClient implements AiQuizClient {
     private final GeminiProperties   geminiProperties;
 
     @Override
-    public List<GeneratedQuizDto> generateQuizzes(List<String> nodeTitles, int count) {
+    public List<GeneratedQuizDto> generateQuizzes(List<String> neuronTitles, int count) {
         try {
             String response = restClientBuilder.build()
                     .post()
                     .uri(buildUri())
                     .header("x-goog-api-key", geminiProperties.getApiKey())
-                    .body(buildRequest(nodeTitles, count))
+                    .body(buildRequest(neuronTitles, count))
                     .retrieve()
                     .body(String.class);
 
@@ -55,10 +55,10 @@ public class GeminiAiQuizClient implements AiQuizClient {
                 .toUriString();
     }
 
-    private Map<String, Object> buildRequest(List<String> nodeTitles, int count) {
+    private Map<String, Object> buildRequest(List<String> neuronTitles, int count) {
         return Map.of(
                 "contents", List.of(Map.of(
-                        "parts", List.of(Map.of("text", buildPrompt(nodeTitles, count)))
+                        "parts", List.of(Map.of("text", buildPrompt(neuronTitles, count)))
                 )),
                 "generationConfig", Map.of(
                         "temperature", 0.4,
@@ -67,9 +67,9 @@ public class GeminiAiQuizClient implements AiQuizClient {
         );
     }
 
-    private String buildPrompt(List<String> nodeTitles, int count) {
+    private String buildPrompt(List<String> neuronTitles, int count) {
         return """
-                다음 학습 노드 제목들을 기반으로 객관식 퀴즈 %d개를 만들어줘.
+                다음 학습 뉴런 제목들을 기반으로 객관식 퀴즈 %d개를 만들어줘.
 
                 조건:
                 - 반드시 JSON만 반환해.
@@ -95,9 +95,9 @@ public class GeminiAiQuizClient implements AiQuizClient {
                   ]
                 }
 
-                학습 노드 제목:
+                학습 뉴런 제목:
                 %s
-                """.formatted(count, String.join("\n", nodeTitles));
+                """.formatted(count, String.join("\n", neuronTitles));
     }
 
     private String extractText(String response) throws Exception {

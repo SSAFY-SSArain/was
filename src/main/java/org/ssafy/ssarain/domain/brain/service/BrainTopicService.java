@@ -16,8 +16,8 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainTopicDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainTopicInfoDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
-import org.ssafy.ssarain.domain.node.dto.NodeInfoDto;
-import org.ssafy.ssarain.domain.node.service.NodeService;
+import org.ssafy.ssarain.domain.neuron.dto.NeuronInfoDto;
+import org.ssafy.ssarain.domain.neuron.service.NeuronService;
 import org.ssafy.ssarain.domain.topic.dao.TopicRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class BrainTopicService {
     private final BrainRepository brainRepository;
     private final TopicRepository topicRepository;
     private final BrainTopicRepository brainTopicRepository;
-    private final NodeService nodeService;
+    private final NeuronService neuronService;
 
     @Transactional
     public void registerTopic(int bid, TopicIdListDto dto) {
@@ -53,9 +53,9 @@ public class BrainTopicService {
     @Transactional(readOnly = true)
     public BrainTopicDetailDto getBrainTopicDetail(int bid, int tid) {
         BrainTopic brainTopic = findBrainTopic(bid, tid);
-        List<NodeInfoDto> nodes = nodeService.findByBrainTopicId(brainTopic.getBtid());
+        List<NeuronInfoDto> neurons = neuronService.findByBrainTopicId(brainTopic.getBtid());
 
-        return BrainTopicDetailDto.from(brainTopic, nodes);
+        return BrainTopicDetailDto.from(brainTopic, neurons);
     }
     
     public boolean existBrainTopic(int btid) {
