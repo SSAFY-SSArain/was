@@ -26,8 +26,8 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      */
     @Query(value = """    
             SELECT tid, pid, name,
-                EXISTS (SELECT * FROM brain_topic WHERE bid = :bid AND tid = t.tid) AS `using`
-            FROM topic t
+                EXISTS (SELECT * FROM brain_topics WHERE bid = :bid AND tid = t.tid) AS `using`
+            FROM topics t
             """,
             nativeQuery = true)
     List<TopicWithUsedQueryDto> findWithUsingByBid(Integer bid);
@@ -41,18 +41,18 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
     @Query(value = """
             WITH RECURSIVE Descendant AS (
                 SELECT tid, pid, name, 1 AS `depth`
-                FROM topic
+                FROM topics
                 WHERE pid = :pid
                 
                 UNION ALL
                 
                 SELECT t.tid, t.pid, t.name, (d.depth + 1)
-                FROM topic t
+                FROM topics t
                 INNER JOIN Descendant d ON t.pid = d.tid
                 WHERE (d.depth + 1) <= :maxDepth
             )
             SELECT tid, pid, name,
-                EXISTS (SELECT 1 FROM brain_topic WHERE bid = :bid AND tid = d.tid) AS `using`
+                EXISTS (SELECT 1 FROM brain_topics WHERE bid = :bid AND tid = d.tid) AS `using`
             FROM Descendant d
             """, 
             nativeQuery = true)

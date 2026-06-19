@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "brain")
+@Table(name = "brains")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Brain extends BaseAuditingEntity {
     @Id

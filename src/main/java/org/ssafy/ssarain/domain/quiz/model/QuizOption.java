@@ -16,7 +16,7 @@ public class QuizOption {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "`option`", nullable = false)
+    @Column(name = "option_content", nullable = false)
     private String option;
 
     @NotNull

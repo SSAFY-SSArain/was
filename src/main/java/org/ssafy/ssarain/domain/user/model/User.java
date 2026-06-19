@@ -8,6 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -40,6 +41,9 @@ public class User extends BaseAuditingEntity {
     @ColumnDefault("'USER'")
     @Column(name = "role", nullable = false, length = 20)
     private UserRole role = UserRole.USER;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @Builder(access = AccessLevel.PRIVATE)
     private User(String email, String name, String password, UserRole role) {

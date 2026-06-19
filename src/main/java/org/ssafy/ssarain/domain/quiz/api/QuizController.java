@@ -31,7 +31,7 @@ public class QuizController {
     }
 
     @PostMapping
-    @Operation(summary = "Q02: BrainTopic 퀴즈 생성", description = "btid에 연결된 node title을 기반으로 퀴즈 10개를 생성합니다.")
+    @Operation(summary = "Q02: BrainTopic 퀴즈 생성", description = "btid에 연결된 neuron title을 기반으로 퀴즈 10개를 생성합니다.")
     public ResponseEntity<BaseResponse<QuizListRes>> generateQuizzes(
             @RequestParam(name = "btid") Integer brainTopicId
     ) {

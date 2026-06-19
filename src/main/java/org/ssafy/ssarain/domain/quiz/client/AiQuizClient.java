@@ -6,5 +6,5 @@ import org.ssafy.ssarain.domain.quiz.dto.GeneratedQuizDto;
 
 public interface AiQuizClient {
 
-    List<GeneratedQuizDto> generateQuizzes(List<String> nodeTitles, int count);
+    List<GeneratedQuizDto> generateQuizzes(List<String> neuronTitles, int count);
 }

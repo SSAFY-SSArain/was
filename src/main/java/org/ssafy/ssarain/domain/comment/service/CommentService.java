@@ -10,10 +10,9 @@ import org.ssafy.ssarain.domain.comment.dto.CommentCreateDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
 import org.ssafy.ssarain.domain.comment.dto.CommentUpdateDto;
 import org.ssafy.ssarain.domain.comment.model.Comment;
-import org.ssafy.ssarain.domain.node.dao.NodeRepository;
-import org.ssafy.ssarain.domain.node.model.Node;
+import org.ssafy.ssarain.domain.neuron.dao.NeuronRepository;
+import org.ssafy.ssarain.domain.neuron.model.Neuron;
 import org.ssafy.ssarain.domain.user.model.User;
-import org.ssafy.ssarain.domain.user.model.UserRole;
 import org.ssafy.ssarain.domain.user.service.UserService;
 
 import java.util.List;
@@ -24,19 +23,19 @@ import java.util.UUID;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final NodeRepository    nodeRepository;
+    private final NeuronRepository    neuronRepository;
     private final UserService       userService;
 
     @Transactional
     public CommentDetailDto createComment(CommentCreateDto commentCreateDto, UUID uid) {
 
-        Node node      = nodeRepository.findById(commentCreateDto.nid())
-                                        .orElseThrow(() -> new GlobalException(ErrorCode.NODE_NOT_FOUND));
-        Comment parent = getParentComment(commentCreateDto.pid(), node);
+        Neuron neuron      = neuronRepository.findByNidAndDeletedAtIsNull(commentCreateDto.nid())
+                                        .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
+        Comment parent = getParentComment(commentCreateDto.pid(), neuron);
         User user      = userService.getUserByUserId(uid);
 
         Comment comment = Comment.of(
-                node,
+                neuron,
                 parent,
                 user,
                 commentCreateDto.content()
@@ -48,7 +47,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentDetailDto> getCommentsByNid(Integer nid) {
 
-        List<Comment> comments = commentRepository.findByNode_NidOrderByCreatedAtAsc(nid);
+        List<Comment> comments = commentRepository.findByNeuron_NidOrderByCreatedAtAsc(nid);
 
         return comments.stream()
                 .map(CommentDetailDto::from)
@@ -90,12 +89,12 @@ public class CommentService {
         return comment;
     }
 
-    private Comment getParentComment(Integer pid, Node node) {
+    private Comment getParentComment(Integer pid, Neuron neuron) {
         if(pid == null) {
             return null;
         }
 
-        return commentRepository.findByCidAndNode_Nid(pid, node.getNid())
+        return commentRepository.findByCidAndNeuron_Nid(pid, neuron.getNid())
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
     }
 

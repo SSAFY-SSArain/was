@@ -11,6 +11,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
@@ -23,12 +24,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "quiz")
+@Table(name = "quizzes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Quiz extends BaseAuditingEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "qid", nullable = false, unique = true)
     private int qid;
 
@@ -47,7 +48,7 @@ public class Quiz extends BaseAuditingEntity {
     private String explanation;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "quiz_option", joinColumns = @JoinColumn(name = "qid"))
+    @CollectionTable(name = "quiz_options", joinColumns = @JoinColumn(name = "qid"))
     private List<QuizOption> options = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)

@@ -18,10 +18,10 @@ public record TopicDetailDto(
         String name,
         
         @Schema(requiredMode = RequiredMode.REQUIRED)
-        List<TopicNodeInfoDto> nodes
+        List<TopicNeuronInfoDto> neurons
         ) {
     
-    public static TopicDetailDto from(Topic topic, List<TopicNodeInfoDto> nodeDtos) {
-        return new TopicDetailDto(topic.getTid(), topic.getPid(), topic.getName(), nodeDtos);
+    public static TopicDetailDto from(Topic topic, List<TopicNeuronInfoDto> neuronDtos) {
+        return new TopicDetailDto(topic.getTid(), topic.getPid(), topic.getName(), neuronDtos);
     }
 }

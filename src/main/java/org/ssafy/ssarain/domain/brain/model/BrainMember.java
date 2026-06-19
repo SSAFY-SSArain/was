@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "brain_member")
+@Table(name = "brain_members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BrainMember extends BaseAuditingEntity {
     @EmbeddedId

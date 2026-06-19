@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(
-        name = "brain_topic",
-        uniqueConstraints = @UniqueConstraint(name = "uk_brain_topic_bid_tid", columnNames = {"bid", "tid"})
+        name = "brain_topics",
+        uniqueConstraints = @UniqueConstraint(name = "uk_brain_topics_bid_tid", columnNames = {"bid", "tid"})
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BrainTopic extends BaseAuditingEntity {
