@@ -1,5 +1,12 @@
 name: ssarain
 
+x-awslogs: &awslogs
+  driver: awslogs
+  options:
+    awslogs-region: ${AWS_REGION:-ap-northeast-2}
+    awslogs-group: ${AWS_LOG_GROUP:-/ssarain/production}
+    awslogs-create-group: "true"
+
 services:
   valkey:
     image: valkey/valkey:8.0-alpine
@@ -10,6 +17,13 @@ services:
     networks:
       - ssarain-network
     restart: unless-stopped
+    logging:
+      <<: *awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-ap-northeast-2}
+        awslogs-group: ${AWS_LOG_GROUP:-/ssarain/production}
+        awslogs-create-group: "true"
+        awslogs-stream: ssarain-valkey
 
   spring-api:
     image: ssarain-api:latest
@@ -36,6 +50,13 @@ services:
     networks:
       - ssarain-network
     restart: unless-stopped
+    logging:
+      <<: *awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-ap-northeast-2}
+        awslogs-group: ${AWS_LOG_GROUP:-/ssarain/production}
+        awslogs-create-group: "true"
+        awslogs-stream: ssarain-api
 
   web:
     image: ssarain-web:latest
@@ -47,6 +68,13 @@ services:
     networks:
       - ssarain-network
     restart: unless-stopped
+    logging:
+      <<: *awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-ap-northeast-2}
+        awslogs-group: ${AWS_LOG_GROUP:-/ssarain/production}
+        awslogs-create-group: "true"
+        awslogs-stream: ssarain-web
 
 volumes:
   valkey_data:
