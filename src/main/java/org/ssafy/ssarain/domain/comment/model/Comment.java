@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.ssafy.ssarain.common.model.BaseAuditingEntity;
 import org.ssafy.ssarain.domain.node.model.Node;
 import org.ssafy.ssarain.domain.user.model.User;
@@ -23,10 +25,12 @@ public class Comment extends BaseAuditingEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "nid", nullable = false)
     private Node node;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pid")
     private Comment parent;
 

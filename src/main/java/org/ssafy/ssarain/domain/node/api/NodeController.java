@@ -10,6 +10,7 @@ import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
+import org.ssafy.ssarain.common.security.service.NodeAuthService;
 import org.ssafy.ssarain.domain.node.dto.NodeCreateDto;
 import org.ssafy.ssarain.domain.node.dto.NodeDetailDto;
 import org.ssafy.ssarain.domain.node.dto.NodePreviewListDto;
@@ -22,6 +23,7 @@ public class NodeController {
 
     private final NodeService      nodeService;
     private final BrainAuthService brainAuthService;
+    private final NodeAuthService  nodeAuthService;
 
     @GetMapping("/preview/{btid}")
     @Operation(summary = "N01: Node 프리 조회")
@@ -56,6 +58,20 @@ public class NodeController {
         NodeDetailDto nodeDetailDto = nodeService.createNode(nodeCreateDto, userDetails.getUserId());
 
         return BaseResponse.success(SuccessCode.NODE_CREATE_SUCCESS, nodeDetailDto);
+    }
+
+    @DeleteMapping("/{nid}")
+    @Operation(summary = "N05: Node 삭제")
+    public ResponseEntity<BaseResponse<Void>> deleteNode(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable int nid
+    ) {
+
+        nodeAuthService.authorizeNodeWriterOrAdmin(userDetails, nid);
+
+        nodeService.deleteNode(nid);
+
+        return BaseResponse.success(SuccessCode.NODE_DELETE_SUCCESS);
     }
 
 }

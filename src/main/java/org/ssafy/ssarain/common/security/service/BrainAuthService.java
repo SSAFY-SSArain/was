@@ -69,6 +69,7 @@ public class BrainAuthService {
         Util Mehtod
      */
 
+
     private boolean hasAnyBrainRole(UUID uid, List<BrainMemberRole> roles) {
         return brainMemberRepository.existsByBmidUidAndRoleIn(uid, roles);
     }
