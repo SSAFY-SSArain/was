@@ -36,7 +36,7 @@ jobs:
 
       - name: Build with Gradle (or Maven)
         env:
-          MYSQL_URL: jdbc:mysql://localhost:3306/ssarain?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+          MYSQL_URL: jdbc:mysql://localhost:3306/ssarain-test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
           MYSQL_USER: root
           MYSQL_PASSWORD: mock_password
           VALKEY_HOST: localhost
