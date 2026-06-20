@@ -18,7 +18,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: mock_password
-          MYSQL_DATABASE: ssarain
+          MYSQL_DATABASE: ssarain_test
         ports:
           - 3306:3306
         # 헬스체크
@@ -36,7 +36,7 @@ jobs:
 
       - name: Build with Gradle (or Maven)
         env:
-          MYSQL_URL: jdbc:mysql://localhost:3306/ssarain-test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+          MYSQL_URL: jdbc:mysql://localhost:3306/ssarain_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
           MYSQL_USER: root
           MYSQL_PASSWORD: mock_password
           VALKEY_HOST: localhost
