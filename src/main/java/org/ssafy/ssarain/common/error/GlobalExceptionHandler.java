@@ -20,7 +20,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(GlobalException.class)
     protected ResponseEntity<BaseResponse<Void>> handleGlobalException(GlobalException e) {
 
-        log.error(e.getMessage(), e);
+        HttpStatusCode statusCode = e.getErrorCode().getStatus();
+
+        logByStatus(statusCode, e);
+
         return BaseResponse.error(e.getErrorCode());
     }
 
@@ -34,21 +37,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MissingRequestCookieException.class)
     protected ResponseEntity<BaseResponse<Void>> handleCookieException(MissingRequestCookieException e) {
 
-        log.warn("MissingRequestCookieException: {}", e.getMessage(), e);
+        log.warn("MissingRequestCookieException: {}", e.getMessage());
         return BaseResponse.error(ErrorCode.COOKIE_NOT_EXISTS);
     }
     
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+    protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers,
             HttpStatusCode statusCode, WebRequest request) {
-        if (statusCode.is4xxClientError())
-            log.warn(ex.getMessage(), ex);
-        if (statusCode.is5xxServerError())
-            log.error(ex.getMessage(), ex);
+
+        logByStatus(statusCode, e);
         
         ErrorCode errorCode = ErrorCode.getCommonErrorCode((HttpStatus)statusCode);
         return ResponseEntity
                 .status(errorCode.getStatus())
                 .body(BaseResponse.of(errorCode));
+    }
+
+    private void logByStatus(HttpStatusCode statusCode, Exception e) {
+
+        if (statusCode.is5xxServerError()) {
+            log.error(e.getMessage(), e);
+            return;
+        }
+
+        log.warn("{}: [{}] {}", e.getClass().getSimpleName(), statusCode.value(), e.getMessage());
     }
 }
