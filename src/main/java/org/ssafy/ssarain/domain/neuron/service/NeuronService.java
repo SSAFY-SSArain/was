@@ -12,9 +12,11 @@ import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
 import org.ssafy.ssarain.domain.comment.service.CommentService;
+import org.ssafy.ssarain.domain.neuron.dao.NeuronLikeRepository;
 import org.ssafy.ssarain.domain.neuron.dao.NeuronRepository;
 import org.ssafy.ssarain.domain.neuron.dto.*;
 import org.ssafy.ssarain.domain.neuron.model.Neuron;
+import org.ssafy.ssarain.domain.neuron.model.NeuronLike;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.ssafy.ssarain.domain.user.service.UserService;
 
@@ -23,7 +25,8 @@ import org.ssafy.ssarain.domain.user.service.UserService;
 public class NeuronService {
 
     private final UserService          userService;
-    private final NeuronRepository       neuronRepository;
+    private final NeuronRepository     neuronRepository;
+    private final NeuronLikeRepository neuronLikeRepository;
     private final BrainTopicRepository brainTopicRepository;
     private final CommentService       commentService;
 
@@ -40,14 +43,17 @@ public class NeuronService {
     }
 
     @Transactional(readOnly = true)
-    public NeuronDetailDto getNeuron(Integer nid) {
+    public NeuronDetailDto getNeuron(Integer nid, UUID uid) {
 
         Neuron neuron = neuronRepository.findByNidAndDeletedAtIsNull(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
 
         List<CommentDetailDto> comments = commentService.getCommentsByNid(nid);
 
-        return NeuronDetailDto.from(neuron, comments);
+        int likeCount = neuronLikeRepository.countByNeuron_Nid(nid);
+        boolean liked = uid != null && neuronLikeRepository.existsByUser_UidAndNeuron_Nid(uid,nid);
+
+        return NeuronDetailDto.from(neuron, likeCount, liked, comments);
     }
 
     @Transactional
@@ -90,5 +96,24 @@ public class NeuronService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
 
         neuron.delete();
+    }
+
+    @Transactional
+    public NeuronLikeDto likeNeuron(int nid, UUID uid) {
+
+        Neuron neuron = neuronRepository.findByNidAndDeletedAtIsNull(nid).orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
+
+        boolean alreadyLiked = neuronLikeRepository.existsByUser_UidAndNeuron_Nid(uid,nid);
+
+        if(alreadyLiked) {
+            neuronLikeRepository.deleteNeuronLikeByUser_UidAndNeuron_Nid(uid,nid);
+        }
+        else {
+            User user = userService.getUserByUserId(uid);
+            neuronLikeRepository.save(NeuronLike.of(user, neuron));
+        }
+
+        int likeCount = neuronLikeRepository.countByNeuron_Nid(nid);
+        return NeuronLikeDto.from(likeCount, !alreadyLiked);
     }
 }

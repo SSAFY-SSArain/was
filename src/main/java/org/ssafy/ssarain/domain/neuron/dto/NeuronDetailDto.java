@@ -15,28 +15,43 @@ public record NeuronDetailDto(
 
         String content,
 
+        int likeCount,
+
+        boolean liked,
+
         LocalDateTime createdAt,
 
         List<CommentDetailDto> comments
 ) {
 
-    public static NeuronDetailDto from(Neuron neuron) {
+    public static NeuronDetailDto from(
+            Neuron neuron
+    ) {
         return new NeuronDetailDto(
                 neuron.getNid(),
                 neuron.getTitle(),
                 neuron.getUser().getName(),
                 neuron.getContent(),
+                0,
+                false,
                 neuron.getCreatedAt(),
                 List.of()
         );
     }
 
-    public static NeuronDetailDto from(Neuron neuron, List<CommentDetailDto> comments) {
+    public static NeuronDetailDto from(
+            Neuron neuron,
+            int likeCount,
+            boolean liked,
+            List<CommentDetailDto> comments
+    ) {
         return new NeuronDetailDto(
                 neuron.getNid(),
                 neuron.getTitle(),
                 neuron.getUser().getName(),
                 neuron.getContent(),
+                likeCount,
+                liked,
                 neuron.getCreatedAt(),
                 comments
         );
