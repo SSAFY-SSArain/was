@@ -53,6 +53,7 @@ public enum SuccessCode {
     NEURON_INFO_SUCCESS(HttpStatus.OK, "뉴런 정보가 조회되었습니다."),
     NEURON_CREATE_SUCCESS(HttpStatus.CREATED, "뉴런 생성이 완료되었습니다."),
     NEURON_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "뉴런 삭제가 완료되었습니다."),
+    NEURON_LIKE_SUCCESS(HttpStatus.OK, "뉴런 좋아요 추가/취소가 완료되었습니다."),
 
     // Comment
     COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "댓글 생성이 완료되었습니다."),
