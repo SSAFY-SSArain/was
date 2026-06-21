@@ -3,7 +3,10 @@ package org.ssafy.ssarain.common.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
+import org.ssafy.ssarain.common.ratelimit.filter.AnonymousRateLimitFilter;
+import org.ssafy.ssarain.common.ratelimit.filter.AuthenticatedRateLimitFilter;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.config.properties.CorsProperties;
@@ -28,6 +31,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final CorsProperties corsProperties;
+    private final AnonymousRateLimitFilter anonymousRateLimitFilter;
+    private final AuthenticatedRateLimitFilter authenticatedRateLimitFilter;
 
     @Bean
     public SecurityFilterChain filterChain(
@@ -77,8 +83,10 @@ public class SecurityConfig {
                         })
                 )
 
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, JwtExceptionFilter.class)
+                .addFilterBefore(anonymousRateLimitFilter, JwtExceptionFilter.class)
+                .addFilterAfter(authenticatedRateLimitFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

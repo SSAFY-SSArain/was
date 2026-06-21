@@ -16,6 +16,33 @@ spring:
             enable: true
 
 app:
+  rate-limit:
+    endpoints:
+      "[POST /api/v1/auth/login]":
+        scope: anonymous
+        capacity: ${RATE_LIMIT_LOGIN_CAPACITY:30}
+        duration-minutes: ${RATE_LIMIT_LOGIN_DURATION_MINUTES:1}
+        refill-strategy: greedy
+      "[GET /api/v1/auth/refresh]":
+        scope: authenticated
+        capacity: ${RATE_LIMIT_REFRESH_CAPACITY:10}
+        duration-minutes: ${RATE_LIMIT_REFRESH_DURATION_MINUTES:1}
+        refill-strategy: greedy
+      "[POST /api/v1/auth/email/request]":
+        scope: anonymous
+        capacity: ${RATE_LIMIT_EMAIL_CAPACITY:10}
+        duration-minutes: ${RATE_LIMIT_EMAIL_DURATION_MINUTES:1}
+        refill-strategy: greedy
+      "[POST /api/v1/auth/email/verify]":
+        scope: anonymous
+        capacity: ${RATE_LIMIT_EMAIL_VERIFY_CAPACITY:10}
+        duration-minutes: ${RATE_LIMIT_EMAIL_VERIFY_DURATION_MINUTES:1}
+        refill-strategy: greedy
+      "[POST /api/v1/quizzes]":
+        scope: authenticated
+        capacity: ${RATE_LIMIT_QUIZ_CAPACITY:3}
+        duration-minutes: ${RATE_LIMIT_QUIZ_DURATION_MINUTES:1}
+        refill-strategy: greedy
   jwt:
     issuer: ssarain
     access-token-secret: ${JWT_ACCESS_SECRET}
