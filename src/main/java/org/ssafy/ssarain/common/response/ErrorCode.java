@@ -21,6 +21,7 @@ public enum ErrorCode {
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "C009", "응답할 수 없는 형식을 요청했습니다."),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "C010", "지원되지 않는 media-type입니다."),
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "C011", "현재 해당 요청을 처리할 수 없습니다."),
+    RATE_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "C012", "요청 횟수를 초과했습니다. 잠시 후 다시 시도해주세요."),
 
     // Email
     EMAIL_VERIFY_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "EM01", "인증 코드가 만료되었거나 존재하지 않습니다."),
