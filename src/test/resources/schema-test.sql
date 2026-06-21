@@ -106,7 +106,6 @@ CREATE TABLE neurons (
     content    LONGTEXT     NOT NULL,
     created_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-    deleted_at DATETIME(6)  NULL,
 
     PRIMARY KEY (nid),
     CONSTRAINT fk_neurons_brain_topics FOREIGN KEY (btid) REFERENCES brain_topics (btid) ON DELETE CASCADE,

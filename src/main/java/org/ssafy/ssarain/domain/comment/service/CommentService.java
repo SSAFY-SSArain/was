@@ -29,7 +29,7 @@ public class CommentService {
     @Transactional
     public CommentDetailDto createComment(CommentCreateDto commentCreateDto, UUID uid) {
 
-        Neuron neuron      = neuronRepository.findByNidAndDeletedAtIsNull(commentCreateDto.nid())
+        Neuron neuron      = neuronRepository.findById(commentCreateDto.nid())
                                         .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
         Comment parent = getParentComment(commentCreateDto.pid(), neuron);
         User user      = userService.getUserByUserId(uid);

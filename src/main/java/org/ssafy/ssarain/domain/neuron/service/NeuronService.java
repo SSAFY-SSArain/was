@@ -34,7 +34,7 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public NeuronPreviewListDto getNeuronPreview(Integer btid) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidAndDeletedAtIsNull(btid);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_Btid(btid);
         List<NeuronPreviewDto> neuronPreviewList = neurons.stream()
                                                     .map(NeuronPreviewDto::from)
                                                     .toList();
@@ -45,7 +45,7 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public NeuronDetailDto getNeuron(Integer nid, UUID uid) {
 
-        Neuron neuron = neuronRepository.findByNidAndDeletedAtIsNull(nid)
+        Neuron neuron = neuronRepository.findById(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
 
         List<CommentDetailDto> comments = commentService.getCommentsByNid(nid);
@@ -72,7 +72,7 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public List<NeuronInfoDto> findByBrainTopicId(Integer brainTopicId) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidAndDeletedAtIsNull(brainTopicId);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_Btid(brainTopicId);
 
         return neurons.stream()
                 .map(NeuronInfoDto::from)
@@ -82,7 +82,7 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public List<String> findTitlesByBrainTopicId(Integer brainTopicId) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidAndDeletedAtIsNull(brainTopicId);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_Btid(brainTopicId);
 
         return neurons.stream()
                 .map(Neuron::getTitle)
@@ -92,16 +92,17 @@ public class NeuronService {
     @Transactional
     public void deleteNeuron(int nid) {
 
-        Neuron neuron = neuronRepository.findByNidAndDeletedAtIsNull(nid)
+        Neuron neuron = neuronRepository.findById(nid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
 
-        neuron.delete();
+        neuronRepository.delete(neuron);
     }
 
     @Transactional
     public NeuronLikeDto likeNeuron(int nid, UUID uid) {
 
-        Neuron neuron = neuronRepository.findByNidAndDeletedAtIsNull(nid).orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
+        Neuron neuron = neuronRepository.findById(nid)
+                .orElseThrow(() -> new GlobalException(ErrorCode.NEURON_NOT_FOUND));
 
         boolean alreadyLiked = neuronLikeRepository.existsByUser_UidAndNeuron_Nid(uid,nid);
 
