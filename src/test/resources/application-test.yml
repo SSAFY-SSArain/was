@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/ssarain_test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:1234}
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${VALKEY_PASSWORD:1234}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        format_sql: false
+        show_sql: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-test.sql
+  mail:
+    username: test@example.com
+    password: test-password
+
+app:
+  jwt:
+    issuer: ssarain-test
+    access-token-secret: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2RlZg==
+    refresh-token-secret: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2RlZg==
+    access-token-expiration-seconds: 3600
+    refresh-token-expiration-seconds: 1209600
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+    allowed-headers:
+      - "*"
+    exposed-headers:
+      - Authorization
+  gemini:
+    api-key: test-gemini-key
+    model: gemini-3.5-flash
