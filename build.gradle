@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.bucket4j:bucket4j_jdk17-lettuce:8.19.0'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
