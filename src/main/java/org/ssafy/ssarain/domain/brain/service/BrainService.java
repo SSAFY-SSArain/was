@@ -61,6 +61,12 @@ public class BrainService {
         return BrainDetailDto.from(brain);
     }
 
+    @Transactional
+    public void deleteBrain(int bid) {
+        validateBrainExists(bid);
+        brainRepository.deleteById(bid);
+    }
+
     @Transactional(readOnly = true)
     public BrainNameVaildationDto checkBrainName(String name) {
         return new BrainNameVaildationDto(brainRepository.existsByName(name));
@@ -73,6 +79,12 @@ public class BrainService {
     private void validateDuplicateName(String name) {
         if (brainRepository.existsByName(name)) {
             throw new GlobalException(ErrorCode.BRAIN_NAME_DUPLICATED);
+        }
+    }
+
+    private void validateBrainExists(int bid) {
+        if (!brainRepository.existsById(bid)) {
+            throw new GlobalException(ErrorCode.BRAIN_NOT_FOUND);
         }
     }
     

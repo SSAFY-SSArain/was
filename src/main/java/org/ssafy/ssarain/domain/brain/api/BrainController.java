@@ -2,9 +2,11 @@ package org.ssafy.ssarain.domain.brain.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
@@ -32,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/brains")
 public class BrainController {
     private final BrainService brainService;
+    private final BrainAuthService brainAuthService;
     
     @GetMapping("/me")
     @Operation(summary = "B04: 내가 속한 Brain 조회")
@@ -59,6 +63,18 @@ public class BrainController {
             @Valid @RequestBody BrainCreateDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         return BaseResponse.success(SuccessCode.BRAIN_CREATED_SUCCESS, brainService.createBrain(dto, userDetails.getUserId()));
+    }
+
+    @DeleteMapping("/{bid}")
+    @Operation(summary = "B08: Brain 삭제")
+    public ResponseEntity<BaseResponse<Void>> deleteBrain(
+            @PathVariable int bid,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_ADMIN);
+        brainService.deleteBrain(bid);
+        return BaseResponse.success(SuccessCode.BRAIN_DELETE_SUCCESS);
     }
     
     @GetMapping("/check-name")

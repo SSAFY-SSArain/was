@@ -31,6 +31,7 @@ public enum SuccessCode {
     // Brain
     BRAIN_INFO_SUCCESS(HttpStatus.OK, "브레인 정보가 조회되었습니다."),
     BRAIN_CREATED_SUCCESS(HttpStatus.CREATED, "브레인이 생성되었습니다."),
+    BRAIN_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "브레인이 삭제되었습니다."),
     BRAIN_TOPIC_REGISTER_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 주제가 등록되었습니다."),
     BRAIN_TOPIC_INFO_SUCCESS(HttpStatus.OK, "브레인의 주제 정보가 조회되었습니다."),
     BRAIN_MEMBER_REQUEST_SUCCESS(HttpStatus.NO_CONTENT, "브레인 가입 신청이 완료되었습니다."),
