@@ -51,15 +51,16 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<BaseResponse<Void>> refresh(
+    public ResponseEntity<BaseResponse<UserInfoRes>> refresh(
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME) String refreshToken,
             HttpServletResponse response
     ) {
 
-        TokenRes result = authService.refresh(refreshToken);
-        setTokenCookies(response, result);
+        UserWithTokenRes result = authService.refresh(refreshToken);
+        setTokenCookies(response, result.tokenRes());
+        UserInfoRes userInfo = result.userInfo();
         
-        return BaseResponse.success(SuccessCode.USER_TOKEN_REFRESH_SUCCESS);
+        return BaseResponse.success(SuccessCode.USER_TOKEN_REFRESH_SUCCESS, userInfo);
     }
 
     @PostMapping("/logout")

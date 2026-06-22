@@ -21,6 +21,7 @@ import org.ssafy.ssarain.infra.mail.service.EmailVerificationService;
 import org.ssafy.ssarain.infra.redis.dao.RedisRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class AuthService {
         return createUserWithTokenRes(user);
     }
 
-    public TokenRes refresh(String refreshToken) {
+    public UserWithTokenRes refresh(String refreshToken) {
 
         validateRefreshTokenStructure(refreshToken);
 
@@ -97,10 +98,14 @@ public class AuthService {
 
         saveRefreshToken(user.getUid(), refreshToken, refreshTokenExpiresIn);
 
-        UserInfoRes userInfo = new UserInfoRes(user.getEmail(), user.getName());
-        TokenRes    tokenRes = new TokenRes(accessToken, accessTokenExpiresIn, refreshToken, refreshTokenExpiresIn);
+        TokenRes tokenRes = new TokenRes(accessToken, accessTokenExpiresIn, refreshToken, refreshTokenExpiresIn);
 
-        return new UserWithTokenRes(tokenRes, userInfo);
+        return createUserWithTokenRes(tokenRes, user);
+    }
+    
+    private UserWithTokenRes createUserWithTokenRes(TokenRes prebuilTokenRes, User user) {
+        UserInfoRes userInfoRes = new UserInfoRes(user.getEmail(), user.getName(), user.getRole());
+        return new UserWithTokenRes(prebuilTokenRes, userInfoRes);
     }
 
     private void saveRefreshToken(UUID userId, String refreshToken, long refreshTokenExpiresIn) {
@@ -159,24 +164,26 @@ public class AuthService {
         return "%sgrace:%s".formatted(JWT_REFRESH_TOKEN_PREFIX, refreshToken);
     }
 
-    private TokenRes reissueWithGracePeriod(String graceToken, String refreshToken) {
+    private UserWithTokenRes reissueWithGracePeriod(String graceToken, String refreshToken) {
 
         Authentication authentication = jwtProvider.getAuthenticationFromRefreshToken(refreshToken);
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userService.getUserByUserId(userDetails.getUserId());
 
-        String accessToken = jwtProvider.generateAccessToken(userDetails.getUserId(),
-                                                            userDetails.getUsername(),
-                                                            userDetails.getRole());
+        String accessToken = jwtProvider.generateAccessToken(user.getUid(),
+                                                            user.getEmail(),
+                                                            user.getRole());
 
-        return new TokenRes(
+        TokenRes tokenRes = new TokenRes(
                 accessToken,
                 jwtProvider.getAccessTokenExpirationSeconds(),
                 graceToken,
                 jwtProvider.getRefreshTokenExpirationSeconds()
         );
+        return createUserWithTokenRes(tokenRes, user);
     }
 
-    private TokenRes reissueWithNewToken(UUID userId, String graceRedisKey) {
+    private UserWithTokenRes reissueWithNewToken(UUID userId, String graceRedisKey) {
 
         User user = userService.getUserByUserId(userId);
 
@@ -191,8 +198,9 @@ public class AuthService {
         // RefreshToken 갱신
         saveRefreshToken(userId, newRefreshToken, refreshTokenExpiresIn);
 
-        return new TokenRes(
+        TokenRes tokenRes = new TokenRes(
                 newAccessToken, accessTokenExpiresIn, newRefreshToken, refreshTokenExpiresIn
         );
+        return createUserWithTokenRes(tokenRes, user);
     }
 }
