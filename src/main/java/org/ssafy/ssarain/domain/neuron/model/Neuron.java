@@ -10,8 +10,6 @@ import org.ssafy.ssarain.common.model.BaseTimeEntity;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.user.model.User;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Entity
 @Table(name = "neurons")
@@ -41,9 +39,6 @@ public class Neuron extends BaseTimeEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
-
     @Builder(access = AccessLevel.PRIVATE)
     private Neuron(BrainTopic brainTopic, User user, String title, String content) {
         this.brainTopic = brainTopic;
@@ -59,13 +54,5 @@ public class Neuron extends BaseTimeEntity {
                 .title(title)
                 .content(content)
                 .build();
-    }
-
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
-
-    public void delete() {
-        this.deletedAt = LocalDateTime.now();
     }
 }

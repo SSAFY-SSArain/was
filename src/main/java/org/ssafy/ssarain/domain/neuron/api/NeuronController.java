@@ -6,15 +6,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.BaseResponse;
+import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.common.security.service.NeuronAuthService;
 import org.ssafy.ssarain.domain.neuron.dto.NeuronCreateDto;
 import org.ssafy.ssarain.domain.neuron.dto.NeuronDetailDto;
+import org.ssafy.ssarain.domain.neuron.dto.NeuronLikeDto;
 import org.ssafy.ssarain.domain.neuron.dto.NeuronPreviewListDto;
 import org.ssafy.ssarain.domain.neuron.service.NeuronService;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,10 +44,12 @@ public class NeuronController {
     @GetMapping("/{nid}")
     @Operation(summary = "N02: Neuron 상세 정보 조회")
     public ResponseEntity<BaseResponse<NeuronDetailDto>> getNeuron(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Integer nid
     ) {
 
-        NeuronDetailDto neuronDetailDto = neuronService.getNeuron(nid);
+        UUID uid = userDetails != null ? userDetails.getUserId() : null;
+        NeuronDetailDto neuronDetailDto = neuronService.getNeuron(nid, uid);
 
         return BaseResponse.success(SuccessCode.NEURON_INFO_SUCCESS, neuronDetailDto);
     }
@@ -72,6 +79,18 @@ public class NeuronController {
         neuronService.deleteNeuron(nid);
 
         return BaseResponse.success(SuccessCode.NEURON_DELETE_SUCCESS);
+    }
+
+    @PostMapping("/{nid}/like")
+    @Operation(summary = "N06: Neuron 좋아요")
+    public ResponseEntity<BaseResponse<NeuronLikeDto>> likeNeuron(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable int nid
+    ) {
+
+        NeuronLikeDto neuronLikeDto = neuronService.likeNeuron(nid, userDetails.getUserId());
+
+        return BaseResponse.success(SuccessCode.NEURON_LIKE_SUCCESS, neuronLikeDto);
     }
 
 }

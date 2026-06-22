@@ -37,7 +37,7 @@ public class NeuronAuthService {
      */
 
     private boolean isNeuronWriter(UUID uid, int nid) {
-        return neuronRepository.existsByNidAndUser_UidAndDeletedAtIsNull(nid, uid);
+        return neuronRepository.existsByNidAndUser_Uid(nid, uid);
     }
 
 }

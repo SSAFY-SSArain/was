@@ -5,15 +5,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.ssafy.ssarain.domain.neuron.model.Neuron;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface NeuronRepository extends JpaRepository<Neuron, Integer> {
-    @Query("SELECT count(*) FROM Neuron n WHERE n.user.uid = :uid AND n.deletedAt IS NULL")
+    @Query("SELECT count(*) FROM Neuron n WHERE n.user.uid = :uid")
     int countByUid(UUID uid);
-    List<Neuron> findByBrainTopic_BtidAndDeletedAtIsNull(Integer btid);
+    List<Neuron> findByBrainTopic_Btid(Integer btid);
 
-    Optional<Neuron> findByNidAndDeletedAtIsNull(Integer nid);
-
-    boolean existsByNidAndUser_UidAndDeletedAtIsNull(Integer nid, UUID userUid);
+    boolean existsByNidAndUser_Uid(Integer nid, UUID userUid);
 }
