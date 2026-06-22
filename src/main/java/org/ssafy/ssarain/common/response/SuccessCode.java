@@ -40,6 +40,7 @@ public enum SuccessCode {
     BRAIN_JOIN_MANAGE_SUCCESS(HttpStatus.NO_CONTENT, "브레인 가입 신청 처리가 완료되었습니다."),
     BRAIN_MEMBER_JOIN_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 사용자 추가가 완료되었습니다."),
     BRAIN_MEMBER_INFO_SUCCESS(HttpStatus.OK, "브레인 회원 정보가 조회되었습니다."),
+    BRAIN_MEMBER_ROLE_UPDATE_SUCCESS(HttpStatus.NO_CONTENT, "브레인 회원 권한이 변경되었습니다."),
     BRAIN_NAME_VALIDATION_SUCCESS(HttpStatus.OK, "브레인 이름 중복 검사가 완료되었습니다."),
 
     // Topic

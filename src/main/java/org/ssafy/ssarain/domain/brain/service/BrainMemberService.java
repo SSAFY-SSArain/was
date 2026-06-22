@@ -16,6 +16,7 @@ import org.ssafy.ssarain.domain.brain.dao.BrainWaitingRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainJoinManageDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberPageDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberRoleUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
@@ -125,6 +126,18 @@ public class BrainMemberService {
                 .map(brainMember -> BrainUserInfoDto.from(brainMember.getUser()));
         return BrainUserPageDto.from(userInfoDtos);
     }
+
+    @Transactional
+    public void updateMemberRole(int bid, UUID requesterUid, UUID targetUid, BrainMemberRoleUpdateDto dto) {
+        validateBrainExists(bid);
+        validateSelfRoleUpdate(requesterUid, targetUid);
+        validateAssignableRole(dto.role());
+
+        BrainMember brainMember = getBrainMember(bid, targetUid);
+        validateTargetRoleChangeable(brainMember);
+
+        brainMember.changeRole(dto.role());
+    }
     
     /*
         Util Method
@@ -143,6 +156,11 @@ public class BrainMemberService {
     private BrainWaiting getBrainWaiting(int bid, UUID uid) {
         return brainWaitingRepository.findByBmidBidAndBmidUid(bid, uid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_WAITING_NOT_FOUND));
+    }
+
+    private BrainMember getBrainMember(int bid, UUID uid) {
+        return brainMemberRepository.findById(new BrainMember.BrainMemberId(bid, uid))
+                .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_MEMBER_NOT_FOUND));
     }
     
     private List<BrainMember> getExistBrainMembersOf(int bid, List<UUID> uids) {
@@ -205,6 +223,24 @@ public class BrainMemberService {
     private void validateSelfDeletion(UUID requester, List<UUID> deleteList) {
         if (deleteList.contains(requester)) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_CANNOT_DELETE_SELF);
+        }
+    }
+
+    private void validateSelfRoleUpdate(UUID requester, UUID target) {
+        if (requester.equals(target)) {
+            throw new GlobalException(ErrorCode.BRAIN_MEMBER_ROLE_UPDATE_DENIED);
+        }
+    }
+
+    private void validateAssignableRole(BrainMemberRole role) {
+        if (role == BrainMemberRole.ADMIN) {
+            throw new GlobalException(ErrorCode.BRAIN_MEMBER_ROLE_UPDATE_DENIED);
+        }
+    }
+
+    private void validateTargetRoleChangeable(BrainMember brainMember) {
+        if (brainMember.getRole() == BrainMemberRole.ADMIN) {
+            throw new GlobalException(ErrorCode.BRAIN_MEMBER_ROLE_UPDATE_DENIED);
         }
     }
 

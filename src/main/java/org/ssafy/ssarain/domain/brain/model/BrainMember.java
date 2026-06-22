@@ -83,4 +83,8 @@ public class BrainMember extends BaseTimeEntity {
     public static BrainMember adminOf(Brain brain, User user) {
         return BrainMember.builder().brain(brain).user(user).role(BrainMemberRole.ADMIN).build();
     }
+
+    public void changeRole(BrainMemberRole role) {
+        this.role = role;
+    }
 }

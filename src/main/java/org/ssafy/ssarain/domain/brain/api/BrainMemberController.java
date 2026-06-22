@@ -1,10 +1,13 @@
 package org.ssafy.ssarain.domain.brain.api;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +20,7 @@ import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainJoinManageDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberPageDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberRoleUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
 import org.ssafy.ssarain.domain.brain.service.BrainMemberService;
@@ -112,5 +116,19 @@ public class BrainMemberController {
                 SuccessCode.BRAIN_MEMBER_INFO_SUCCESS,
                 brainMemberService.getBrainMembers(pageDto, bid)
         );
+    }
+
+    @PatchMapping("/{bid}/users/{uid}/role")
+    @Operation(summary = "B19: Brain 멤버 권한 부여 및 박탈")
+    public ResponseEntity<BaseResponse<Void>> updateMemberRole(
+            @PathVariable int bid,
+            @PathVariable UUID uid,
+            @Valid @RequestBody BrainMemberRoleUpdateDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_ADMIN);
+        brainMemberService.updateMemberRole(bid, userDetails.getUserId(), uid, dto);
+        return BaseResponse.success(SuccessCode.BRAIN_MEMBER_ROLE_UPDATE_SUCCESS);
     }
 }
