@@ -43,8 +43,14 @@ public class BrainController {
     @GetMapping
     @Operation(summary = "B05: Brain 검색")
     public ResponseEntity<BaseResponse<BrainPageDto<BrainFoundDto>>> searchBrain(
-            @Valid @ModelAttribute BrainSearchDto dto) {
-        return BaseResponse.success(SuccessCode.BRAIN_INFO_SUCCESS, brainService.searchBrain(dto));
+            @Valid @ModelAttribute BrainSearchDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        return BaseResponse.success(
+                SuccessCode.BRAIN_INFO_SUCCESS,
+                brainService.searchBrain(dto, userDetails == null ? null : userDetails.getUserId())
+        );
     }
     
     @PostMapping

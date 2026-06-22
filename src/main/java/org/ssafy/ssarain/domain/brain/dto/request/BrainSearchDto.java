@@ -12,6 +12,9 @@ public record BrainSearchDto(
         @Schema(requiredMode = RequiredMode.NOT_REQUIRED, example = "구미")
         @Size(max = 50)
         String name,
+
+        @Schema(requiredMode = RequiredMode.NOT_REQUIRED, example = "false")
+        Boolean includeJoined,
         
         @Schema(requiredMode = RequiredMode.NOT_REQUIRED, example = "0")
         Integer page,
@@ -24,5 +27,9 @@ public record BrainSearchDto(
         int p = (page == null || page < 0) ? 0 : page;
         int s = (size == null || size <= 0) ? 9 : size;
         return PageRequest.of(p, s, Sort.by("createdAt").descending());
+    }
+
+    public boolean shouldIncludeJoined() {
+        return includeJoined == null || includeJoined;
     }
 }

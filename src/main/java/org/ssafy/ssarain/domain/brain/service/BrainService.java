@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
@@ -38,14 +37,14 @@ public class BrainService {
     @Transactional(readOnly = true)
     public BrainListDto<BrainInfoDto> getBrainInfos(UUID uid) {
         List<BrainInfoDto> brains = brainMemberRepository.findByBmid_Uid(uid).stream()
-                .map(brainMember -> BrainInfoDto.from(brainMember.getBrain()))
+                .map(BrainInfoDto::from)
                 .toList();
         return BrainListDto.from(brains);
     }
     
     @Transactional(readOnly = true)
-    public BrainPageDto<BrainFoundDto> searchBrain(BrainSearchDto dto) {
-        Page<Brain> brains = findBrains(dto);
+    public BrainPageDto<BrainFoundDto> searchBrain(BrainSearchDto dto, UUID uid) {
+        Page<Brain> brains = findBrains(dto, uid);
         Page<BrainFoundDto> brainDtos = brains.map(this::toBrainFoundDto);
         
         return BrainPageDto.from(brainDtos);
@@ -82,12 +81,9 @@ public class BrainService {
         return brainRepository.save(newBrain);
     }
     
-    private Page<Brain> findBrains(BrainSearchDto dto) {
-        Pageable pageable = dto.pageable();
-        String name = dto.name();
-        return (name == null || name.isBlank())
-                ? brainRepository.findAll(pageable)
-                : brainRepository.findByNameContaining(name.trim(), pageable);
+    private Page<Brain> findBrains(BrainSearchDto dto, UUID uid) {
+        String name = dto.name() == null ? null : dto.name().trim();
+        return brainRepository.searchBrains(name, uid, dto.shouldIncludeJoined(), dto.pageable());
     }
     
     private BrainFoundDto toBrainFoundDto(Brain brain) {
