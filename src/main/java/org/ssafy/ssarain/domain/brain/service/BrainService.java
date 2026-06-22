@@ -13,6 +13,7 @@ import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainSearchDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainFoundDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
@@ -60,6 +61,23 @@ public class BrainService {
         brainMemberRepository.save(BrainMember.adminOf(brain, brainAdmin));
         
         return BrainDetailDto.from(brain);
+    }
+    
+    @Transactional
+    public BrainInfoDto updateBrain(int bid, BrainUpdateDto dto) {
+    	Brain brain = findBrain(bid);
+    	
+    	if (dto.name() != null) {
+    		brain.setName(dto.name());
+    	}
+    	if (dto.description() != null) {
+    		brain.setDescription(dto.description());
+    	}
+    	if (dto.joinPolicy() != null) {
+    		brain.setJoinPolicy(dto.joinPolicy());
+    	}
+    	
+    	return BrainInfoDto.from(brain);
     }
     
     @Transactional(readOnly = true)

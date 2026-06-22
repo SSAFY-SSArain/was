@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -32,16 +33,19 @@ public class Brain extends BaseTimeEntity {
     @Column(name = "bid", nullable = false, unique = true)
     private int bid;
 
+    @Setter
     @Size(max = 50)
     @NotNull
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
     
+    @Setter
     @Size(max = 200)
     @Column(name = "description", nullable = false, length = 200)
     @ColumnDefault("''")
     private String description = "";
     
+    @Setter
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "join_policy", nullable = false, columnDefinition = "ENUM('PUBLIC', 'PROTECTED')")
