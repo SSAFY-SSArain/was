@@ -61,6 +61,12 @@ public class BrainService {
         
         return BrainDetailDto.from(brain);
     }
+    
+    @Transactional(readOnly = true)
+    public BrainInfoDto getBrainInfo(int bid) {
+    	Brain brain = findBrain(bid);
+    	return BrainInfoDto.from(brain);
+    }
 
     @Transactional(readOnly = true)
     public BrainNameVaildationDto checkBrainName(String name) {
@@ -80,6 +86,11 @@ public class BrainService {
     private Brain createAndSaveBrain(BrainCreateDto dto) {
         Brain newBrain = Brain.of(dto.name(), dto.description(), dto.joinPolicy());
         return brainRepository.save(newBrain);
+    }
+    
+    private Brain findBrain(int bid) {
+    	return brainRepository.findById(bid)
+    			.orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_NOT_FOUND));
     }
     
     private Page<Brain> findBrains(BrainSearchDto dto) {
