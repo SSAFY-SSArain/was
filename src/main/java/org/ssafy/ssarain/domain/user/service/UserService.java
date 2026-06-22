@@ -79,7 +79,7 @@ public class UserService {
 
         User user = findUserByEmail(email);
         int neuronCount = neuronRepository.countByUid(user.getUid());
-        int commentCount = commentRepository.countByUid(user.getUid());
+        int commentCount = commentRepository.countByUidAndDeletedAtIsNull(user.getUid());
         int likeCount = neuronLikeRepository.countByNlid_Uid(user.getUid());
 
         return new UserInfoDto(

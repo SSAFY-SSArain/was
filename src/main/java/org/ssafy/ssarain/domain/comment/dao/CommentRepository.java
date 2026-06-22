@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     
-    @Query("SELECT count(*) FROM Comment c WHERE c.user.uid = :uid")
-    int countByUid(UUID uid);
+    @Query("SELECT count(*) FROM Comment c WHERE c.user.uid = :uid AND c.deletedAt IS NULL")
+    int countByUidAndDeletedAtIsNull(UUID uid);
 
     List<Comment> findByNeuron_NidOrderByCreatedAtAsc(Integer neuronNid);
 
