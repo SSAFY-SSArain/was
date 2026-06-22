@@ -9,7 +9,7 @@ import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
 import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
-import org.ssafy.ssarain.domain.user.dto.UserUpdateDto;
+import org.ssafy.ssarain.domain.user.dto.UserPasswordUpdateDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.dto.res.NameCheckRes;
 import org.ssafy.ssarain.domain.user.service.UserService;
@@ -34,14 +34,14 @@ public class UserController {
     }
     
     @Operation(summary = "U02: 비밀번호를 변경합니다.", description = "유저 본인의 비밀번호를 변경합니다.")
-    @PatchMapping
-    public ResponseEntity<BaseResponse<UserProfileDto>> updateUser(
+    @PatchMapping("/password")
+    public ResponseEntity<BaseResponse<UserProfileDto>> updatePassword(
     		@AuthenticationPrincipal CustomUserDetails userDetails,
-    		@Valid @RequestBody UserUpdateDto dto) {
+    		@Valid @RequestBody UserPasswordUpdateDto dto) {
     	
-    	UserProfileDto userProfile = userService.updateUser(userDetails.getUsername(), dto);
+    	UserProfileDto userProfile = userService.updateUserPassword(userDetails.getUsername(), dto);
     	
-    	return BaseResponse.success(SuccessCode.USER_UPDATE_SUCCESS, userProfile);
+    	return BaseResponse.success(SuccessCode.USER_PASSWORD_UPDATE_SUCCESS, userProfile);
     }
 
     @Operation(summary = "U03: 이름 중복 검증", description = "중복되는 이름인지 확인합니다.")

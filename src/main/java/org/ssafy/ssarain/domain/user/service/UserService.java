@@ -10,7 +10,7 @@ import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.dto.UserActivityDto;
 import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
 import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
-import org.ssafy.ssarain.domain.user.dto.UserUpdateDto;
+import org.ssafy.ssarain.domain.user.dto.UserPasswordUpdateDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,7 +43,7 @@ public class UserService {
     }
     
     @Transactional
-    public UserProfileDto updateUser(String email, UserUpdateDto dto) {
+    public UserProfileDto updateUserPassword(String email, UserPasswordUpdateDto dto) {
 
         User user = findUserByEmail(email);
         
