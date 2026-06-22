@@ -65,7 +65,10 @@ public class BrainService {
     
     @Transactional
     public BrainInfoDto updateBrain(int bid, BrainUpdateDto dto) {
-    	Brain brain = findBrain(bid);
+        Brain brain = findBrain(bid);
+        if (dto.name() != null) {
+            validateDuplicateName(dto.name());
+        }
     	
         brain.update(dto);
     	
