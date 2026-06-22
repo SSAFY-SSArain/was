@@ -27,10 +27,13 @@ public enum SuccessCode {
     USER_ACTIVITY_INFO_SUCCESS(HttpStatus.OK, "내 활동 조회가 완료되었습니다."),
     USER_TOKEN_REFRESH_SUCCESS(HttpStatus.OK, "토큰 재발급이 완료되었습니다."),
     USER_NAME_CHECK_SUCCESS(HttpStatus.OK, "유저 닉네임 중복 여부가 조회되었습니다."),
+    USER_UPDATE_SUCCESS(HttpStatus.OK, "유저 정보가 수정되었습니다."),
+    USER_PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "유저 비밀번호가 수정되었습니다."),
     
     // Brain
     BRAIN_INFO_SUCCESS(HttpStatus.OK, "브레인 정보가 조회되었습니다."),
     BRAIN_CREATED_SUCCESS(HttpStatus.CREATED, "브레인이 생성되었습니다."),
+    BRAIN_UPDATE_SUCCESS(HttpStatus.OK, "브레인 정보가 수정되었습니다."),
     BRAIN_TOPIC_REGISTER_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 주제가 등록되었습니다."),
     BRAIN_TOPIC_INFO_SUCCESS(HttpStatus.OK, "브레인의 주제 정보가 조회되었습니다."),
     BRAIN_MEMBER_REQUEST_SUCCESS(HttpStatus.NO_CONTENT, "브레인 가입 신청이 완료되었습니다."),

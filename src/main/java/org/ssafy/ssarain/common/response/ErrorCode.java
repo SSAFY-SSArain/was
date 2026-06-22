@@ -41,6 +41,8 @@ public enum ErrorCode {
     USER_AUTH_ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "US007", "만료된 AccessToken입니다."),
     USER_AUTH_INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "US008", "잘못된 RefreshToken입니다."),
     USER_AUTH_REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "US009", "만료된 RefreshToken입니다."),
+    USER_PASSWORD_CONFLICT(HttpStatus.CONFLICT, "US010", "이전 비밀번호와 동일합니다."),
+    USER_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "US011", "잘못된 비밀번호입니다."),
 
     // Brain
     BRAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "해당 브레인을 찾을 수 없습니다."),

@@ -13,6 +13,7 @@ import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainSearchDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainFoundDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
@@ -61,6 +62,24 @@ public class BrainService {
         
         return BrainDetailDto.from(brain);
     }
+    
+    @Transactional
+    public BrainInfoDto updateBrain(int bid, BrainUpdateDto dto) {
+        Brain brain = findBrain(bid);
+        if (dto.name() != null) {
+            validateDuplicateName(dto.name());
+        }
+    	
+        brain.update(dto);
+    	
+    	return BrainInfoDto.from(brain);
+    }
+    
+    @Transactional(readOnly = true)
+    public BrainInfoDto getBrainInfo(int bid) {
+    	Brain brain = findBrain(bid);
+    	return BrainInfoDto.from(brain);
+    }
 
     @Transactional(readOnly = true)
     public BrainNameVaildationDto checkBrainName(String name) {
@@ -80,6 +99,11 @@ public class BrainService {
     private Brain createAndSaveBrain(BrainCreateDto dto) {
         Brain newBrain = Brain.of(dto.name(), dto.description(), dto.joinPolicy());
         return brainRepository.save(newBrain);
+    }
+    
+    private Brain findBrain(int bid) {
+    	return brainRepository.findById(bid)
+    			.orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_NOT_FOUND));
     }
     
     private Page<Brain> findBrains(BrainSearchDto dto) {

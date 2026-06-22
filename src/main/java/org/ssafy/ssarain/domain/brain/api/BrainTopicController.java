@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
@@ -19,6 +20,8 @@ import org.ssafy.ssarain.domain.brain.service.BrainTopicService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -43,8 +46,10 @@ public class BrainTopicController {
     @GetMapping("/{bid}/topics")
     @Operation(summary = "B10: 특정 Brain의 Topic 조회")
     public ResponseEntity<BaseResponse<BrainDetailDto>> getBrainTopics(
-            @PathVariable int bid) {
-        return BaseResponse.success(SuccessCode.BRAIN_TOPIC_INFO_SUCCESS, brainTopicService.getBrainTopics(bid));
+            @PathVariable int bid,
+            @RequestParam(required = false) Integer tid,
+            @RequestParam(required = false, defaultValue = "3") @Min(1) @Max(5) int depth) {
+        return BaseResponse.success(SuccessCode.BRAIN_TOPIC_INFO_SUCCESS, brainTopicService.getBrainTopics(bid, tid, depth));
     }
 
     @GetMapping("/{bid}/topics/{tid}")

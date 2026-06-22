@@ -11,9 +11,8 @@ import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 
 public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer> {
 
-    @EntityGraph(attributePaths = {"brain", "topic"})
-    List<BrainTopic> findByBid(int bid);
-
+	boolean existsByBidAndTid(int bid, int tid);
+	
     @EntityGraph(attributePaths = {"brain", "topic"})
     Optional<BrainTopic> findByBidAndTid(int bid, int tid);
     
@@ -41,4 +40,25 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
             """, 
         nativeQuery = true)
     int addTopicWithAncestors(int bid, List<Integer> tid);
+    
+    @Query(value = """
+            WITH RECURSIVE Descendant AS (
+                SELECT bt.*, 1 AS `depth`
+                FROM brain_topics bt
+                LEFT OUTER JOIN topics t ON t.tid = bt.tid
+                WHERE bid = :bid AND if(isnull(:tid), isnull(t.pid), bt.tid = :tid) 
+                
+                UNION ALL
+                
+                SELECT bt.*, (d.depth + 1) AS `depth`
+                FROM brain_topics bt
+                LEFT OUTER JOIN topics t ON t.tid = bt.tid
+                INNER JOIN Descendant d ON t.pid = d.tid
+                WHERE bt.bid = :bid AND (d.depth + 1) <= :depth
+            )
+            SELECT *
+            FROM Descendant d
+            """, 
+            nativeQuery = true)
+    List<BrainTopic> findByPidAndBid(int bid, Integer tid, int depth);
 }

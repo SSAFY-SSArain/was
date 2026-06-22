@@ -40,9 +40,13 @@ public class BrainTopicService {
     }
 
     @Transactional(readOnly = true)
-    public BrainDetailDto getBrainTopics(int bid) {
+    public BrainDetailDto getBrainTopics(int bid, Integer tid, int depth) {
         Brain brain = findBrain(bid);
-        List<BrainTopicInfoDto> topics = brainTopicRepository.findByBid(bid)
+        if (tid != null) {
+        	validateBrainTopic(bid, tid);
+        }
+        
+        List<BrainTopicInfoDto> topics = brainTopicRepository.findByPidAndBid(bid, tid, depth)
                 .stream()
                 .map(BrainTopicInfoDto::from)
                 .toList();
@@ -69,6 +73,12 @@ public class BrainTopicService {
     private void validateBid(int bid) {
         if (!brainRepository.existsById(bid)) {
             throw new GlobalException(ErrorCode.BRAIN_NOT_FOUND);
+        }
+    }
+    
+    private void validateBrainTopic(int bid, int tid) {
+        if (!brainTopicRepository.existsByBidAndTid(bid, tid)) {
+        	throw new GlobalException(ErrorCode.BRAIN_OR_TOPIC_NOT_FOUND);
         }
     }
     

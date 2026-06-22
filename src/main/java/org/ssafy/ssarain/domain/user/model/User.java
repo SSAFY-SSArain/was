@@ -52,6 +52,10 @@ public class User extends BaseTimeEntity {
         this.password = password;
         this.role = role;
     }
+    
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 
     public static User of(String email, String name, String password) {
         return User.builder().email(email).name(name).password(password).role(UserRole.USER).build();

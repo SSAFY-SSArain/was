@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.ssafy.ssarain.common.model.BaseTimeEntity;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainUpdateDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,6 +61,18 @@ public class Brain extends BaseTimeEntity {
         this.name = name;
         this.description = description;
         this.joinPolicy = joinPolicy;
+    }
+    
+    public void update(BrainUpdateDto dto) {
+        if (dto.name() != null) {
+            this.name = dto.name();
+        }
+        if (dto.description() != null) {
+            this.description = dto.description();
+        }
+        if (dto.joinPolicy() != null) {
+            this.joinPolicy = dto.joinPolicy();
+        }
     }
     
     public static Brain of(String name, String description, JoinPolicy joinPolicy) {

@@ -10,6 +10,7 @@ import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.dto.UserActivityDto;
 import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
 import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
+import org.ssafy.ssarain.domain.user.dto.UserPasswordUpdateDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
 import org.ssafy.ssarain.domain.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +40,24 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(password);
 
         return userRepository.save(User.of(email, name, encodedPassword));
+    }
+    
+    @Transactional
+    public UserProfileDto updateUserPassword(String email, UserPasswordUpdateDto dto) {
+
+        User user = findUserByEmail(email);
+        
+        if(!isPasswordValid(dto.oldPassword(), user.getPassword())) {
+            throw new GlobalException(ErrorCode.USER_PASSWORD_INCORRECT);
+        }
+        
+        if (isPasswordValid(dto.newPassword(), user.getPassword())) {
+        	throw new GlobalException(ErrorCode.USER_PASSWORD_CONFLICT);
+        }
+        
+        String encodedPassword = passwordEncoder.encode(dto.newPassword());
+        user.updatePassword(encodedPassword);
+        return UserProfileDto.from(user);
     }
 
     @Transactional(readOnly = true)
