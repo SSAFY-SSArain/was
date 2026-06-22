@@ -12,6 +12,8 @@ import java.util.UUID;
 public interface NeuronLikeRepository extends JpaRepository<NeuronLike, NeuronLike.NeuronLikeId> {
 
     int countByNeuron_Nid(Integer neuronNid);
+    
+    int countByNlid_Uid(UUID uid);
 
     boolean existsByUser_UidAndNeuron_Nid(UUID userUid, Integer neuronNid);
 

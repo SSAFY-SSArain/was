@@ -5,6 +5,7 @@ import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.security.dto.req.SignupReq;
 import org.ssafy.ssarain.domain.comment.dao.CommentRepository;
+import org.ssafy.ssarain.domain.neuron.dao.NeuronLikeRepository;
 import org.ssafy.ssarain.domain.neuron.dao.NeuronRepository;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.dto.UserActivityDto;
@@ -23,10 +24,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository    userRepository;
-    private final NeuronRepository    neuronRepository;
-    private final CommentRepository commentRepository;
-    private final PasswordEncoder   passwordEncoder;
+    private final UserRepository       userRepository;
+    private final NeuronRepository     neuronRepository;
+    private final CommentRepository    commentRepository;
+    private final NeuronLikeRepository neuronLikeRepository;
+    private final PasswordEncoder      passwordEncoder;
 
     @Transactional
     public User createUser(SignupReq dto) {
@@ -78,8 +80,7 @@ public class UserService {
         User user = findUserByEmail(email);
         int neuronCount = neuronRepository.countByUid(user.getUid());
         int commentCount = commentRepository.countByUid(user.getUid());
-        // TODO: 추후 확장을 위한 데이터이며, 현재는 0이 전송됨
-        int likeCount = 0;
+        int likeCount = neuronLikeRepository.countByNlid_Uid(user.getUid());
 
         return new UserInfoDto(
                 UserProfileDto.from(user),
