@@ -1,6 +1,7 @@
 package org.ssafy.ssarain.domain.quiz.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
+import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.quiz.dto.QuizListRes;
 import org.ssafy.ssarain.domain.quiz.service.QuizService;
 
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/quizzes")
 public class QuizController {
 
+    private final BrainAuthService brainAuthService;
     private final QuizService quizService;
 
     @GetMapping
@@ -33,9 +37,11 @@ public class QuizController {
     @PostMapping
     @Operation(summary = "Q02: BrainTopic 퀴즈 생성", description = "btid에 연결된 neuron title을 기반으로 퀴즈 10개를 생성합니다.")
     public ResponseEntity<BaseResponse<QuizListRes>> generateQuizzes(
-            @RequestParam(name = "btid") Integer brainTopicId
+            @RequestParam(name = "btid") Integer brainTopicId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
+        brainAuthService.authorizeBrainTopicRoleOf(userDetails, brainTopicId, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(SuccessCode.QUIZ_CREATE_SUCCESS, quizService.generateQuizzes(brainTopicId));
     }
 }
