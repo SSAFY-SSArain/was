@@ -56,7 +56,7 @@ public class UserService {
         }
         
         String encodedPassword = passwordEncoder.encode(dto.newPassword());
-        user.setPassword(encodedPassword);
+        user.updatePassword(encodedPassword);
         return UserProfileDto.from(user);
     }
 

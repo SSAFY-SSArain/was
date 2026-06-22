@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.ssafy.ssarain.common.model.BaseTimeEntity;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainUpdateDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +22,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Entity
@@ -33,19 +33,16 @@ public class Brain extends BaseTimeEntity {
     @Column(name = "bid", nullable = false, unique = true)
     private int bid;
 
-    @Setter
     @Size(max = 50)
     @NotNull
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
     
-    @Setter
     @Size(max = 200)
     @Column(name = "description", nullable = false, length = 200)
     @ColumnDefault("''")
     private String description = "";
     
-    @Setter
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "join_policy", nullable = false, columnDefinition = "ENUM('PUBLIC', 'PROTECTED')")
@@ -64,6 +61,18 @@ public class Brain extends BaseTimeEntity {
         this.name = name;
         this.description = description;
         this.joinPolicy = joinPolicy;
+    }
+    
+    public void update(BrainUpdateDto dto) {
+        if (dto.name() != null) {
+            this.name = dto.name();
+        }
+        if (dto.description() != null) {
+            this.description = dto.description();
+        }
+        if (dto.joinPolicy() != null) {
+            this.joinPolicy = dto.joinPolicy();
+        }
     }
     
     public static Brain of(String name, String description, JoinPolicy joinPolicy) {

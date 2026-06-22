@@ -67,15 +67,7 @@ public class BrainService {
     public BrainInfoDto updateBrain(int bid, BrainUpdateDto dto) {
     	Brain brain = findBrain(bid);
     	
-    	if (dto.name() != null) {
-    		brain.setName(dto.name());
-    	}
-    	if (dto.description() != null) {
-    		brain.setDescription(dto.description());
-    	}
-    	if (dto.joinPolicy() != null) {
-    		brain.setJoinPolicy(dto.joinPolicy());
-    	}
+        brain.update(dto);
     	
     	return BrainInfoDto.from(brain);
     }
