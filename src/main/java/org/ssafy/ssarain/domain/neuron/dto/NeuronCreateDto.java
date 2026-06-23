@@ -14,6 +14,7 @@ public record NeuronCreateDto(
         String title,
 
         @Schema(requiredMode = RequiredMode.REQUIRED, example = "뉴런 내용 1")
+        @Size(max = 10000)
         @NotBlank
         String content,
 
