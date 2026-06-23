@@ -150,12 +150,14 @@ public class BrainMemberService {
     public void leaveFromBrain(int bid, UUID uid) {
     	 BrainMember brainMember = getBrainMember(bid, uid);
     	 
+    	 // JPA 영속성 컨텍스트 관리:
+    	 // Brain 삭제를 위해서는 연관된 엔티티인 brainMember가 먼저 제거되어야 합니다. 
+    	 brainMemberRepository.delete(brainMember);
+    	 
     	 if (brainMember.getRole() == BrainMemberRole.ADMIN) {
     		 if (!resignAdmin(bid, List.of(uid))) {
                  brainRepository.deleteById(bid);
              }
-    	 } else {
-    		 brainMemberRepository.delete(brainMember); 
     	 }
     }
     
