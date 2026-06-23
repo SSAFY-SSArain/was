@@ -99,13 +99,13 @@ CREATE TABLE brain_waitings (
 );
 
 CREATE TABLE neurons (
-    nid        INT          NOT NULL AUTO_INCREMENT,
-    btid       INT          NOT NULL,
-    uid        BINARY(16)   NOT NULL,
-    title      VARCHAR(100) NOT NULL,
-    content    LONGTEXT     NOT NULL,
-    created_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    updated_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    nid        INT            NOT NULL AUTO_INCREMENT,
+    btid       INT            NOT NULL,
+    uid        BINARY(16)     NOT NULL,
+    title      VARCHAR(100)   NOT NULL,
+    content    VARCHAR(10000) NOT NULL,
+    created_at DATETIME(6)    NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6)    NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
     PRIMARY KEY (nid),
     CONSTRAINT fk_neurons_brain_topics FOREIGN KEY (btid) REFERENCES brain_topics (btid) ON DELETE CASCADE,

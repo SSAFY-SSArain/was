@@ -35,7 +35,7 @@ public class Neuron extends BaseTimeEntity {
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @Lob
+    @Size(max = 10000)
     @Column(name = "content", nullable = false)
     private String content;
 
