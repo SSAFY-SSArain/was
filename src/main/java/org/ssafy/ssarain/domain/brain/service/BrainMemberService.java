@@ -19,6 +19,8 @@ import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberPageDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberRoleUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainMemberInfoDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainMemberInfoPageDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
@@ -125,12 +127,12 @@ public class BrainMemberService {
     }
 
     @Transactional(readOnly = true)
-    public BrainUserPageDto getBrainMembers(BrainMemberPageDto dto, int bid) {
+    public BrainMemberInfoPageDto getBrainMembers(BrainMemberPageDto dto, int bid) {
         validateBrainExists(bid);
         
-        Page<BrainUserInfoDto> userInfoDtos = brainMemberRepository.findByBmid_Bid(bid, dto.pageable())
-                .map(brainMember -> BrainUserInfoDto.from(brainMember.getUser()));
-        return BrainUserPageDto.from(userInfoDtos);
+        Page<BrainMemberInfoDto> memberInfoDtos = brainMemberRepository.findByBmid_Bid(bid, dto.pageable())
+                .map(BrainMemberInfoDto::from);
+        return BrainMemberInfoPageDto.from(memberInfoDtos);
     }
 
     @Transactional
