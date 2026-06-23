@@ -1,6 +1,10 @@
 package org.ssafy.ssarain.domain.topic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -10,9 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.domain.topic.dao.TopicRepository;
 import org.ssafy.ssarain.domain.topic.dao.dto.TopicPathQueryDto;
+import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicPathSearchDto;
+import org.ssafy.ssarain.domain.topic.model.Topic;
 
 @ExtendWith(MockitoExtension.class)
 class TopicServiceTest {
@@ -69,6 +76,41 @@ class TopicServiceTest {
         assertThat(result.topics().get(1))
                 .extracting("tid")
                 .containsExactly(4, 5, 8);
+    }
+
+    @Test
+    void 같은_부모의_자식_topic_name은_중복될_수_없다() {
+        when(topicRepository.existsById(1)).thenReturn(true);
+        when(topicRepository.existsByPidAndName(1, "index")).thenReturn(true);
+
+        assertThatThrownBy(() -> topicService.createTopic(1, new TopicCreateDto("index")))
+                .isInstanceOf(GlobalException.class);
+
+        verify(topicRepository, never()).save(any(Topic.class));
+    }
+
+    @Test
+    void root_topic_name도_중복될_수_없다() {
+        when(topicRepository.existsByPidAndName(null, "database")).thenReturn(true);
+
+        assertThatThrownBy(() -> topicService.createTopic(null, new TopicCreateDto("database")))
+                .isInstanceOf(GlobalException.class);
+
+        verify(topicRepository, never()).save(any(Topic.class));
+    }
+
+    @Test
+    void 부모가_다르면_같은_topic_name으로_생성할_수_있다() {
+        Topic savedTopic = Topic.of(Topic.of(null, "database"), "index");
+
+        when(topicRepository.existsById(2)).thenReturn(true);
+        when(topicRepository.existsByPidAndName(2, "index")).thenReturn(false);
+        when(topicRepository.getReferenceById(2)).thenReturn(Topic.of(null, "mysql"));
+        when(topicRepository.save(any(Topic.class))).thenReturn(savedTopic);
+
+        topicService.createTopic(2, new TopicCreateDto("index"));
+
+        verify(topicRepository).save(any(Topic.class));
     }
 
 }
