@@ -179,39 +179,43 @@ INSERT INTO users (uid, email, role, name, password) VALUES
     (UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 'user@example.com', 'USER', 'Test User', '$2a$10$2LXV6rjXZ1KSt4LjyAXuge03bQ8PxeCr338ZX1QVy0zNs/IWWeVtW');
 
 INSERT INTO topics (tid, pid, name) VALUES
-    (1000, NULL, 'algo'),
-    (1010, 1000, 'algo.graph'),
-    (1020, 1010, 'algo.graph.shortest-path'),
-    (1030, 1020, 'algo.graph.shortest-path.dijkstra'),
-    (1040, 1030, 'algo.graph.shortest-path.dijkstra.priority-queue'),
-    (1110, 1000, 'algo.dp'),
-    (1120, 1110, 'algo.dp.knapsack'),
-    (1130, 1120, 'algo.dp.knapsack.01'),
-    (1140, 1130, 'algo.dp.knapsack.01.optimization'),
-    (2000, NULL, 'db'),
-    (2010, 2000, 'db.mysql'),
-    (2020, 2010, 'db.mysql.index'),
-    (2030, 2020, 'db.mysql.index.btree'),
-    (2040, 2030, 'db.mysql.index.btree.covering-index'),
-    (2110, 2000, 'db.transaction'),
-    (2120, 2110, 'db.transaction.isolation'),
-    (2130, 2120, 'db.transaction.isolation.repeatable-read'),
-    (2140, 2130, 'db.transaction.isolation.repeatable-read.mvcc'),
-    (3000, NULL, 'java'),
-    (3010, 3000, 'java.jvm'),
-    (3020, 3010, 'java.jvm.memory'),
-    (3030, 3020, 'java.jvm.memory.heap'),
-    (3040, 3030, 'java.jvm.memory.heap.gc'),
-    (3110, 3000, 'java.spring'),
-    (3120, 3110, 'java.spring.jpa'),
-    (3130, 3120, 'java.spring.jpa.persistence-context'),
-    (3140, 3130, 'java.spring.jpa.persistence-context.dirty-checking');
+    (1000, NULL, '알고리즘'),
+    (1010, 1000, '그래프'),
+    (1020, 1010, '최단 경로'),
+    (1030, 1020, '다익스트라'),
+    (1040, 1030, '우선순위 큐'),
+    (1110, 1000, 'DP'),
+    (1120, 1110, '배낭 문제'),
+    (1130, 1120, '01-Knapsack'),
+    (1140, 1130, '최적화'),
+    (1210, 1000, '탐색 테이블'),
+    (1220, 1210, '인덱스'),
+    (2000, NULL, 'DB'),
+    (2010, 2000, 'MySQL'),
+    (2020, 2010, '인덱스'),
+    (2030, 2020, 'BTree'),
+    (2040, 2030, 'covering-index'),
+    (2110, 2000, '트랜잭션'),
+    (2120, 2110, '격리 수준'),
+    (2130, 2120, 'Repeatable read'),
+    (2140, 2130, 'MVCC'),
+    (3000, NULL, 'Java'),
+    (3010, 3000, 'JVM'),
+    (3020, 3010, '메모리 관리'),
+    (3030, 3020, '힙'),
+    (3040, 3030, 'GC-가비지컬렉션'),
+    (3110, 3000, 'Spring'),
+    (3120, 3110, 'JPA'),
+    (3130, 3120, 'Persistence-context'),
+    (3140, 3130, 'dirty-check'),
+    (3210, 3000, 'DB'),
+    (3220, 3210, '트랜잭션');
 
 INSERT INTO brains (bid, name, description, join_policy) VALUES
-    (1, 'Owner1 Algo Brain', 'Graph and DP interview notes', 'PROTECTED'),
-    (2, 'Owner2 DB Brain', 'MySQL index and transaction notes', 'PROTECTED'),
-    (3, 'Admin Java Brain', 'JVM and Spring JPA admin notes', 'PUBLIC'),
-    (4, 'User Mixed Brain', 'Practical backend CS notes', 'PUBLIC');
+    (1, 'Owner1 알고리즘 브레인', 'Graph and DP interview notes', 'PROTECTED'),
+    (2, 'Owner2 DB 브레인', 'MySQL index and transaction notes', 'PROTECTED'),
+    (3, 'Admin Java 브레인', 'JVM and Spring JPA admin notes', 'PUBLIC'),
+    (4, 'User 기타 브레인', 'Practical backend CS notes', 'PUBLIC');
 
 INSERT INTO brain_members (bid, uid, role) VALUES
     (1, UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), 'ADMIN'),
@@ -272,19 +276,44 @@ INSERT INTO neurons (nid, btid, uid, title, content) VALUES
     (11, 11, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '인덱스 선택도', '선택도가 높은 컬럼일수록 인덱스를 통한 필터링 효과가 크다.'),
     (12, 12, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 'JPA 지연 로딩', '지연 로딩은 연관 엔티티 접근 시점까지 조회를 미뤄 초기 쿼리 비용을 낮춘다.');
 
-INSERT INTO comments (nid, pid, uid, content, deleted_at) VALUES
-    (1, NULL, UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '면접 답변용으로 O(n log n) 예시도 추가하면 좋겠다.', NULL),
-    (2, NULL, UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), '음수 간선은 벨만-포드와 비교해서 정리해보자.', NULL),
-    (3, NULL, UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '1차원 배열 최적화도 같이 보면 좋음.', NULL),
-    (5, NULL, UNHEX(REPLACE('9c665e0e-bed0-4d11-8eba-34b63cf2e137', '-', '')), 'EXPLAIN 결과 예시를 붙이면 더 명확하다.', NULL),
-    (6, NULL, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '팬텀 리드와 next-key lock도 연결해서 정리 필요.', NULL),
-    (8, NULL, UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 'GC Root 종류를 별도 노드로 분리해도 될 듯.', NULL),
-    (9, NULL, UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 'flush 시점과 commit 시점을 같이 설명하면 좋겠다.', NULL),
-    (11, NULL, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '카디널리티와 선택도 차이를 예제로 보강하자.', NULL),
-    (12, NULL, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 'N+1 문제로 이어지는 예시를 추가하자.', NULL);
+INSERT INTO comments (cid, nid, pid, uid, content, deleted_at) VALUES
+    (1, 1, NULL, UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '면접 답변용으로 O(n log n) 예시도 추가하면 좋겠다.', NULL),
+    (2, 1, 1,    UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), '면접관이 이 글을 좋아하지 않습니다.', NULL),
+    (3, 1, 1,    UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '정렬 알고리즘 한 번 찾아보세요.', NULL),
+    (4, 1, 2,    UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '삭제된 댓글입니다.', NOW()),
+    (5, 2, NULL, UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), '음수 간선은 벨만-포드와 비교해서 정리해보자.', NULL),
+    (6, 2, 5,    UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '좋은 접근이네.', NULL),
+    (7, 2, 6,    UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '삭제된 댓글입니다.', NOW()),
+    (8, 3, NULL, UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '1차원 배열 최적화도 같이 보면 좋음.', NULL),
+    (9, 3, 8,    UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '이름만 들어도 무시무시한걸?', NULL),
+    (10, 5,  NULL, UNHEX(REPLACE('9c665e0e-bed0-4d11-8eba-34b63cf2e137', '-', '')), 'EXPLAIN 결과 예시를 붙이면 더 명확하다.', NULL),
+    (11, 5,  NULL, UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), '최대한 인덱스 컬럼을 활용하자.', NULL),
+    (12, 6,  NULL, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '팬텀 리드와 next-key lock도 연결해서 정리 필요.', NULL),
+    (13, 8,  NULL, UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 'GC Root 종류를 별도 노드로 분리해도 될 듯.', NULL),
+    (14, 9,  NULL, UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 'flush 시점과 commit 시점을 같이 설명하면 좋겠다.', NULL),
+    (15, 11, NULL, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), '카디널리티와 선택도 차이를 예제로 보강하자.', NULL),
+    (16, 12, NULL, UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 'N+1 문제로 이어지는 예시를 추가하자.', NULL);
+
+INSERT INTO neuron_likes (uid, nid) VALUES
+	(UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), 1),
+	(UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), 3),
+	(UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), 5),
+	(UNHEX(REPLACE('5ab8561c-a697-4767-953a-ef6933e77007', '-', '')), 6),
+	(UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 2),
+	(UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 3),
+	(UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 4),
+	(UNHEX(REPLACE('11111111-1111-4111-8111-111111111111', '-', '')), 12),
+	(UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 3),
+	(UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 5),
+	(UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 6),
+	(UNHEX(REPLACE('22222222-2222-4222-8222-222222222222', '-', '')), 9),
+    (UNHEX(REPLACE('9c665e0e-bed0-4d11-8eba-34b63cf2e137', '-', '')), 5),
+    (UNHEX(REPLACE('9c665e0e-bed0-4d11-8eba-34b63cf2e137', '-', '')), 6),
+    (UNHEX(REPLACE('9c665e0e-bed0-4d11-8eba-34b63cf2e137', '-', '')), 9),
+    (UNHEX(REPLACE('9c665e0e-bed0-4d11-8eba-34b63cf2e137', '-', '')), 12);
 
 ALTER TABLE topics AUTO_INCREMENT = 4000;
 ALTER TABLE brains AUTO_INCREMENT = 5;
 ALTER TABLE brain_topics AUTO_INCREMENT = 36;
 ALTER TABLE neurons AUTO_INCREMENT = 13;
-ALTER TABLE comments AUTO_INCREMENT = 10;
+ALTER TABLE comments AUTO_INCREMENT = 17;
