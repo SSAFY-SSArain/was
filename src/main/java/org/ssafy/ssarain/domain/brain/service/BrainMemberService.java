@@ -78,17 +78,14 @@ public class BrainMemberService {
     @Transactional
     public void deleteMembers(int bid, UUID uid, BrainMemberListDto dto) {
         validateBrainExists(bid);
+        validateSelfDeletion(dto.users(), uid);
 
         List<BrainMember> members = getExistBrainMembersOf(bid, dto.users());
         BrainMemberRole requesterRole = brainMemberRepository.findRoleByBmidUidAndBmidBid(uid, bid);
         validateDeleteList(requesterRole, members);
-
-        if (dto.users().contains(uid)) {
-            validateSelfDeletion(requesterRole);
-            resignAdmin(bid, dto.users());
-        }
         
         brainMemberRepository.deleteAllInBatch(members);
+        resignAdmin(bid, dto.users());
     }
 
     @Transactional(readOnly = true)
@@ -147,6 +144,21 @@ public class BrainMemberService {
         }
 
         targetMember.changeRole(dto.role());
+    }
+    
+    @Transactional
+    public void leaveFromBrain(int bid, UUID uid) {
+    	 BrainMember brainMember = getBrainMember(bid, uid);
+    	 
+    	 // JPA 영속성 컨텍스트 관리:
+    	 // Brain 삭제를 위해서는 연관된 엔티티인 brainMember가 먼저 제거되어야 합니다. 
+    	 brainMemberRepository.delete(brainMember);
+    	 
+    	 if (brainMember.getRole() == BrainMemberRole.ADMIN) {
+    		 if (!resignAdmin(bid, List.of(uid))) {
+                 brainRepository.deleteById(bid);
+             }
+    	 }
     }
     
     /*
@@ -230,8 +242,8 @@ public class BrainMemberService {
         }
     }
     
-    private void validateSelfDeletion(BrainMemberRole requesterRole) {
-        if (requesterRole != BrainMemberRole.ADMIN) {
+    private void validateSelfDeletion(List<UUID> deleteList, UUID requester) {
+        if (deleteList.contains(requester)) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_CANNOT_DELETE_SELF);
         }
     }
@@ -255,16 +267,16 @@ public class BrainMemberService {
         adminMember.changeRole(BrainMemberRole.MANAGER);
     }
 
-    private void resignAdmin(int bid, List<UUID> resigningUids) {
+    private boolean resignAdmin(int bid, List<UUID> resigningUids) {
         Optional<BrainMember> successor = findOldestSuccessor(bid, BrainMemberRole.MANAGER, resigningUids)
                 .or(() -> findOldestSuccessor(bid, BrainMemberRole.USER, resigningUids));
 
         if (successor.isPresent()) {
             successor.get().changeRole(BrainMemberRole.ADMIN);
-            return;
+            return true;
         }
 
-        brainRepository.deleteById(bid);
+        return false;
     }
 
     private BrainMember getAdminMember(int bid) {
