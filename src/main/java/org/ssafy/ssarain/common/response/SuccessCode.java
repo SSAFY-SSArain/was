@@ -49,6 +49,7 @@ public enum SuccessCode {
 
     // Topic
     TOPIC_INFO_SUCCESS(HttpStatus.OK, "주제 정보가 조회되었습니다."),
+    TOPIC_SEARCH_SUCCESS(HttpStatus.OK, "해당 토픽들의 검색이 완료되었습니다."),
     TOPIC_CREATE_SUCCESS(HttpStatus.CREATED, "주제가 생성되었습니다."),
 
     // Quiz

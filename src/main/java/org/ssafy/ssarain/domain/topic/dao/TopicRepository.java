@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.ssafy.ssarain.domain.topic.dao.dto.TopicPathQueryDto;
 import org.ssafy.ssarain.domain.topic.dao.dto.TopicWithUsedQueryDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
@@ -57,8 +59,38 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
             """, 
             nativeQuery = true)
     List<TopicWithUsedQueryDto> findWithUsingByPidAndBid(int pid, Integer bid, int maxDepth);
-    
-    boolean existsByName(String name);
-    
+
+    @Query(value = """
+            WITH RECURSIVE Ancestor AS (
+                SELECT t.tid AS target_tid, t.tid, t.pid, t.name, 0 AS `depth`
+                FROM topics t
+                WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%'))
+
+                UNION ALL
+
+                SELECT a.target_tid, p.tid, p.pid, p.name, (a.depth + 1)
+                FROM topics p
+                INNER JOIN Ancestor a ON a.pid = p.tid
+            )
+            SELECT target_tid AS targetTid, tid, pid, name,
+                CASE WHEN EXISTS (SELECT 1 FROM brain_topics WHERE bid = :bid AND tid = a.tid) THEN 1 ELSE 0 END AS `using`,
+                `depth`
+            FROM Ancestor a
+            ORDER BY target_tid ASC, `depth` DESC
+            """,
+            nativeQuery = true)
+    List<TopicPathQueryDto> findPathsByNameContaining(@Param("name") String name, @Param("bid") Integer bid);
+
+    @Query("""
+          SELECT COUNT(t) > 0
+          FROM Topic t
+          WHERE t.name = :name
+            AND (
+                (:pid IS NULL AND t.parentTopic IS NULL)
+                OR t.parentTopic.tid = :pid
+            )
+          """)
+    boolean existsByPidAndName(@Param("pid") Integer pid, @Param("name") String name);
+
     long countByTidIn(List<Integer> ids);
 }

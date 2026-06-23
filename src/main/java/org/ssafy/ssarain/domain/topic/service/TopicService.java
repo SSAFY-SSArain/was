@@ -1,15 +1,20 @@
 package org.ssafy.ssarain.domain.topic.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.domain.topic.dao.dto.TopicPathQueryDto;
 import org.ssafy.ssarain.domain.topic.dao.TopicRepository;
 import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
+import org.ssafy.ssarain.domain.topic.dto.TopicPathSearchDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
 import lombok.RequiredArgsConstructor;
@@ -37,11 +42,22 @@ public class TopicService {
                 .map(TopicInfoDto::from)
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public TopicPathSearchDto searchTopicPaths(String name, Integer bid) {
+        Map<Integer, List<TopicInfoDto>> topicPaths = new LinkedHashMap<>();
+        for (TopicPathQueryDto topic : topicRepository.findPathsByNameContaining(name.trim(), bid)) {
+            topicPaths.computeIfAbsent(topic.getTargetTid(), key -> new ArrayList<>())
+                    .add(TopicInfoDto.from(topic));
+        }
+
+        return TopicPathSearchDto.from(List.copyOf(topicPaths.values()));
+    }
     
     @Transactional
     public TopicDetailDto createTopic(Integer pid, TopicCreateDto dto) {
         validatePid(pid);
-        validateCreateDto(dto);
+        validateCreateDto(pid, dto);
         
         // JPA 방식의 외래키 설정을 위해 프록시 껍데기 객체만 생성해 등록합니다.
         Topic newTopic = Topic.of(getParentTopicProxy(pid), dto.name());
@@ -61,15 +77,15 @@ public class TopicService {
         }
     }
     
-    private void validateCreateDto(TopicCreateDto dto) {
+    private void validateCreateDto(Integer pid, TopicCreateDto dto) {
         if (dto == null || dto.name() == null) {
             throw new GlobalException(ErrorCode.BAD_REQUEST);
         }
-        validateDuplicateName(dto.name());
+        validateDuplicateName(pid, dto.name());
     }
     
-    private void validateDuplicateName(String name) {
-        if (topicRepository.existsByName(name)) {
+    private void validateDuplicateName(Integer pid, String name) {
+        if (topicRepository.existsByPidAndName(pid, name)) {
             throw new GlobalException(ErrorCode.TOPIC_NAME_DUPLICATED);
         }
     }

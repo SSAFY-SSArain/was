@@ -34,7 +34,7 @@ public class Topic extends BaseTimeEntity {
     
     @Size(max = 100)
     @NotNull
-    @Column(name = "name", nullable = false, unique = true, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
     
     public Integer getPid() {
