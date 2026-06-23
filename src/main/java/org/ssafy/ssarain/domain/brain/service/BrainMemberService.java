@@ -55,6 +55,7 @@ public class BrainMemberService {
             brainWaitingRepository.save(BrainWaiting.of(brain, user));
         } else if (brain.getJoinPolicy() == JoinPolicy.PUBLIC) {
             brainMemberRepository.save(BrainMember.of(brain, user));
+            brainWaitingRepository.deleteById(new BrainWaiting.BrainWaitingId(bid, uid));
         } else {
             log.error("JoinPolicy.{}에 대한 가입 요청 처리 로직이 없습니다.", brain.getJoinPolicy());
             throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
