@@ -151,6 +151,19 @@ public class BrainMemberService {
         targetMember.changeRole(dto.role());
     }
     
+    @Transactional
+    public void leaveFromBrain(int bid, UUID uid) {
+    	 BrainMember brainMember = getBrainMember(bid, uid);
+    	 
+    	 if (brainMember.getRole() == BrainMemberRole.ADMIN) {
+    		 if (!resignAdmin(bid, List.of(uid))) {
+                 brainRepository.deleteById(bid);
+             }
+    	 } else {
+    		 brainMemberRepository.delete(brainMember); 
+    	 }
+    }
+    
     /*
         Util Method
      */

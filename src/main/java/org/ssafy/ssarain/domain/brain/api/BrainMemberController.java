@@ -131,4 +131,15 @@ public class BrainMemberController {
         brainMemberService.updateMemberRole(bid, userDetails.getUserId(), uid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_ROLE_UPDATE_SUCCESS);
     }
+    
+    @DeleteMapping("/{bid}/me")
+    @Operation(summary = "B20: Brain에서 나가기")
+    public ResponseEntity<BaseResponse<Void>> leaveFromBrain(
+            @PathVariable int bid,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        brainMemberService.leaveFromBrain(bid, userDetails.getUserId());
+        return BaseResponse.success(SuccessCode.BRAIN_LEAVE_SUCCESS);
+    }
 }
