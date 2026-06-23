@@ -2,6 +2,9 @@ package org.ssafy.ssarain.domain.brain.dto.response;
 
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
+import org.ssafy.ssarain.domain.brain.model.BrainMember;
+import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
+
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
@@ -15,12 +18,21 @@ public record BrainInfoDto(
         
         @Schema(requiredMode = RequiredMode.REQUIRED, example = "구미 캠퍼스 3반입니다.")
         String description,
-        
+
         @Schema(requiredMode = RequiredMode.REQUIRED, example = "PUBLIC")
-        JoinPolicy joinPolicy
+        JoinPolicy joinPolicy,
+
+        @Schema(requiredMode = RequiredMode.REQUIRED, example = "MANAGER")
+        BrainMemberRole brainRole
         ) {
     
     public static BrainInfoDto from(Brain brain) {
-        return new BrainInfoDto(brain.getBid(), brain.getName(), brain.getDescription(), brain.getJoinPolicy());
+        return new BrainInfoDto(brain.getBid(), brain.getName(), brain.getDescription(), brain.getJoinPolicy(), null);
+    }
+
+    public static BrainInfoDto from(BrainMember brainMember) {
+        Brain brain = brainMember.getBrain();
+        return new BrainInfoDto(brain.getBid(), brain.getName(), brain.getDescription(), brain.getJoinPolicy(), brainMember.getRole());
+
     }
 }

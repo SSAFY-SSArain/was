@@ -2,6 +2,7 @@ package org.ssafy.ssarain.domain.brain.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,8 +36,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/brains")
 public class BrainController {
-	private final BrainAuthService brainAuthService;
     private final BrainService brainService;
+    private final BrainAuthService brainAuthService;
     
     @GetMapping("/me")
     @Operation(summary = "B04: 내가 속한 Brain 조회")
@@ -48,8 +49,14 @@ public class BrainController {
     @GetMapping
     @Operation(summary = "B05: Brain 검색")
     public ResponseEntity<BaseResponse<BrainPageDto<BrainFoundDto>>> searchBrain(
-            @Valid @ModelAttribute BrainSearchDto dto) {
-        return BaseResponse.success(SuccessCode.BRAIN_INFO_SUCCESS, brainService.searchBrain(dto));
+            @Valid @ModelAttribute BrainSearchDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        return BaseResponse.success(
+                SuccessCode.BRAIN_INFO_SUCCESS,
+                brainService.searchBrain(dto, userDetails == null ? null : userDetails.getUserId())
+        );
     }
     
     @PostMapping
@@ -58,6 +65,18 @@ public class BrainController {
             @Valid @RequestBody BrainCreateDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         return BaseResponse.success(SuccessCode.BRAIN_CREATED_SUCCESS, brainService.createBrain(dto, userDetails.getUserId()));
+    }
+
+    @DeleteMapping("/{bid}")
+    @Operation(summary = "B08: Brain 삭제")
+    public ResponseEntity<BaseResponse<Void>> deleteBrain(
+            @PathVariable int bid,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_ADMIN);
+        brainService.deleteBrain(bid);
+        return BaseResponse.success(SuccessCode.BRAIN_DELETE_SUCCESS);
     }
     
     @PatchMapping("/{bid}")

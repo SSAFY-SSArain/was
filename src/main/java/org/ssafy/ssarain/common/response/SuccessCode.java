@@ -29,10 +29,11 @@ public enum SuccessCode {
     USER_NAME_CHECK_SUCCESS(HttpStatus.OK, "유저 닉네임 중복 여부가 조회되었습니다."),
     USER_UPDATE_SUCCESS(HttpStatus.OK, "유저 정보가 수정되었습니다."),
     USER_PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "유저 비밀번호가 수정되었습니다."),
-    
+
     // Brain
     BRAIN_INFO_SUCCESS(HttpStatus.OK, "브레인 정보가 조회되었습니다."),
     BRAIN_CREATED_SUCCESS(HttpStatus.CREATED, "브레인이 생성되었습니다."),
+    BRAIN_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "브레인이 삭제되었습니다."),
     BRAIN_UPDATE_SUCCESS(HttpStatus.OK, "브레인 정보가 수정되었습니다."),
     BRAIN_TOPIC_REGISTER_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 주제가 등록되었습니다."),
     BRAIN_TOPIC_INFO_SUCCESS(HttpStatus.OK, "브레인의 주제 정보가 조회되었습니다."),
@@ -43,6 +44,7 @@ public enum SuccessCode {
     BRAIN_JOIN_MANAGE_SUCCESS(HttpStatus.NO_CONTENT, "브레인 가입 신청 처리가 완료되었습니다."),
     BRAIN_MEMBER_JOIN_SUCCESS(HttpStatus.NO_CONTENT, "브레인에 사용자 추가가 완료되었습니다."),
     BRAIN_MEMBER_INFO_SUCCESS(HttpStatus.OK, "브레인 회원 정보가 조회되었습니다."),
+    BRAIN_MEMBER_ROLE_UPDATE_SUCCESS(HttpStatus.NO_CONTENT, "브레인 회원 권한이 변경되었습니다."),
     BRAIN_NAME_VALIDATION_SUCCESS(HttpStatus.OK, "브레인 이름 중복 검사가 완료되었습니다."),
 
     // Topic

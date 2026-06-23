@@ -55,6 +55,7 @@ public enum ErrorCode {
     BRAIN_MEMBER_CANNOT_DELETE_SELF(HttpStatus.UNPROCESSABLE_ENTITY, "B008", "브레인 관리자 자신을 제외시킬 수 없습니다."),
     BRAIN_WAITING_ALREADY_EXISTS(HttpStatus.CONFLICT, "B009", "이미 해당 브레인에 가입 신청을 했습니다."),
     BRAIN_MEMBER_DELETION_DENIED(HttpStatus.FORBIDDEN, "B010", "해당 사용자를 Brain에서 삭제할 권한이 부족합니다."),
+    BRAIN_MEMBER_ROLE_UPDATE_DENIED(HttpStatus.FORBIDDEN, "B011", "해당 사용자의 Brain 권한을 변경할 수 없습니다."),
     
     // Topic
     TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당 주제를 찾을 수 없습니다."),
