@@ -1,6 +1,7 @@
 package org.ssafy.ssarain.domain.brain.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -76,11 +77,15 @@ public class BrainMemberService {
     @Transactional
     public void deleteMembers(int bid, UUID uid, BrainMemberListDto dto) {
         validateBrainExists(bid);
-        validateSelfDeletion(uid, dto.users());
 
         List<BrainMember> members = getExistBrainMembersOf(bid, dto.users());
         BrainMemberRole requesterRole = brainMemberRepository.findRoleByBmidUidAndBmidBid(uid, bid);
         validateDeleteList(requesterRole, members);
+
+        if (dto.users().contains(uid)) {
+            validateSelfDeletion(requesterRole);
+            resignAdmin(bid, dto.users());
+        }
         
         brainMemberRepository.deleteAllInBatch(members);
     }
@@ -131,12 +136,16 @@ public class BrainMemberService {
     public void updateMemberRole(int bid, UUID requesterUid, UUID targetUid, BrainMemberRoleUpdateDto dto) {
         validateBrainExists(bid);
         validateSelfRoleUpdate(requesterUid, targetUid);
-        validateAssignableRole(dto.role());
 
-        BrainMember brainMember = getBrainMember(bid, targetUid);
-        validateTargetRoleChangeable(brainMember);
+        BrainMember targetMember = getBrainMember(bid, targetUid);
+        validateTargetRoleChangeable(targetMember);
 
-        brainMember.changeRole(dto.role());
+        if (dto.role() == BrainMemberRole.ADMIN) {
+            transferAdminRole(bid, targetMember);
+            return;
+        }
+
+        targetMember.changeRole(dto.role());
     }
     
     /*
@@ -220,8 +229,8 @@ public class BrainMemberService {
         }
     }
     
-    private void validateSelfDeletion(UUID requester, List<UUID> deleteList) {
-        if (deleteList.contains(requester)) {
+    private void validateSelfDeletion(BrainMemberRole requesterRole) {
+        if (requesterRole != BrainMemberRole.ADMIN) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_CANNOT_DELETE_SELF);
         }
     }
@@ -232,16 +241,42 @@ public class BrainMemberService {
         }
     }
 
-    private void validateAssignableRole(BrainMemberRole role) {
-        if (role == BrainMemberRole.ADMIN) {
-            throw new GlobalException(ErrorCode.BRAIN_MEMBER_ROLE_UPDATE_DENIED);
-        }
-    }
-
     private void validateTargetRoleChangeable(BrainMember brainMember) {
         if (brainMember.getRole() == BrainMemberRole.ADMIN) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_ROLE_UPDATE_DENIED);
         }
+    }
+
+    private void transferAdminRole(int bid, BrainMember targetMember) {
+        BrainMember adminMember = getAdminMember(bid);
+
+        targetMember.changeRole(BrainMemberRole.ADMIN);
+        adminMember.changeRole(BrainMemberRole.MANAGER);
+    }
+
+    private void resignAdmin(int bid, List<UUID> resigningUids) {
+        Optional<BrainMember> successor = findOldestSuccessor(bid, BrainMemberRole.MANAGER, resigningUids)
+                .or(() -> findOldestSuccessor(bid, BrainMemberRole.USER, resigningUids));
+
+        if (successor.isPresent()) {
+            successor.get().changeRole(BrainMemberRole.ADMIN);
+            return;
+        }
+
+        brainRepository.deleteById(bid);
+    }
+
+    private BrainMember getAdminMember(int bid) {
+        return brainMemberRepository.findByBmidBidAndRole(bid, BrainMemberRole.ADMIN)
+                .orElseThrow(() -> new GlobalException(ErrorCode.BRAIN_MEMBER_NOT_FOUND));
+    }
+
+    private Optional<BrainMember> findOldestSuccessor(int bid, BrainMemberRole role, List<UUID> excludedUids) {
+        return brainMemberRepository.findFirstByBmidBidAndRoleAndBmidUidNotInOrderByCreatedAtAsc(
+                bid,
+                role,
+                excludedUids.stream().distinct().toList()
+        );
     }
 
     private void validateBrainExists(int bid) {

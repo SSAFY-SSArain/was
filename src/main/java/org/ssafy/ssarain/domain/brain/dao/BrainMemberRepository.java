@@ -1,6 +1,7 @@
 package org.ssafy.ssarain.domain.brain.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -24,6 +25,14 @@ public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainM
     boolean existsByBmidUidAndBmidBidAndRoleIn(UUID uid, int bid, List<BrainMemberRole> role);
     
     long countAllByBmidIn(List<BrainMember.BrainMemberId> ids);
+
+    Optional<BrainMember> findByBmidBidAndRole(int bid, BrainMemberRole role);
+
+    Optional<BrainMember> findFirstByBmidBidAndRoleAndBmidUidNotInOrderByCreatedAtAsc(
+            int bid,
+            BrainMemberRole role,
+            List<UUID> excludedUids
+    );
 
     @Query("""
             SELECT 0 < count(*)
