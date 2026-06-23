@@ -11,7 +11,9 @@ import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
 import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
 import org.ssafy.ssarain.domain.user.dto.UserPasswordUpdateDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
+import org.ssafy.ssarain.domain.user.dto.req.UserSearchReq;
 import org.ssafy.ssarain.domain.user.dto.res.NameCheckRes;
+import org.ssafy.ssarain.domain.user.dto.res.UserSearchPageRes;
 import org.ssafy.ssarain.domain.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,5 +57,17 @@ public class UserController {
         NameCheckRes nameCheckRes = NameCheckRes.of(isDuplicate);
 
         return BaseResponse.success(SuccessCode.USER_NAME_CHECK_SUCCESS, nameCheckRes);
+    }
+
+    @Operation(summary = "U07: 유저 검색", description = "브레인 생성 시 초기 멤버로 추가할 유저를 검색합니다.")
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<UserSearchPageRes>> searchUsers(
+            @Valid @ModelAttribute UserSearchReq req,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        UserSearchPageRes users = userService.searchUsers(req, userDetails.getUserId());
+
+        return BaseResponse.success(SuccessCode.USER_SEARCH_SUCCESS, users);
     }
 }
