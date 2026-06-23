@@ -50,6 +50,20 @@ public class BrainAuthService {
         throw new GlobalException(ErrorCode.ACCESS_DENIED);
     }
 
+    public void authorizeBrainTopicRoleOf(CustomUserDetails userDetails, int btid, List<BrainMemberRole> roles) {
+        // ADMIN 권한은 항상 허용
+        if (authService.isAdmin(userDetails)) {
+            return;
+        }
+
+        // BrainTopic이 속한 Brain에서 Role을 가지는지 확인
+        if (hasBrainTopicRoleOf(userDetails.getUserId(), btid, roles)) {
+            return;
+        }
+        
+        throw new GlobalException(ErrorCode.ACCESS_DENIED);
+    }
+
     public void authorizeBrainMemberByBtid(CustomUserDetails userDetails, int btid) {
 
         // ADMIN 권한은 항상 허용
@@ -72,6 +86,10 @@ public class BrainAuthService {
 
     private boolean hasAnyBrainRole(UUID uid, List<BrainMemberRole> roles) {
         return brainMemberRepository.existsByBmidUidAndRoleIn(uid, roles);
+    }
+    
+    private boolean hasBrainTopicRoleOf(UUID uid, int btid, List<BrainMemberRole> roles) {
+        return brainMemberRepository.existsByUidAndBtidAndRoleIn(uid, btid, roles);
     }
     
     private boolean hasBrainRoleOf(UUID uid, int bid, List<BrainMemberRole> roles) {
