@@ -57,7 +57,7 @@ public class TopicService {
     @Transactional
     public TopicDetailDto createTopic(Integer pid, TopicCreateDto dto) {
         validatePid(pid);
-        validateCreateDto(dto);
+        validateCreateDto(pid, dto);
         
         // JPA 방식의 외래키 설정을 위해 프록시 껍데기 객체만 생성해 등록합니다.
         Topic newTopic = Topic.of(getParentTopicProxy(pid), dto.name());
@@ -77,15 +77,15 @@ public class TopicService {
         }
     }
     
-    private void validateCreateDto(TopicCreateDto dto) {
+    private void validateCreateDto(Integer pid, TopicCreateDto dto) {
         if (dto == null || dto.name() == null) {
             throw new GlobalException(ErrorCode.BAD_REQUEST);
         }
-        validateDuplicateName(dto.name());
+        validateDuplicateName(pid, dto.name());
     }
-
-    private void validateDuplicateName(String name) {
-        if (topicRepository.existsByName(name)) {
+    
+    private void validateDuplicateName(Integer pid, String name) {
+        if (topicRepository.existsByPidAndName(pid, name)) {
             throw new GlobalException(ErrorCode.TOPIC_NAME_DUPLICATED);
         }
     }

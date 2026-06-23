@@ -81,7 +81,16 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
             nativeQuery = true)
     List<TopicPathQueryDto> findPathsByNameContaining(@Param("name") String name, @Param("bid") Integer bid);
     
-    boolean existsByName(String name);
-    
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM topics
+                WHERE name = :name
+                  AND ((:pid IS NULL AND pid IS NULL) OR pid = :pid)
+            )
+            """,
+            nativeQuery = true)
+    boolean existsByPidAndName(@Param("pid") Integer pid, @Param("name") String name);
+
     long countByTidIn(List<Integer> ids);
 }

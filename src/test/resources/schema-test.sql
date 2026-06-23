@@ -53,11 +53,12 @@ CREATE TABLE brains (
 CREATE TABLE topics (
     tid        INT          NOT NULL AUTO_INCREMENT,
     pid        INT          NULL,
-    name       VARCHAR(100) NOT NULL UNIQUE,
+    name       VARCHAR(100) NOT NULL,
     created_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
     PRIMARY KEY (tid),
+    UNIQUE KEY uk_topics_pid_name (pid, name),
     CONSTRAINT fk_topics_parent FOREIGN KEY (pid) REFERENCES topics (tid)
 );
 
