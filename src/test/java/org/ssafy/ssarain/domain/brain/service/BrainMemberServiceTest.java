@@ -1,7 +1,6 @@
 package org.ssafy.ssarain.domain.brain.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,12 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.ssafy.ssarain.domain.brain.dao.BrainMemberRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainWaitingRepository;
-import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberRoleUpdateDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
+import org.ssafy.ssarain.domain.brain.model.BrainMember.BrainMemberId;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.model.User;
 
@@ -74,17 +73,17 @@ class BrainMemberServiceTest {
     @Test
     void admin이_탈퇴하면_가장_오래된_manager가_admin이_된다() {
         UUID adminUid = UUID.randomUUID();
+        BrainMemberId bmid = new BrainMemberId(BID, adminUid);
         BrainMember admin   = brainMember(BrainMemberRole.ADMIN);
         BrainMember manager = brainMember(BrainMemberRole.MANAGER);
 
-        mockAdminDeletion(adminUid, admin);
-
         // admin 제외 가장 오래된 manager 찾기
+        when(brainMemberRepository.findById(bmid)).thenReturn(Optional.of(admin));
         when(brainMemberRepository.findFirstByBmidBidAndRoleAndBmidUidNotInOrderByCreatedAtAsc(
                 BID, BrainMemberRole.MANAGER, List.of(adminUid)))
                 .thenReturn(Optional.of(manager));
 
-        brainMemberService.deleteMembers(BID, adminUid, new BrainMemberListDto(List.of(adminUid)));
+        brainMemberService.leaveFromBrain(BID, adminUid);
 
         assertThat(manager.getRole()).isEqualTo(BrainMemberRole.ADMIN);
         verify(brainRepository, never()).deleteById(BID);
@@ -93,10 +92,11 @@ class BrainMemberServiceTest {
     @Test
     void admin이_탈퇴할_때_manager가_없으면_가장_오래된_user가_admin이_된다() {
         UUID adminUid = UUID.randomUUID();
+        BrainMemberId bmid = new BrainMemberId(BID, adminUid);
         BrainMember admin = brainMember(BrainMemberRole.ADMIN);
         BrainMember user = brainMember(BrainMemberRole.USER);
 
-        mockAdminDeletion(adminUid, admin);
+        when(brainMemberRepository.findById(bmid)).thenReturn(Optional.of(admin));
         when(brainMemberRepository.findFirstByBmidBidAndRoleAndBmidUidNotInOrderByCreatedAtAsc(
                 BID, BrainMemberRole.MANAGER, List.of(adminUid)))
                 .thenReturn(Optional.empty());
@@ -104,7 +104,7 @@ class BrainMemberServiceTest {
                 BID, BrainMemberRole.USER, List.of(adminUid)))
                 .thenReturn(Optional.of(user));
 
-        brainMemberService.deleteMembers(BID, adminUid, new BrainMemberListDto(List.of(adminUid)));
+        brainMemberService.leaveFromBrain(BID, adminUid);
 
         assertThat(user.getRole()).isEqualTo(BrainMemberRole.ADMIN);
         verify(brainRepository, never()).deleteById(BID);
@@ -113,9 +113,10 @@ class BrainMemberServiceTest {
     @Test
     void admin이_탈퇴할_때_승계자가_없으면_brain을_삭제한다() {
         UUID adminUid = UUID.randomUUID();
+        BrainMemberId bmid = new BrainMemberId(BID, adminUid);
         BrainMember admin = brainMember(BrainMemberRole.ADMIN);
 
-        mockAdminDeletion(adminUid, admin);
+        when(brainMemberRepository.findById(bmid)).thenReturn(Optional.of(admin));
         when(brainMemberRepository.findFirstByBmidBidAndRoleAndBmidUidNotInOrderByCreatedAtAsc(
                 BID, BrainMemberRole.MANAGER, List.of(adminUid)))
                 .thenReturn(Optional.empty());
@@ -123,16 +124,9 @@ class BrainMemberServiceTest {
                 BID, BrainMemberRole.USER, List.of(adminUid)))
                 .thenReturn(Optional.empty());
 
-        brainMemberService.deleteMembers(BID, adminUid, new BrainMemberListDto(List.of(adminUid)));
+        brainMemberService.leaveFromBrain(BID, adminUid);
 
         verify(brainRepository).deleteById(BID);
-    }
-
-    private void mockAdminDeletion(UUID adminUid, BrainMember admin) {
-        when(brainRepository.existsById(BID)).thenReturn(true);
-        when(brainMemberRepository.findAllById(anyList())).thenReturn(List.of(admin));
-        when(brainMemberRepository.findRoleByBmidUidAndBmidBid(adminUid, BID))
-                .thenReturn(BrainMemberRole.ADMIN);
     }
 
     private BrainMember brainMember(BrainMemberRole role) {
