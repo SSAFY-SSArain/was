@@ -78,19 +78,14 @@ public class BrainMemberService {
     @Transactional
     public void deleteMembers(int bid, UUID uid, BrainMemberListDto dto) {
         validateBrainExists(bid);
+        validateSelfDeletion(dto.users(), uid);
 
         List<BrainMember> members = getExistBrainMembersOf(bid, dto.users());
         BrainMemberRole requesterRole = brainMemberRepository.findRoleByBmidUidAndBmidBid(uid, bid);
         validateDeleteList(requesterRole, members);
-
-        if (dto.users().contains(uid)) {
-            validateSelfDeletion(requesterRole);
-            if (!resignAdmin(bid, dto.users())) {
-                brainRepository.deleteById(bid);
-            }
-        }
         
         brainMemberRepository.deleteAllInBatch(members);
+        resignAdmin(bid, dto.users());
     }
 
     @Transactional(readOnly = true)
@@ -245,8 +240,8 @@ public class BrainMemberService {
         }
     }
     
-    private void validateSelfDeletion(BrainMemberRole requesterRole) {
-        if (requesterRole != BrainMemberRole.ADMIN) {
+    private void validateSelfDeletion(List<UUID> deleteList, UUID requester) {
+        if (deleteList.contains(requester)) {
             throw new GlobalException(ErrorCode.BRAIN_MEMBER_CANNOT_DELETE_SELF);
         }
     }
