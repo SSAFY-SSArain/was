@@ -22,6 +22,7 @@ import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberPageDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberRoleUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
+import org.ssafy.ssarain.domain.brain.dto.response.BrainMemberInfoPageDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
 import org.ssafy.ssarain.domain.brain.service.BrainMemberService;
 
@@ -107,7 +108,7 @@ public class BrainMemberController {
 
     @GetMapping("/{bid}/users")
     @Operation(summary = "B17: Brain 소속 사용자 조회")
-    public ResponseEntity<BaseResponse<BrainUserPageDto>> getBrainMembers(
+    public ResponseEntity<BaseResponse<BrainMemberInfoPageDto>> getBrainMembers(
             @PathVariable int bid,
             @Valid @ModelAttribute BrainMemberPageDto pageDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {

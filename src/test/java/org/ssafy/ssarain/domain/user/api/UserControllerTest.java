@@ -105,6 +105,35 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.data.isDuplicate").value(true));
     }
 
+    @Test
+    void 유저를_검색한다() throws Exception {
+        String requesterEmail = "requester-user-search-test@example.com";
+        String requesterName  = "requester-user-search-test";
+        String password       = "test1234!";
+        saveUser(requesterEmail, requesterName, password);
+        saveUser("member-alpha-search-test@example.com", "member-alpha-search-test", password);
+        saveUser("member-beta-search-test@example.com", "member-beta-search-test", password);
+        saveUser("other-user-search-test@example.com", "other-user-search-test", password);
+
+        Cookie accessToken = loginAndGetCookie(requesterEmail, password, ACCESS_TOKEN_COOKIE_NAME);
+
+        mockMvc.perform(get("/api/v1/user/search")
+                        .param("keyword", "member")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .cookie(accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(SuccessCode.USER_SEARCH_SUCCESS.getStatus().value()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.USER_SEARCH_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.data.users.length()").value(2))
+                .andExpect(jsonPath("$.data.users[0].name").value("member-alpha-search-test"))
+                .andExpect(jsonPath("$.data.users[1].name").value("member-beta-search-test"))
+                .andExpect(jsonPath("$.data.currentPage").value(0))
+                .andExpect(jsonPath("$.data.pageSize").value(10))
+                .andExpect(jsonPath("$.data.totalElements").value(2))
+                .andExpect(jsonPath("$.data.hasNext").value(false));
+    }
+
     private Cookie loginAndGetCookie(String email, String password, String cookieName) throws Exception {
         return mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -27,6 +27,7 @@ public enum SuccessCode {
     USER_ACTIVITY_INFO_SUCCESS(HttpStatus.OK, "내 활동 조회가 완료되었습니다."),
     USER_TOKEN_REFRESH_SUCCESS(HttpStatus.OK, "토큰 재발급이 완료되었습니다."),
     USER_NAME_CHECK_SUCCESS(HttpStatus.OK, "유저 닉네임 중복 여부가 조회되었습니다."),
+    USER_SEARCH_SUCCESS(HttpStatus.OK, "유저 검색이 완료되었습니다."),
     USER_UPDATE_SUCCESS(HttpStatus.OK, "유저 정보가 수정되었습니다."),
     USER_PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "유저 비밀번호가 수정되었습니다."),
 

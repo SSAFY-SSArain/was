@@ -13,7 +13,11 @@ import org.ssafy.ssarain.domain.user.dto.UserInfoDto;
 import org.ssafy.ssarain.domain.user.dto.UserProfileDto;
 import org.ssafy.ssarain.domain.user.dto.UserPasswordUpdateDto;
 import org.ssafy.ssarain.domain.user.dto.req.NameCheckReq;
+import org.ssafy.ssarain.domain.user.dto.req.UserSearchReq;
 import org.ssafy.ssarain.domain.user.model.User;
+import org.ssafy.ssarain.domain.user.dto.res.UserSearchInfoRes;
+import org.ssafy.ssarain.domain.user.dto.res.UserSearchPageRes;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,6 +101,15 @@ public class UserService {
 
         String name = nameCheckReq.name();
         return userRepository.existsByName(name);
+    }
+
+    @Transactional(readOnly = true)
+    public UserSearchPageRes searchUsers(UserSearchReq req, UUID requesterUid) {
+
+        Page<UserSearchInfoRes> users = userRepository.searchUsers(req.searchKeyword(), requesterUid, req.pageable())
+                .map(UserSearchInfoRes::from);
+
+        return UserSearchPageRes.from(users);
     }
 
     /*
