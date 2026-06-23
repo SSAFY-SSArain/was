@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final int MAX_LOG_ELEMENT_LENGTH = 100;
-	private static final int MAX_LOG_TOTAL_LENGTH = 10000;
 	
     @ExceptionHandler(GlobalException.class)
     protected ResponseEntity<BaseResponse<Void>> handleGlobalException(GlobalException e) {
@@ -34,14 +33,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<BaseResponse<Void>> handleException(Exception e) {
 
-        log.error(toSafeLogString(e.getMessage()), e);
+        log.error(e.getMessage(), e);
         return BaseResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MissingRequestCookieException.class)
     protected ResponseEntity<BaseResponse<Void>> handleCookieException(MissingRequestCookieException e) {
 
-        log.warn("MissingRequestCookieException: {}", toSafeLogString(e.getMessage()));
+        log.warn("MissingRequestCookieException: {}", e.getMessage());
         return BaseResponse.error(ErrorCode.COOKIE_NOT_EXISTS);
     }
     
@@ -67,7 +66,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             
             Object rejectedValue = error.getRejectedValue(); 
-            String valueString = toSafeElementString(rejectedValue);
+            String valueString = toSafeString(rejectedValue);
             
             String log = String.format("Validation failed for field [%s]. Value: [%s]. Reason: %s", 
             		fieldName, valueString, errorMessage);
@@ -84,7 +83,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(BaseResponse.of(ErrorCode.BAD_REQUEST));
     }
 
-    private String toSafeString(Object value, int limit) {
+    private String toSafeString(Object value) {
         if (value == null) return "null";
         String strValue = (value instanceof String s ? s : value.toString());
         if (strValue.length() > MAX_LOG_ELEMENT_LENGTH) {
@@ -92,22 +91,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         return strValue;
     }
-    
-    private String toSafeElementString(Object value) {
-    	return toSafeString(value, MAX_LOG_ELEMENT_LENGTH);
-    }
-    
-    private String toSafeLogString(Object value) {
-    	return toSafeString(value, MAX_LOG_TOTAL_LENGTH);
-    }
 
     private void logByStatus(HttpStatusCode statusCode, Exception e) {
 
         if (statusCode.is5xxServerError()) {
-            log.error(toSafeLogString(e.getMessage()), e);
+            log.error(e.getMessage(), e);
             return;
         }
 
-        log.warn("{}: [{}] {}", e.getClass().getSimpleName(), statusCode.value(), toSafeLogString(e.getMessage()));
+        log.warn("{}: [{}] {}", e.getClass().getSimpleName(), statusCode.value(), e.getMessage());
     }
 }
