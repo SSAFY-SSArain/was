@@ -85,7 +85,9 @@ public class BrainMemberService {
 
         if (dto.users().contains(uid)) {
             validateSelfDeletion(requesterRole);
-            resignAdmin(bid, dto.users());
+            if (!resignAdmin(bid, dto.users())) {
+                brainRepository.deleteById(bid);
+            }
         }
         
         brainMemberRepository.deleteAllInBatch(members);
@@ -255,16 +257,16 @@ public class BrainMemberService {
         adminMember.changeRole(BrainMemberRole.MANAGER);
     }
 
-    private void resignAdmin(int bid, List<UUID> resigningUids) {
+    private boolean resignAdmin(int bid, List<UUID> resigningUids) {
         Optional<BrainMember> successor = findOldestSuccessor(bid, BrainMemberRole.MANAGER, resigningUids)
                 .or(() -> findOldestSuccessor(bid, BrainMemberRole.USER, resigningUids));
 
         if (successor.isPresent()) {
             successor.get().changeRole(BrainMemberRole.ADMIN);
-            return;
+            return true;
         }
 
-        brainRepository.deleteById(bid);
+        return false;
     }
 
     private BrainMember getAdminMember(int bid) {
