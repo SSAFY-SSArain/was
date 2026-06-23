@@ -1,6 +1,7 @@
 package org.ssafy.ssarain.domain.topic.dto;
 
 import org.ssafy.ssarain.domain.topic.dao.dto.TopicWithUsedQueryDto;
+import org.ssafy.ssarain.domain.topic.dao.dto.TopicPathQueryDto;
 import org.ssafy.ssarain.domain.topic.model.Topic;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,5 +27,9 @@ public record TopicInfoDto(
     
     public static TopicInfoDto from(TopicWithUsedQueryDto topic) {
         return new TopicInfoDto(topic.tid(), topic.pid(), topic.name(), topic.isUsing());
+    }
+
+    public static TopicInfoDto from(TopicPathQueryDto topic) {
+        return new TopicInfoDto(topic.getTid(), topic.getPid(), topic.name(), topic.isUsing());
     }
 }

@@ -2,8 +2,11 @@ package org.ssafy.ssarain.domain.topic.api;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +21,14 @@ import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.topic.dto.TopicCreateDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicDetailDto;
 import org.ssafy.ssarain.domain.topic.dto.TopicInfoDto;
+import org.ssafy.ssarain.domain.topic.dto.TopicPathSearchDto;
 import org.ssafy.ssarain.domain.topic.service.TopicService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/topics")
 public class TopicController {
@@ -35,6 +40,16 @@ public class TopicController {
     public ResponseEntity<BaseResponse<List<TopicInfoDto>>> getAllTopics(
             @RequestParam(name = "brain", required = false) Integer bid) {
         return BaseResponse.success(SuccessCode.TOPIC_INFO_SUCCESS, topicService.getAllTopicInfo(bid));
+    }
+
+    @GetMapping("/parents")
+    @Operation(summary = "T07: Topic 검색 및 부모 Topic 조회")
+    public ResponseEntity<BaseResponse<TopicPathSearchDto>> searchTopicParents(
+            @RequestParam @NotBlank String name,
+            @RequestParam(name = "brain") @NotNull Integer bid
+    ) {
+
+        return BaseResponse.success(SuccessCode.TOPIC_SEARCH_SUCCESS, topicService.searchTopicPaths(name, bid));
     }
     
     @GetMapping("/{tid}/child")
