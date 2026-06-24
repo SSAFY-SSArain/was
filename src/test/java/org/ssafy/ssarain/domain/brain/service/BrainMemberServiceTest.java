@@ -23,7 +23,6 @@ import org.ssafy.ssarain.domain.brain.model.BrainMember;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
 import org.ssafy.ssarain.domain.brain.model.BrainMember.BrainMemberId;
-import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.model.User;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,9 +38,6 @@ class BrainMemberServiceTest {
 
     @Mock
     private BrainWaitingRepository brainWaitingRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @InjectMocks
     private BrainMemberService brainMemberService;

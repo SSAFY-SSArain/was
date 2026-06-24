@@ -12,20 +12,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndDeletedAtIsNull(String email);
 
-    Optional<User> findByUid(UUID uid);
+    Optional<User> findByUidAndDeletedAtIsNull(UUID uid);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndDeletedAtIsNull(String email);
 
-    boolean existsByName(String name);
+    boolean existsByNameAndDeletedAtIsNull(String name);
     
-    long countAllByUidIn(List<UUID> uids);
+    long countAllByUidInAndDeletedAtIsNull(List<UUID> uids);
 
     @Query("""
             SELECT u
             FROM User u
-            WHERE (:search = ''
+            WHERE u.deletedAt IS NULL
+              AND (:search = ''
                     OR LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%'))
                     OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')))
               AND NOT EXISTS (

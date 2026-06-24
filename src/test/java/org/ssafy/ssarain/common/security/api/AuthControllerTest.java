@@ -85,7 +85,7 @@ class AuthControllerTest {
                 .andExpect(cookie().exists(ACCESS_TOKEN_COOKIE_NAME))
                 .andExpect(cookie().exists(REFRESH_TOKEN_COOKIE_NAME));
 
-        User savedUser = userRepository.findByEmail(email).orElseThrow();
+        User savedUser = userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow();
 
         assertThat(savedUser.getName()).isEqualTo(name);
         assertThat(passwordEncoder.matches(password, savedUser.getPassword())).isTrue();

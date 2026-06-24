@@ -31,14 +31,16 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 유저
 CREATE TABLE users (
     uid        BINARY(16)   NOT NULL,
-    email      VARCHAR(100) NOT NULL UNIQUE,
+    email      VARCHAR(100) NOT NULL,
     role       ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
     name       VARCHAR(45)  NOT NULL,
     password   VARCHAR(255) NOT NULL,
     created_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
     deleted_at DATETIME(6)  NULL,
-
+	
+	available_email VARCHAR(100) GENERATED ALWAYS AS (IF(deleted_at IS NULL, email, NULL)) VIRTUAL,
+	UNIQUE KEY uk_users_email (available_email),
     PRIMARY KEY (uid)
 );
 
