@@ -67,6 +67,20 @@ public class BrainMergeService {
         }
     }
     
+    /**
+     * 일반 Brain에 대해 입력된 bid를,<br>
+     * Merged Brain에 대해 실제 가리키는 bid를 반환합니다.
+     * @param bid
+     * @return
+     */
+    public List<Integer> getRawBrainIds(int bid) {
+        if (brainRepository.isMergeBrain(bid)) {
+            return mergeBrainRepository.findMemberBrainIdsByMainId(bid);
+        } else {
+            return List.of(bid);
+        }
+    }
+    
     /*
         Util Method
      */

@@ -40,10 +40,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BrainMemberService {
 
-    private final BrainRepository brainRepository;
-    private final BrainMemberRepository brainMemberRepository;
+    private final BrainRepository        brainRepository;
+    private final BrainMemberRepository  brainMemberRepository;
     private final BrainWaitingRepository brainWaitingRepository;
-    private final UserRepository userRepository;
+    private final UserRepository         userRepository;
+    private final BrainMergeService      brainMergeService;
 
     @Transactional(readOnly = true)
     public JoinStatus getJoinStatus(int bid, UUID uid) {
@@ -107,9 +108,10 @@ public class BrainMemberService {
     @Transactional(readOnly = true)
     public BrainUserPageDto searchAvailableUsers(int bid, BrainMemberSearchDto dto) {
         validateBrainExists(bid);
+        List<Integer> rawBids = brainMergeService.getRawBrainIds(bid);
 
         String keyword = dto.keyword() == null ? "" : dto.keyword().trim();
-        Page<BrainUserInfoDto> users = userRepository.searchUsersAvailableForBrain(bid, keyword, dto.pageable())
+        Page<BrainUserInfoDto> users = userRepository.searchUsersAvailableForBrain(rawBids, keyword, dto.pageable())
                 .map(BrainUserInfoDto::from);
 
         return BrainUserPageDto.from(users);
