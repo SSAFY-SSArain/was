@@ -68,7 +68,7 @@ jobs:
             trap 'rm -f .env' EXIT
 
             # EOF 대신 echo를 사용하여 YAML 들여쓰기 규칙 준수
-            echo "MYSQL_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&characterEncoding=UTF-8" > .env
+            echo "MYSQL_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/ssarain?serverTimezone=Asia/Seoul&sessionVariables=time_zone='%2B09:00'&characterEncoding=UTF-8" > .env
             echo "MYSQL_USER=${{ secrets.RDS_USERNAME }}" >> .env
             echo "MYSQL_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> .env
             echo "VALKEY_PASSWORD=${{ secrets.VALKEY_PASSWORD }}" >> .env
