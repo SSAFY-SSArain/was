@@ -18,6 +18,17 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
 
     @Query("SELECT DISTINCT bt.topic.tid FROM BrainTopic bt WHERE bt.brain.bid IN :bid")
     Set<Integer> findDistinctTidByBidIn(Iterable<Integer> bid);
+    
+    @Query("""
+            SELECT btid
+            FROM BrainTopic
+            WHERE (bid, tid) IN
+                (SELECT mb.mbid.memberid, bt.tid
+                FROM BrainTopic bt 
+                LEFT OUTER JOIN MergeBrain mb ON bt.bid = mb.mbid.mainid 
+                WHERE bt.btid = :btid)
+            """)
+    List<Integer> findRawBtidInMergeBrainTopic(int btid);
 	
     @EntityGraph(attributePaths = {"brain", "topic"})
     Optional<BrainTopic> findByBidAndTid(int bid, int tid);

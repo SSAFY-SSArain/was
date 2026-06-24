@@ -53,6 +53,20 @@ public class BrainMergeService {
         }
     }
     
+    /**
+     * 일반 Brain에 대해 입력된 BtId를,<br>
+     * Merged Brain에 대해 실제 가리키는 BtId를 반환합니다.
+     * @param btid
+     * @return
+     */
+    public List<Integer> getRawBrainTopicIds(int btid) {
+        if (brainRepository.isMergeBrainOfBrainTopic(btid)) {
+            return brainTopicRepository.findRawBtidInMergeBrainTopic(btid);
+        } else {
+            return List.of(btid);
+        }
+    }
+    
     /*
         Util Method
      */
