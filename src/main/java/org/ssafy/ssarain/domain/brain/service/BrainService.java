@@ -22,6 +22,7 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainPageDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
+import org.ssafy.ssarain.domain.brain.model.JoinStatus;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.model.User;
 
@@ -34,6 +35,7 @@ public class BrainService {
     private final UserRepository userRepository;
     private final BrainRepository brainRepository;
     private final BrainMemberRepository brainMemberRepository;
+    private final BrainMemberService brainMemberService;
     
     @Transactional(readOnly = true)
     public BrainListDto<BrainInfoDto> getBrainInfos(UUID uid) {
@@ -46,7 +48,7 @@ public class BrainService {
     @Transactional(readOnly = true)
     public BrainPageDto<BrainFoundDto> searchBrain(BrainSearchDto dto, UUID uid) {
         Page<Brain> brains = findBrains(dto, uid);
-        Page<BrainFoundDto> brainDtos = brains.map(this::toBrainFoundDto);
+        Page<BrainFoundDto> brainDtos = brains.map(brain -> toBrainFoundDto(brain, uid));
         
         return BrainPageDto.from(brainDtos);
     }
@@ -122,7 +124,7 @@ public class BrainService {
         return brainRepository.searchBrains(name, uid, dto.shouldIncludeJoined(), dto.pageable());
     }
     
-    private BrainFoundDto toBrainFoundDto(Brain brain) {
+    private BrainFoundDto toBrainFoundDto(Brain brain, UUID uid) {
         List<BrainMember> members = brain.getBrainMembers();
         String adminName = members.stream()
                 .filter(member -> member.getRole().equals(BrainMemberRole.ADMIN)
@@ -134,7 +136,8 @@ public class BrainService {
         List<String> memberNames = members.stream()
                 .map(brainMember -> brainMember.getUser().getName())
                 .toList();
+        JoinStatus joinStatus = brainMemberService.getJoinStatus(brain.getBid(), uid);
         
-        return BrainFoundDto.from(brain, adminName, memberNames);
+        return BrainFoundDto.from(brain, adminName, joinStatus, memberNames);
     }
 }

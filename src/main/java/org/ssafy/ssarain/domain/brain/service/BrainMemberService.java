@@ -27,6 +27,7 @@ import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainMember;
 import org.ssafy.ssarain.domain.brain.model.BrainMemberRole;
 import org.ssafy.ssarain.domain.brain.model.BrainWaiting;
+import org.ssafy.ssarain.domain.brain.model.JoinStatus;
 import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
 import org.ssafy.ssarain.domain.user.dao.UserRepository;
 import org.ssafy.ssarain.domain.user.model.User;
@@ -43,6 +44,20 @@ public class BrainMemberService {
     private final BrainMemberRepository brainMemberRepository;
     private final BrainWaitingRepository brainWaitingRepository;
     private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    public JoinStatus getJoinStatus(int bid, UUID uid) {
+        if (uid == null) {
+            return JoinStatus.INACTIVE;
+        }
+        if (brainMemberRepository.existsById(new BrainMember.BrainMemberId(bid, uid))) {
+            return JoinStatus.ACTIVE;
+        }
+        if (brainWaitingRepository.existsByBmidBidAndBmidUid(bid, uid)) {
+            return JoinStatus.PENDING;
+        }
+        return JoinStatus.INACTIVE;
+    }
 
     @Transactional
     public void requestJoin(int bid, UUID uid) {
