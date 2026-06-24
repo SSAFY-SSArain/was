@@ -53,7 +53,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @RequestBody BrainMemberListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MEMBER);
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.addBrainMembers(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_JOIN_SUCCESS);
     }
@@ -112,7 +112,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @ModelAttribute BrainMemberPageDto pageDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
+        brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MEMBER);
         return BaseResponse.success(
                 SuccessCode.BRAIN_MEMBER_INFO_SUCCESS,
                 brainMemberService.getBrainMembers(pageDto, bid)

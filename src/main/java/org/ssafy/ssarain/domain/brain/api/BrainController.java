@@ -85,7 +85,7 @@ public class BrainController {
     		@PathVariable int bid,
     		@Valid @RequestBody BrainUpdateDto dto,
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
-    	brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MEMBER);
+    	brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
     	return BaseResponse.success(SuccessCode.BRAIN_UPDATE_SUCCESS, brainService.updateBrain(bid, dto));
     }
     
@@ -101,7 +101,7 @@ public class BrainController {
     public ResponseEntity<BaseResponse<BrainInfoDto>> getBrainInfo(
     		@PathVariable int bid,
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
-    	brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
+    	brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MEMBER);
     	return BaseResponse.success(SuccessCode.BRAIN_INFO_SUCCESS, brainService.getBrainInfo(bid));
     }
 }
