@@ -57,6 +57,7 @@ public enum ErrorCode {
     BRAIN_MEMBER_DELETION_DENIED(HttpStatus.FORBIDDEN, "B010", "해당 사용자를 Brain에서 삭제할 권한이 부족합니다."),
     BRAIN_MEMBER_ROLE_UPDATE_DENIED(HttpStatus.FORBIDDEN, "B011", "해당 사용자의 Brain 권한을 변경할 수 없습니다."),
     BRAIN_TOPIC_HAS_NEURON(HttpStatus.CONFLICT, "B012", "BrainTopic에 뉴런이 존재합니다."),
+    MERGE_BRAIN_CANNOT_MODIFY(HttpStatus.CONFLICT, "B013", "합쳐진 브레인에 관한 내용은 수정할 수 없습니다."),
     
     // Topic
     TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "해당 주제를 찾을 수 없습니다."),

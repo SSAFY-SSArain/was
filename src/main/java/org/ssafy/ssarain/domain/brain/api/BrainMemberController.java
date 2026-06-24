@@ -25,6 +25,7 @@ import org.ssafy.ssarain.domain.brain.dto.request.BrainMemberSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainMemberInfoPageDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainUserPageDto;
 import org.ssafy.ssarain.domain.brain.service.BrainMemberService;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -36,13 +37,15 @@ import lombok.RequiredArgsConstructor;
 public class BrainMemberController {
 
     private final BrainMemberService brainMemberService;
-    private final BrainAuthService brainAuthService;
+    private final BrainAuthService   brainAuthService;
+    private final BrainMergeService  brainMergeService;
 
     @PostMapping("/{bid}/join")
     @Operation(summary = "B01: Brain 가입 신청")
     public ResponseEntity<BaseResponse<Void>> requestJoin(
             @PathVariable int bid,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainMergeService.validateModifyBrain(bid);
         brainMemberService.requestJoin(bid, userDetails.getUserId());
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_REQUEST_SUCCESS);
     }
@@ -53,6 +56,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @RequestBody BrainMemberListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainMergeService.validateModifyBrain(bid);
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.addBrainMembers(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_JOIN_SUCCESS);
@@ -64,6 +68,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @RequestBody BrainMemberListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainMergeService.validateModifyBrain(bid);
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.deleteMembers(bid, userDetails.getUserId(), dto);
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_DELETE_SUCCESS);
@@ -101,6 +106,7 @@ public class BrainMemberController {
             @PathVariable int bid,
             @Valid @RequestBody BrainJoinManageDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainMergeService.validateModifyBrain(bid);
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainMemberService.manageJoinRequest(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_JOIN_MANAGE_SUCCESS);
@@ -128,6 +134,7 @@ public class BrainMemberController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
+        brainMergeService.validateModifyBrain(bid);
         brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_ADMIN);
         brainMemberService.updateMemberRole(bid, userDetails.getUserId(), uid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_MEMBER_ROLE_UPDATE_SUCCESS);

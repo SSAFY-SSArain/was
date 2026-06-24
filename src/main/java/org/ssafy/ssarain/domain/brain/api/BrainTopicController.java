@@ -18,6 +18,7 @@ import org.ssafy.ssarain.domain.brain.dto.request.TopicDeleteListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.TopicIdListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainTopicDetailDto;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 import org.ssafy.ssarain.domain.brain.service.BrainTopicService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,8 +31,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/brains")
 public class BrainTopicController {
-    private final BrainAuthService authService;
+    private final BrainAuthService  authService;
     private final BrainTopicService brainTopicService;
+    private final BrainMergeService brainMergeService;
 
     @PostMapping("/{bid}/topics")
     @Operation(summary = "B09: 특정 Brain에 Topic 등록")
@@ -40,6 +42,7 @@ public class BrainTopicController {
             @Valid @RequestBody TopicIdListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
             ) {
+        brainMergeService.validateModifyBrain(bid);
         authService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
         brainTopicService.registerTopic(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_TOPIC_REGISTER_SUCCESS);
@@ -68,6 +71,7 @@ public class BrainTopicController {
             @PathVariable int bid,
             @Valid @RequestBody TopicDeleteListDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        brainMergeService.validateModifyBrain(bid);
     	authService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
     	brainTopicService.deleteTopic(bid, dto);
         return BaseResponse.success(SuccessCode.BRAIN_TOPIC_DELETE_SUCCESS);

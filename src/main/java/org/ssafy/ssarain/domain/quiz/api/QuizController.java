@@ -11,6 +11,7 @@ import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 import org.ssafy.ssarain.domain.quiz.dto.QuizListRes;
 import org.ssafy.ssarain.domain.quiz.service.QuizService;
 
@@ -22,8 +23,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/quizzes")
 public class QuizController {
 
-    private final BrainAuthService brainAuthService;
-    private final QuizService quizService;
+    private final BrainAuthService  brainAuthService;
+    private final BrainMergeService brainMergeService;
+    private final QuizService       quizService;
 
     @GetMapping
     @Operation(summary = "Q01: BrainTopic 퀴즈 조회")
@@ -41,6 +43,7 @@ public class QuizController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
+        brainMergeService.validateModifyBrainTopic(brainTopicId);
         brainAuthService.authorizeBrainTopicRoleOf(userDetails, brainTopicId, BrainAuthService.BRAIN_MANAGER);
         return BaseResponse.success(SuccessCode.QUIZ_CREATE_SUCCESS, quizService.generateQuizzes(brainTopicId));
     }

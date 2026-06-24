@@ -41,6 +41,18 @@ public class BrainMergeService {
         // 뉴런, 댓글, 퀴즈 등은 복사하지 않으며, 조회시 기존 정보를 조인하여 반환합니다.
     }
     
+    public void validateModifyBrain(int bid) {
+        if (brainRepository.isMergeBrain(bid)) {
+            throw new GlobalException(ErrorCode.MERGE_BRAIN_CANNOT_MODIFY);
+        }
+    }
+    
+    public void validateModifyBrainTopic(int btid) {
+        if (brainRepository.isMergeBrainOfBrainTopic(btid)) {
+            throw new GlobalException(ErrorCode.MERGE_BRAIN_CANNOT_MODIFY);
+        }
+    }
+    
     /*
         Util Method
      */
