@@ -12,10 +12,12 @@ import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.util.BatchProcessor;
 import org.ssafy.ssarain.domain.brain.dao.BrainRepository;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
+import org.ssafy.ssarain.domain.brain.dao.MergeBrainRepository;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainMergeDto;
 import org.ssafy.ssarain.domain.brain.model.Brain;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
 import org.ssafy.ssarain.domain.brain.model.JoinPolicy;
+import org.ssafy.ssarain.domain.brain.model.MergeBrain;
 import org.ssafy.ssarain.domain.topic.dao.TopicRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,12 +29,13 @@ public class BrainMergeService {
     private final TopicRepository      topicRepository;
     private final BrainRepository      brainRepository;
     private final BrainTopicRepository brainTopicRepository;
+    private final MergeBrainRepository mergeBrainRepository;
     
     @Transactional
     public void mergeBrains(BrainMergeDto dto) {
         validateMergeRequest(dto);
         
-        Brain brain = createBrain(dto.name(), dto.description());
+        Brain brain = createBrain(dto.name(), dto.description(), dto.brains());
         copyAllTopics(brain, dto.brains());
         
         // 뉴런, 댓글, 퀴즈 등은 복사하지 않으며, 조회시 기존 정보를 조인하여 반환합니다.
@@ -42,9 +45,16 @@ public class BrainMergeService {
         Util Method
      */
     
-    private Brain createBrain(String name, String description) {
+    private Brain createBrain(String name, String description, List<Integer> memberBrains) {
         Brain brain = Brain.mergedOf(name, description, JoinPolicy.PROTECTED);
-        return brainRepository.save(brain);
+        brainRepository.save(brain);
+        
+        List<MergeBrain> mergeBrains = memberBrains.stream()
+                .map(bid -> MergeBrain.of(brain, brainRepository.getReferenceById(bid)))
+                .toList();
+        mergeBrainRepository.saveAll(mergeBrains);
+        
+        return brain;
     }
     
     private void copyAllTopics(Brain toBrain, List<Integer> fromBids) {
