@@ -17,6 +17,9 @@ public interface NeuronRepository extends JpaRepository<Neuron, Integer> {
 
     boolean existsByNidAndUser_Uid(Integer nid, UUID userUid);
 
+    @Query("SELECT count(*) FROM Neuron n WHERE n.brainTopic.btid IN :btid")
+    int countByBtidIn(List<Integer> btid);
+
     @Query(value = """
             SELECT new org.ssafy.ssarain.domain.user.dto.UserActivityNeuronDto(
                 bt.bid,

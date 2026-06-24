@@ -2,6 +2,7 @@ package org.ssafy.ssarain.domain.brain.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
+import org.ssafy.ssarain.domain.brain.dto.request.TopicDeleteListDto;
 import org.ssafy.ssarain.domain.brain.dto.request.TopicIdListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainTopicDetailDto;
@@ -58,5 +60,16 @@ public class BrainTopicController {
             @PathVariable int bid,
             @PathVariable int tid) {
         return BaseResponse.success(SuccessCode.BRAIN_TOPIC_INFO_SUCCESS, brainTopicService.getBrainTopicDetail(bid, tid));
+    }
+    
+    @DeleteMapping("/{bid}/topics")
+    @Operation(summary = "B11: 특정 Brain의 Topic 삭제")
+    public ResponseEntity<BaseResponse<Void>> deleteBrainTopic(
+            @PathVariable int bid,
+            @Valid @RequestBody TopicDeleteListDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+    	authService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MANAGER);
+    	brainTopicService.deleteTopic(bid, dto);
+        return BaseResponse.success(SuccessCode.BRAIN_TOPIC_DELETE_SUCCESS);
     }
 }
