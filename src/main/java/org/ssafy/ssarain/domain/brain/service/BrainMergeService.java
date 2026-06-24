@@ -132,8 +132,8 @@ public class BrainMergeService {
     
     private void validateBrainIdInBatches(List<Integer> bids) {
         BatchProcessor.process(bids, batch -> {
-            if (batch.size() != brainRepository.countBybidIn(batch)) {
-                throw new GlobalException(ErrorCode.BRAIN_NOT_FOUND);
+            if (batch.size() != brainRepository.countByBidInAndIsMergedFalse(batch)) {
+                throw new GlobalException(ErrorCode.MERGEABLE_BRAIN_NOT_FOUND);
             }
         });
     }

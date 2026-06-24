@@ -19,7 +19,7 @@ public interface BrainRepository extends JpaRepository<Brain, Integer> {
     @Query("SELECT (0 <> count(*) AND bt.brain.isMerged) FROM BrainTopic bt WHERE bt.btid = :btid")
     boolean isMergeBrainOfBrainTopic(int btid);
     
-    int countBybidIn(List<Integer> bid);
+    int countByBidInAndIsMergedFalse(List<Integer> bid);
     
     Page<Brain> findByNameContaining(String name, Pageable pageable);
 
