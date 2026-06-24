@@ -1,5 +1,6 @@
 package org.ssafy.ssarain.domain.brain.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ import org.ssafy.ssarain.domain.brain.model.Brain;
 public interface BrainRepository extends JpaRepository<Brain, Integer> {
     
     boolean existsByName(String name);
+    
+    int countBybidIn(List<Integer> bid);
     
     Page<Brain> findByNameContaining(String name, Pageable pageable);
 
