@@ -18,6 +18,7 @@ public class BrainAuthService {
     
     public static final List<BrainMemberRole> BRAIN_MANAGER = List.of(BrainMemberRole.ADMIN, BrainMemberRole.MANAGER);
     public static final List<BrainMemberRole> BRAIN_ADMIN = List.of(BrainMemberRole.ADMIN);
+    public static final List<BrainMemberRole> BRAIN_MEMBER = List.of(BrainMemberRole.ADMIN, BrainMemberRole.MANAGER, BrainMemberRole.USER);
 
     private final BrainMemberRepository brainMemberRepository;
     private final AuthService           authService;
