@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 import org.ssafy.ssarain.domain.brain.service.BrainTopicService;
 import org.ssafy.ssarain.domain.neuron.service.NeuronService;
 import org.ssafy.ssarain.domain.quiz.client.AiQuizClient;
@@ -28,13 +29,15 @@ public class QuizService {
 
     private final QuizRepository    quizRepository;
     private final BrainTopicService brainTopicService;
-    private final NeuronService       neuronService;
+    private final BrainMergeService brainMergeService;
+    private final NeuronService     neuronService;
     private final AiQuizClient      aiQuizClient;
 
     public QuizListRes getQuizzes(Integer brainTopicId) {
         validateBrainTopicId(brainTopicId);
-
-        List<QuizInfoDto> quizzes = quizRepository.findByBrainTopicIdOrderByQidAsc(brainTopicId)
+        
+        List<Integer> btids = brainMergeService.getRawBrainTopicIds(brainTopicId);
+        List<QuizInfoDto> quizzes = quizRepository.findByBrainTopicIdInOrderByQidAsc(btids)
                 .stream()
                 .map(QuizInfoDto::from)
                 .toList();
