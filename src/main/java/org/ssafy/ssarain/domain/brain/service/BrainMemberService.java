@@ -102,7 +102,6 @@ public class BrainMemberService {
         validateDeleteList(requesterRole, members);
         
         brainMemberRepository.deleteAllInBatch(members);
-        resignAdmin(bid, dto.users());
     }
 
     @Transactional(readOnly = true)
