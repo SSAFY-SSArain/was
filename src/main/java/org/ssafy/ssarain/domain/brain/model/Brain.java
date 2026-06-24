@@ -49,6 +49,10 @@ public class Brain extends BaseTimeEntity {
     @ColumnDefault("'PROTECTED'")
     private JoinPolicy joinPolicy = JoinPolicy.PROTECTED;
     
+    @Column(name = "is_merged", nullable = false)
+    @ColumnDefault("false")
+    private boolean isMerged = false;
+    
     /*
      * 연관된 엔티티
      */
@@ -57,10 +61,13 @@ public class Brain extends BaseTimeEntity {
     private List<BrainMember> brainMembers;
     
     @Builder(access = AccessLevel.PRIVATE)
-    private Brain(String name, String description, JoinPolicy joinPolicy) {
+    private Brain(String name, String description, JoinPolicy joinPolicy, Boolean isMerged) {
         this.name = name;
         this.description = description;
         this.joinPolicy = joinPolicy;
+        if (isMerged != null) {
+            this.isMerged = isMerged;
+        }
     }
     
     public void update(BrainUpdateDto dto) {
@@ -77,5 +84,9 @@ public class Brain extends BaseTimeEntity {
     
     public static Brain of(String name, String description, JoinPolicy joinPolicy) {
         return Brain.builder().name(name).description(description).joinPolicy(joinPolicy).build();
+    }
+    
+    public static Brain mergedOf(String name, String description, JoinPolicy joinPolicy) {
+        return Brain.builder().name(name).description(description).joinPolicy(joinPolicy).isMerged(true).build();
     }
 }
