@@ -36,7 +36,8 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public NeuronPreviewListDto getNeuronPreview(Integer btid) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidIn(List.of(btid));
+        List<Integer> btids = brainMergeService.getRawBrainTopicIds(btid);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidIn(btids);
         List<NeuronPreviewDto> neuronPreviewList = neurons.stream()
                                                     .map(NeuronPreviewDto::from)
                                                     .toList();
