@@ -173,7 +173,7 @@ public class BrainMemberService {
     }
     
     private User getUser(UUID uid) {
-        return userRepository.findByUid(uid)
+        return userRepository.findByUidAndDeletedAtIsNull(uid)
                 .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
     }
     
@@ -228,7 +228,7 @@ public class BrainMemberService {
     
     private void validateUidsInBatches(List<UUID> uids) {
         BatchProcessor.process(uids, batch -> {
-            if (batch.size() != userRepository.countAllByUidIn(batch)) {
+            if (batch.size() != userRepository.countAllByUidInAndDeletedAtIsNull(batch)) {
                 throw new GlobalException(ErrorCode.USER_NOT_FOUND);
             }
         });

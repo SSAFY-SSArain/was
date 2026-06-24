@@ -36,7 +36,7 @@ public class EmailVerificationService {
 
         String email = emailVerifyReq.email();
         // 이메일 중복 체크
-        if(userRepository.existsByEmail(email)) {
+        if(userRepository.existsByEmailAndDeletedAtIsNull(email)) {
             throw new GlobalException(ErrorCode.USER_EMAIL_DUPLICATED);
         }
 

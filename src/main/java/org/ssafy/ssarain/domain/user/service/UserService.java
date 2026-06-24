@@ -93,14 +93,14 @@ public class UserService {
 
     public User getUserByUserId(UUID userId) {
 
-        return userRepository.findByUid(userId)
+        return userRepository.findByUidAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
     }
 
     public boolean isNameDuplicate(NameCheckReq nameCheckReq) {
 
         String name = nameCheckReq.name();
-        return userRepository.existsByName(name);
+        return userRepository.existsByNameAndDeletedAtIsNull(name);
     }
 
     @Transactional(readOnly = true)
@@ -126,7 +126,7 @@ public class UserService {
     // 이메일 중복
     private void validateDuplicateEmail(String email) {
 
-        if(userRepository.existsByEmail(email)) {
+        if(userRepository.existsByEmailAndDeletedAtIsNull(email)) {
             throw new GlobalException(ErrorCode.USER_EMAIL_DUPLICATED);
         }
     }
@@ -134,7 +134,7 @@ public class UserService {
     // 닉네임 중복
     private void validateDuplicateName(String name) {
 
-        if(userRepository.existsByName(name)) {
+        if(userRepository.existsByNameAndDeletedAtIsNull(name)) {
             throw new GlobalException(ErrorCode.USER_NAME_DUPLICATED);
         }
     }
@@ -146,7 +146,7 @@ public class UserService {
 
     private User findUserByEmail(String email) {
 
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
     }
 }
