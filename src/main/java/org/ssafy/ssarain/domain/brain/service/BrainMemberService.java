@@ -142,8 +142,9 @@ public class BrainMemberService {
     @Transactional(readOnly = true)
     public BrainMemberInfoPageDto getBrainMembers(BrainMemberPageDto dto, int bid) {
         validateBrainExists(bid);
+        List<Integer> rawBids = brainMergeService.getRawBrainIds(bid);
         
-        Page<BrainMemberInfoDto> memberInfoDtos = brainMemberRepository.findByBmid_Bid(bid, dto.pageable())
+        Page<BrainMemberInfoDto> memberInfoDtos = brainMemberRepository.findByBmid_BidIn(rawBids, dto.pageable())
                 .map(BrainMemberInfoDto::from);
         return BrainMemberInfoPageDto.from(memberInfoDtos);
     }
