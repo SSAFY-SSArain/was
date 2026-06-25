@@ -32,11 +32,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
               AND NOT EXISTS (
                     SELECT 1
                     FROM BrainMember bm
-                    WHERE bm.bmid.bid = :bid
+                    WHERE bm.bmid.bid IN :bid
                       AND bm.bmid.uid = u.uid
               )
             """)
-    Page<User> searchUsersAvailableForBrain(int bid, String search, Pageable pageable);
+    Page<User> searchUsersAvailableForBrain(List<Integer> bid, String search, Pageable pageable);
 
     @Query("""
             SELECT u

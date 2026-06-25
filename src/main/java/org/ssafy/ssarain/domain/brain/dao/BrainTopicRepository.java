@@ -2,6 +2,7 @@ package org.ssafy.ssarain.domain.brain.dao;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,20 @@ public interface BrainTopicRepository extends JpaRepository<BrainTopic, Integer>
 	int countByBidAndTidIn(int bid, List<Integer> tids);
 	
 	boolean existsByBidAndTid(int bid, int tid);
+
+    @Query("SELECT DISTINCT bt.topic.tid FROM BrainTopic bt WHERE bt.brain.bid IN :bid")
+    Set<Integer> findDistinctTidByBidIn(Iterable<Integer> bid);
+    
+    @Query("""
+            SELECT btid
+            FROM BrainTopic
+            WHERE (bid, tid) IN
+                (SELECT mb.mbid.memberid, bt.tid
+                FROM BrainTopic bt 
+                LEFT OUTER JOIN MergeBrain mb ON bt.bid = mb.mbid.mainid 
+                WHERE bt.btid = :btid)
+            """)
+    List<Integer> findRawBtidInMergeBrainTopic(int btid);
 	
     @EntityGraph(attributePaths = {"brain", "topic"})
     Optional<BrainTopic> findByBidAndTid(int bid, int tid);

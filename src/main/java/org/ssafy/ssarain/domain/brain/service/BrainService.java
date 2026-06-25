@@ -32,10 +32,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrainService {
     
-    private final UserRepository userRepository;
-    private final BrainRepository brainRepository;
+    private final UserRepository        userRepository;
+    private final BrainRepository       brainRepository;
     private final BrainMemberRepository brainMemberRepository;
-    private final BrainMemberService brainMemberService;
+    private final BrainMemberService    brainMemberService;
+    private final BrainMergeService     brainMergeService;
     
     @Transactional(readOnly = true)
     public BrainListDto<BrainInfoDto> getBrainInfos(UUID uid) {
@@ -69,6 +70,11 @@ public class BrainService {
         Brain brain = findBrain(bid);
         if (dto.name() != null) {
             validateDuplicateName(dto.name());
+        }
+        
+        // Merged Brain에 대한 수정 가능성 검증
+        if (brain.getJoinPolicy() != dto.joinPolicy()) {
+            brainMergeService.validateModifyBrain(bid);
         }
 
         brain.update(dto);

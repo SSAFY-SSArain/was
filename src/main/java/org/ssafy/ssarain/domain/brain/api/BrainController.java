@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssafy.ssarain.common.response.BaseResponse;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
+import org.ssafy.ssarain.common.security.service.AuthService;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainCreateDto;
+import org.ssafy.ssarain.domain.brain.dto.request.BrainMergeDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainSearchDto;
 import org.ssafy.ssarain.domain.brain.dto.request.BrainUpdateDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainDetailDto;
@@ -25,6 +27,7 @@ import org.ssafy.ssarain.domain.brain.dto.response.BrainInfoDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainListDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainNameVaildationDto;
 import org.ssafy.ssarain.domain.brain.dto.response.BrainPageDto;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 import org.ssafy.ssarain.domain.brain.service.BrainService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,8 +39,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/brains")
 public class BrainController {
-    private final BrainService brainService;
-    private final BrainAuthService brainAuthService;
+    private final AuthService       authService;
+    private final BrainService      brainService;
+    private final BrainMergeService brainMergeService;
+    private final BrainAuthService  brainAuthService;
     
     @GetMapping("/me")
     @Operation(summary = "B04: 내가 속한 Brain 조회")
@@ -103,5 +108,15 @@ public class BrainController {
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
     	brainAuthService.authorizeBrainRoleOf(userDetails, bid, BrainAuthService.BRAIN_MEMBER);
     	return BaseResponse.success(SuccessCode.BRAIN_INFO_SUCCESS, brainService.getBrainInfo(bid));
+    }
+    
+    @PostMapping("/merge")
+    @Operation(summary = "B21: Brain 병합 생성")
+    public ResponseEntity<BaseResponse<Void>> mergeBrains(
+            @Valid @RequestBody BrainMergeDto dto, 
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        authService.authorizeAdmin(userDetails);
+        brainMergeService.mergeBrains(dto);
+        return BaseResponse.success(SuccessCode.BRAIN_MERGE_SUCCESS);
     }
 }

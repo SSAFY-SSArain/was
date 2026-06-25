@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS neurons;
 DROP TABLE IF EXISTS brain_waitings;
 DROP TABLE IF EXISTS brain_members;
 DROP TABLE IF EXISTS brain_topics;
+DROP TABLE IF EXISTS merge_brains;
 DROP TABLE IF EXISTS topics;
 DROP TABLE IF EXISTS brains;
 DROP TABLE IF EXISTS users;
@@ -50,6 +51,7 @@ CREATE TABLE brains (
     name        VARCHAR(50)  NOT NULL UNIQUE,
     description VARCHAR(200) NOT NULL,
     join_policy ENUM('PUBLIC', 'PROTECTED') NOT NULL DEFAULT 'PROTECTED',
+    is_merged   TINYINT(1)   NOT NULL DEFAULT FALSE,
     created_at  DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at  DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -107,6 +109,15 @@ CREATE TABLE brain_waitings (
     PRIMARY KEY (bid, uid),
     CONSTRAINT fk_brain_waitings_brains FOREIGN KEY (bid) REFERENCES brains (bid) ON DELETE CASCADE,
     CONSTRAINT fk_brain_waitings_users FOREIGN KEY (uid) REFERENCES users (uid) ON DELETE CASCADE
+);
+
+CREATE TABLE merge_brains (
+	mainid	 INT NOT NULL,
+	memberid INT NOT NULL,
+    
+	PRIMARY KEY (mainid, memberid),
+	CONSTRAINT fk_merge_brains_brains_member FOREIGN KEY (mainid) REFERENCES brains (bid) ON DELETE CASCADE,
+	CONSTRAINT fk_merge_brains_brains_main FOREIGN KEY (memberid) REFERENCES brains (bid) ON DELETE CASCADE
 );
 
 -- 뉴런

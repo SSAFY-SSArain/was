@@ -6,13 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.BaseResponse;
-import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.common.response.SuccessCode;
 import org.ssafy.ssarain.common.security.model.CustomUserDetails;
 import org.ssafy.ssarain.common.security.service.BrainAuthService;
 import org.ssafy.ssarain.common.security.service.NeuronAuthService;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 import org.ssafy.ssarain.domain.neuron.dto.NeuronCreateDto;
 import org.ssafy.ssarain.domain.neuron.dto.NeuronDetailDto;
 import org.ssafy.ssarain.domain.neuron.dto.NeuronLikeDto;
@@ -27,7 +26,8 @@ import java.util.UUID;
 public class NeuronController {
 
     private final NeuronService      neuronService;
-    private final BrainAuthService brainAuthService;
+    private final BrainAuthService   brainAuthService;
+    private final BrainMergeService  brainMergeService;
     private final NeuronAuthService  neuronAuthService;
 
     @GetMapping("/preview/{btid}")
@@ -61,6 +61,7 @@ public class NeuronController {
             @RequestBody @Valid NeuronCreateDto neuronCreateDto
     ) {
 
+        brainMergeService.validateModifyBrainTopic(neuronCreateDto.btid());
         brainAuthService.authorizeBrainMemberByBtid(userDetails, neuronCreateDto.btid());
         NeuronDetailDto neuronDetailDto = neuronService.createNeuron(neuronCreateDto, userDetails.getUserId());
 

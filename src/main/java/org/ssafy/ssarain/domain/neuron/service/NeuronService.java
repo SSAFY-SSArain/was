@@ -10,6 +10,7 @@ import org.ssafy.ssarain.common.error.GlobalException;
 import org.ssafy.ssarain.common.response.ErrorCode;
 import org.ssafy.ssarain.domain.brain.dao.BrainTopicRepository;
 import org.ssafy.ssarain.domain.brain.model.BrainTopic;
+import org.ssafy.ssarain.domain.brain.service.BrainMergeService;
 import org.ssafy.ssarain.domain.comment.dto.CommentDetailDto;
 import org.ssafy.ssarain.domain.comment.service.CommentService;
 import org.ssafy.ssarain.domain.neuron.dao.NeuronLikeRepository;
@@ -28,13 +29,15 @@ public class NeuronService {
     private final NeuronRepository     neuronRepository;
     private final NeuronLikeRepository neuronLikeRepository;
     private final BrainTopicRepository brainTopicRepository;
+    private final BrainMergeService    brainMergeService;
     private final CommentService       commentService;
 
 
     @Transactional(readOnly = true)
     public NeuronPreviewListDto getNeuronPreview(Integer btid) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_Btid(btid);
+        List<Integer> btids = brainMergeService.getRawBrainTopicIds(btid);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidIn(btids);
         List<NeuronPreviewDto> neuronPreviewList = neurons.stream()
                                                     .map(NeuronPreviewDto::from)
                                                     .toList();
@@ -72,7 +75,8 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public List<NeuronInfoDto> findByBrainTopicId(Integer brainTopicId) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_Btid(brainTopicId);
+        List<Integer> btids = brainMergeService.getRawBrainTopicIds(brainTopicId);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidIn(btids);
 
         return neurons.stream()
                 .map(NeuronInfoDto::from)
@@ -82,7 +86,7 @@ public class NeuronService {
     @Transactional(readOnly = true)
     public List<String> findTitlesByBrainTopicId(Integer brainTopicId) {
 
-        List<Neuron> neurons = neuronRepository.findByBrainTopic_Btid(brainTopicId);
+        List<Neuron> neurons = neuronRepository.findByBrainTopic_BtidIn(List.of(brainTopicId));
 
         return neurons.stream()
                 .map(Neuron::getTitle)

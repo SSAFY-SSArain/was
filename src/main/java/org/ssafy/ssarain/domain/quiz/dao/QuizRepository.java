@@ -9,7 +9,7 @@ import org.ssafy.ssarain.domain.quiz.model.Quiz;
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
 
     @EntityGraph(attributePaths = "options")
-    List<Quiz> findByBrainTopicIdOrderByQidAsc(Integer brainTopicId);
+    List<Quiz> findByBrainTopicIdInOrderByQidAsc(List<Integer> brainTopicId);
 
     long countByBrainTopicId(Integer brainTopicId);
 }

@@ -1,5 +1,6 @@
 package org.ssafy.ssarain.domain.brain.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,14 @@ import org.ssafy.ssarain.domain.brain.model.Brain;
 public interface BrainRepository extends JpaRepository<Brain, Integer> {
     
     boolean existsByName(String name);
+    
+    @Query("SELECT (0 <> count(*) AND b.isMerged) FROM Brain b WHERE b.bid = :bid")
+    boolean isMergeBrain(int bid);
+    
+    @Query("SELECT (0 <> count(*) AND bt.brain.isMerged) FROM BrainTopic bt WHERE bt.btid = :btid")
+    boolean isMergeBrainOfBrainTopic(int btid);
+    
+    int countByBidInAndIsMergedFalse(List<Integer> bid);
     
     Page<Brain> findByNameContaining(String name, Pageable pageable);
 

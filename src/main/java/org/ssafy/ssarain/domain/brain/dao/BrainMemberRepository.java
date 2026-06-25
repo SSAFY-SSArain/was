@@ -15,7 +15,7 @@ public interface BrainMemberRepository extends JpaRepository<BrainMember, BrainM
     
     List<BrainMember> findByBmid_Uid(UUID uid);
     
-    Page<BrainMember> findByBmid_Bid(int bid, Pageable pageable);
+    Page<BrainMember> findByBmid_BidIn(List<Integer> bid, Pageable pageable);
     
     @Query("SELECT bm.role FROM BrainMember bm WHERE (bm.bmid.uid, bm.bmid.bid) = (:uid, :bid)")
     BrainMemberRole findRoleByBmidUidAndBmidBid(UUID uid, int bid);

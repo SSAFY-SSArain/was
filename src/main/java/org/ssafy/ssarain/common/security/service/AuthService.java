@@ -78,6 +78,12 @@ public class AuthService {
         UUID userId = jwtProvider.getUserIdFromAccessToken(accessToken);
         deleteRefreshToken(userId);
     }
+    
+    public void authorizeAdmin(CustomUserDetails userDetails) {
+        if (!isAdmin(userDetails)) {
+            throw new GlobalException(ErrorCode.ACCESS_DENIED);
+        }
+    }
 
     public boolean isAdmin(CustomUserDetails userDetails) {
         return userDetails.getAuthorities().stream()
