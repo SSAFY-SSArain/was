@@ -46,7 +46,7 @@ services:
       - SMTP_EMAIL=${SMTP_EMAIL}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
     depends_on:
-      - local-mysql
+      - local-mysqlㅎ
       - local-redis
     networks:
       - ssarain-network
