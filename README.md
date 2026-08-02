@@ -142,3 +142,35 @@
     Docker Container 형태로 이미지화 해 운영 환경으로 배포합니다.
 
   ![아키텍쳐](./docs/backend_architecture.png)
+
+## 4. 주요 화면
+
+### 4.1 Brain 전체 지식 맵
+
+Brain에 축적된 Topic과 Neuron의 연결 관계를 한눈에 탐색할 수 있습니다.
+
+![Brain 전체 지식 맵](./docs/메인화면.jpeg)
+
+### 4.2 Topic별 지식 탐색
+
+관심 있는 Topic을 선택하여 관련 하위 주제와 Neuron을 시각적으로 확인할 수 있습니다.
+
+![Topic별 지식 탐색](./docs/메인화면2.jpeg)
+
+### 4.3 세부 주제별 Neuron 탐색
+
+세부 주제를 중심으로 연결된 Neuron을 살펴보며 지식의 흐름을 파악할 수 있습니다.
+
+![세부 주제별 Neuron 탐색](./docs/메인화면3.jpeg)
+
+### 4.4 Neuron 상세 조회
+
+사용자가 작성한 지식의 상세 내용과 작성 정보, 추천 및 댓글을 확인할 수 있습니다.
+
+![Neuron 상세 조회](./docs/뉴런.jpeg)
+
+### 4.5 AI 기반 Quiz
+
+Topic에 축적된 지식을 바탕으로 생성된 퀴즈를 풀며 학습 내용을 점검할 수 있습니다.
+
+![AI 기반 Quiz](./docs/퀴즈.jpeg)
