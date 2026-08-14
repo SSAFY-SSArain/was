@@ -21,9 +21,9 @@ import org.ssafy.ssarain.infra.mail.service.EmailVerificationService;
 import org.ssafy.ssarain.infra.redis.dao.RedisRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+  
 import java.time.Duration;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.ssafy.ssarain.infra.redis.constant.RedisConst.JWT_REFRESH_TOKEN_PREFIX;
@@ -33,7 +33,7 @@ import static org.ssafy.ssarain.infra.redis.constant.RedisConst.JWT_REFRESH_TOKE
 @Slf4j
 public class AuthService {
 
-    private static final long     GRACE_PERIOD_SECONDS = 30L;
+    private static final long     GRACE_PERIOD_SECONDS = 5L;
 
     private final UserService     userService;
     private final JwtProvider     jwtProvider;
@@ -61,15 +61,21 @@ public class AuthService {
         validateRefreshTokenStructure(refreshToken);
 
         UUID userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
-        String refreshTokenRedisKey  = getRefreshTokenRedisKey(userId);
-
-        validateRefreshTokenMatch(refreshToken, refreshTokenRedisKey);
 
         String graceRedisKey = getGraceTokenKey(refreshToken);
+        Optional<String> graceToken = redisRepository.getValue(graceRedisKey, String.class);
 
-        return redisRepository.getValue(graceRedisKey, String.class)
-                .map(token -> reissueWithGracePeriod(token, refreshToken))
-                .orElseGet(() -> reissueWithNewToken(userId, graceRedisKey));
+        if(graceToken.isPresent()) {
+            String latestRefreshToken = graceToken.get();
+
+            validateRefreshTokenMatch(latestRefreshToken, getRefreshTokenRedisKey(userId));
+
+            return reissueWithGracePeriod(userId, latestRefreshToken);
+        }
+
+        validateRefreshTokenMatch(refreshToken, getRefreshTokenRedisKey(userId));
+
+        return reissueWithNewToken(userId, graceRedisKey);
 
     }
 
@@ -170,11 +176,9 @@ public class AuthService {
         return "%sgrace:%s".formatted(JWT_REFRESH_TOKEN_PREFIX, refreshToken);
     }
 
-    private UserWithTokenRes reissueWithGracePeriod(String graceToken, String refreshToken) {
+    private UserWithTokenRes reissueWithGracePeriod(UUID userId, String graceToken) {
 
-        Authentication authentication = jwtProvider.getAuthenticationFromRefreshToken(refreshToken);
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.getUserByUserId(userDetails.getUserId());
+        User user = userService.getUserByUserId(userId);
 
         String accessToken = jwtProvider.generateAccessToken(user.getUid(),
                                                             user.getEmail(),
@@ -199,7 +203,7 @@ public class AuthService {
         long accessTokenExpiresIn  = jwtProvider.getAccessTokenExpirationSeconds();
         long refreshTokenExpiresIn = jwtProvider.getRefreshTokenExpirationSeconds();
 
-        // Grace period 설정 (30 초)
+        // Grace period 설정 (5 초)
         redisRepository.setValue(graceRedisKey, newRefreshToken, Duration.ofSeconds(GRACE_PERIOD_SECONDS));
         // RefreshToken 갱신
         saveRefreshToken(userId, newRefreshToken, refreshTokenExpiresIn);
